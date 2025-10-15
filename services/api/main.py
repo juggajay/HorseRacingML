@@ -30,6 +30,18 @@ _cached_model: Optional[Booster] = None
 _cached_data: Optional[pd.DataFrame] = None
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Pre-load model and dataset on startup to avoid first-request timeout"""
+    global _cached_model, _cached_data
+    print("Loading dataset and model at startup...")
+    # Pre-load dataset
+    _load_full_dataset()
+    # Pre-load model
+    _latest_model()
+    print("Dataset and model loaded successfully!")
+
+
 def _latest_model() -> Booster:
     global _cached_model
     if _cached_model is None:
