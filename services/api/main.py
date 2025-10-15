@@ -25,20 +25,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Cache model and dataset at startup
+_cached_model: Optional[Booster] = None
+_cached_data: Optional[pd.DataFrame] = None
+
 
 def _latest_model() -> Booster:
-    models = sorted(MODEL_DIR.glob("betfair_kash_top5_model_*.txt"))
-    if not models:
-        raise HTTPException(status_code=500, detail="Model artifact not found. Train the model first.")
-    return Booster(model_file=str(models[-1]))
+    global _cached_model
+    if _cached_model is None:
+        models = sorted(MODEL_DIR.glob("betfair_kash_top5_model_*.txt"))
+        if not models:
+            raise HTTPException(status_code=500, detail="Model artifact not found. Train the model first.")
+        _cached_model = Booster(model_file=str(models[-1]))
+    return _cached_model
+
+
+def _load_full_dataset() -> pd.DataFrame:
+    global _cached_data
+    if _cached_data is None:
+        if not DATA_PATH.exists():
+            raise HTTPException(status_code=500, detail="Training dataset missing. Run data prep pipeline first.")
+        _cached_data = pd.read_csv(DATA_PATH, low_memory=False)
+        _cached_data["event_date"] = pd.to_datetime(_cached_data["event_date"], errors="coerce")
+        _cached_data = _cached_data.dropna(subset=["event_date"]).copy()
+    return _cached_data
 
 
 def _load_dataset(target_date: date) -> pd.DataFrame:
-    if not DATA_PATH.exists():
-        raise HTTPException(status_code=500, detail="Training dataset missing. Run data prep pipeline first.")
-    df = pd.read_csv(DATA_PATH)
-    df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
-    df = df.dropna(subset=["event_date"]).copy()
+    df = _load_full_dataset()
     mask = df["event_date"].dt.date == target_date
     subset = df.loc[mask]
     if subset.empty:
