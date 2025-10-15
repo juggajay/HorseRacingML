@@ -19,6 +19,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+# But include web/lib (Next.js code)
+!web/lib/
 parts/
 sdist/
 var/
