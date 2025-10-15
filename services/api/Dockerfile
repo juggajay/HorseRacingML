@@ -14,4 +14,6 @@ COPY . .
 ENV PYTHONPATH=/app
 ENV PORT=8000
 
-CMD ["uvicorn", "services.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# When run from services/api/ directory (Railway), use main:app
+# When run from repo root (Docker Compose), use services.api.main:app
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
