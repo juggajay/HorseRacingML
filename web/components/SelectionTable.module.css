@@ -6,31 +6,31 @@
   backdrop-filter: blur(16px);
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   min-width: 680px;
 }
 
-thead {
+.table thead {
   background: rgba(10, 18, 30, 0.8);
 }
 
-th,
-td {
+.table th,
+.table td {
   padding: 0.85rem 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
   text-align: left;
 }
 
-th {
+.table th {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--text-tertiary);
 }
 
-tbody tr:hover {
+.table tbody tr:hover {
   background: rgba(20, 147, 255, 0.08);
 }
 

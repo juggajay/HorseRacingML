@@ -12,7 +12,7 @@ export const SelectionTable: React.FC<Props> = ({ selections }) => {
 
   return (
     <div className={styles.wrapper}>
-      <table>
+      <table className={styles.table}>
         <thead>
           <tr>
             <th>Date</th>
