@@ -1,0 +1,9 @@
+pandas
+numpy
+lightgbm
+scikit-learn
+fastapi
+uvicorn
+python-dotenv
+requests
+requests

@@ -1,0 +1,100 @@
+# Environment & Secrets
+.env
+.env.local
+.env.production
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# Data & Artifacts (too large for Git)
+data/raw/
+data/processed/
+artifacts/models/*.txt
+artifacts/*.csv
+*.csv.gz
+*.zip
+archive.zip
+
+# Keep structure but ignore large files
+!data/.gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!artifacts/.gitkeep
+!artifacts/models/.gitkeep
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node.js (for web UI)
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+*.env.docker
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Screenshots (don't commit user screenshots)
+*.png
+*.jpg
+*.jpeg
+!docs/images/*.png
+
+# Betfair specific
+.pf_*
+betfair_snapshot_*.csv

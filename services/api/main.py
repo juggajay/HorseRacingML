@@ -1,0 +1,114 @@
+from __future__ import annotations
+
+from datetime import date
+from pathlib import Path
+from typing import Optional
+
+import pandas as pd
+from fastapi import FastAPI, HTTPException, Query
+from lightgbm import Booster
+
+from feature_engineering import engineer_all_features, get_feature_columns
+
+DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
+MODEL_DIR = Path("artifacts/models")
+
+app = FastAPI(title="HorseRacingML API", version="0.1.0")
+
+
+def _latest_model() -> Booster:
+    models = sorted(MODEL_DIR.glob("betfair_kash_top5_model_*.txt"))
+    if not models:
+        raise HTTPException(status_code=500, detail="Model artifact not found. Train the model first.")
+    return Booster(model_file=str(models[-1]))
+
+
+def _load_dataset(target_date: date) -> pd.DataFrame:
+    if not DATA_PATH.exists():
+        raise HTTPException(status_code=500, detail="Training dataset missing. Run data prep pipeline first.")
+    df = pd.read_csv(DATA_PATH)
+    df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
+    df = df.dropna(subset=["event_date"]).copy()
+    mask = df["event_date"].dt.date == target_date
+    subset = df.loc[mask]
+    if subset.empty:
+        raise HTTPException(status_code=404, detail=f"No runners found on {target_date}")
+    return subset
+
+
+def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
+    df_feat = engineer_all_features(df_raw)
+    feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
+    predictions = booster.predict(df_feat[feature_cols])
+    df_feat["model_prob"] = predictions
+    df_feat["implied_prob"] = 1.0 / (df_feat["win_odds"] + 1e-9)
+    df_feat["edge"] = df_feat["model_prob"] - df_feat["implied_prob"]
+    return df_feat
+
+
+@app.get("/health")
+def health() -> dict:
+    return {"status": "ok"}
+
+
+@app.get("/races")
+def get_races(date_str: Optional[str] = Query(None, description="YYYY-MM-DD")) -> dict:
+    target_date = date.fromisoformat(date_str) if date_str else date.today()
+    subset = _load_dataset(target_date)
+    booster = _latest_model()
+    scored = _score(subset, booster)
+    cols = [
+        "event_date",
+        "track",
+        "race_no",
+        "win_market_id",
+        "selection_id",
+        "selection_name",
+        "win_odds",
+        "model_prob",
+        "implied_prob",
+        "edge",
+        "value_pct",
+        "betfair_horse_rating",
+        "win_rate",
+        "model_rank",
+    ]
+    data = scored[cols].to_dict(orient="records")
+    return {"date": target_date.isoformat(), "runners": data}
+
+
+@app.get("/selections")
+def get_selections(
+    date_str: Optional[str] = Query(None, description="YYYY-MM-DD"),
+    margin: float = Query(1.05, ge=1.0),
+    top: Optional[int] = Query(None, ge=1),
+) -> dict:
+    target_date = date.fromisoformat(date_str) if date_str else date.today()
+    subset = _load_dataset(target_date)
+    booster = _latest_model()
+    scored = _score(subset, booster)
+
+    scored["edge_margin"] = scored["model_prob"] - scored["implied_prob"] * margin
+    filtered = scored[scored["edge_margin"] > 0].copy()
+    filtered = filtered.sort_values(["event_date", "edge_margin"], ascending=[True, False])
+    if top:
+        filtered = filtered.groupby(["event_date", "win_market_id"]).head(top).reset_index(drop=True)
+
+    cols = [
+        "event_date",
+        "track",
+        "race_no",
+        "win_market_id",
+        "selection_id",
+        "selection_name",
+        "win_odds",
+        "model_prob",
+        "implied_prob",
+        "edge_margin",
+        "value_pct",
+        "betfair_horse_rating",
+        "win_rate",
+        "model_rank",
+    ]
+    data = filtered[cols].to_dict(orient="records")
+    return {"date": target_date.isoformat(), "margin": margin, "selections": data}

@@ -1,0 +1,42 @@
+=====================================================================
+EMAIL TEMPLATE FOR BETFAIR AUSTRALIA SUPPORT
+=====================================================================
+
+TO: automation@betfair.com.au
+
+SUBJECT: Request for Delayed Application Key - Account jryan1810
+
+---------------------------------------------------------------------
+
+Hello Betfair Support Team,
+
+I would like to request a Delayed Application Key for development and testing purposes.
+
+Account Details:
+- Username: jryan1810
+- Requested Application Name: HorseRacingML2025
+
+I am developing a horse racing machine learning application and need API access to test my integration with Betfair data.
+
+I have been unable to access the API developer tools visualizer (as the .com.au version is not yet available), so I would appreciate if you could create my Delayed App Key manually and email it to me.
+
+I understand that:
+- The Delayed Key is free for development purposes
+- It provides delayed data (1-180 seconds)
+- I will contact you separately if I need to activate the Live Key in future
+
+Please let me know if you need any additional information from me.
+
+Thank you for your assistance!
+
+Best regards,
+[Your Name]
+
+---------------------------------------------------------------------
+
+ALTERNATIVE CONTACT:
+If no response within 48 hours, you can also try:
+- Betfair Australia Support: https://support.betfair.com.au/
+- Phone support (if available)
+
+=====================================================================
