@@ -1,0 +1,48 @@
+.wrapper {
+  overflow-x: auto;
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(12, 20, 34, 0.92);
+  backdrop-filter: blur(16px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+}
+
+thead {
+  background: rgba(10, 18, 30, 0.8);
+}
+
+th,
+td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  text-align: left;
+}
+
+th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+}
+
+tbody tr:hover {
+  background: rgba(20, 147, 255, 0.08);
+}
+
+.valuePositive {
+  color: var(--profit-green);
+}
+
+.valueNegative {
+  color: var(--loss-red);
+}
+
+.empty {
+  padding: 1.5rem 1rem;
+  color: var(--text-secondary);
+}

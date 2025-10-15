@@ -1,12 +1,40 @@
 :root {
-  color-scheme: light dark;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --primary-blue: #1493ff;
+  --deep-blue: #1976d2;
+  --dark-navy: #0b1929;
+  --surface: #121826;
+  --surface-elevated: rgba(23, 33, 56, 0.92);
+  --surface-muted: rgba(26, 38, 63, 0.6);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5f5;
+  --text-tertiary: #94a3b8;
+  --divider: rgba(148, 163, 184, 0.25);
+  --high-confidence: #00c853;
+  --medium-high-confidence: #4caf50;
+  --medium-confidence: #ffc107;
+  --low-confidence: #ff5252;
+  --profit-green: #22c55e;
+  --loss-red: #ef4444;
+  --card-radius: 20px;
+  --transition-fast: 150ms ease;
+  --transition-medium: 250ms ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  background: #0f172a;
-  color: #f8fafc;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, rgba(20, 147, 255, 0.08), transparent 45%),
+    radial-gradient(circle at 20% 20%, rgba(34, 197, 94, 0.05), transparent 50%),
+    #0b1626;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 a {
@@ -14,6 +42,13 @@ a {
   text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(20, 147, 255, 0.35);
+  color: var(--text-primary);
 }

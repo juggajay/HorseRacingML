@@ -35,8 +35,11 @@ def fetch_todays_betfair_data(country: str = "AU", delay_between_markets: float 
     client = BetfairClient()
 
     print("\n1. Authenticating with Betfair...")
-    if not client.login():
-        raise Exception("Failed to authenticate with Betfair")
+    try:
+        client.login()
+        print("   ✓ Authentication successful")
+    except Exception as e:
+        raise Exception(f"Failed to authenticate with Betfair: {e}")
 
     print(f"\n2. Fetching today's {country} horse racing markets...")
     markets = client.get_todays_races(country=country)

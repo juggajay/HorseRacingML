@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import useSWR from 'swr';
-import { fetchSelections } from '../lib/api';
+import { fetchSelections, type Runner } from '../lib/api';
 import { SelectionTable } from '../components/SelectionTable';
+import { RaceCard } from '../components/RaceCard';
+import styles from '../styles/Dashboard.module.css';
 
 const todayIso = new Date().toISOString().slice(0, 10);
 
@@ -9,6 +11,14 @@ const fetcher = async (date: string, margin: number) => {
   const data = await fetchSelections(date, margin);
   return data;
 };
+
+interface RaceGroup {
+  key: string;
+  track: string;
+  raceNo: number;
+  eventDate: string;
+  selections: Runner[];
+}
 
 export default function Dashboard() {
   const [date, setDate] = useState<string>(todayIso);
@@ -22,129 +32,230 @@ export default function Dashboard() {
 
   const allSelections = data?.selections ?? [];
 
-  // Get unique tracks and races for filtering
-  const tracks = Array.from(new Set(allSelections.map((s) => s.track))).sort();
-  const races = selectedTrack === 'all'
-    ? []
-    : Array.from(new Set(allSelections.filter(s => s.track === selectedTrack).map(s => s.race_no))).sort((a, b) => a - b);
+  const tracks = useMemo(() => {
+    return Array.from(new Set(allSelections.map((item) => item.track))).sort();
+  }, [allSelections]);
 
-  // Filter selections based on selected track and race
-  const selections = allSelections.filter(s => {
-    if (selectedTrack !== 'all' && s.track !== selectedTrack) return false;
-    if (selectedRace !== 'all' && s.race_no !== parseInt(selectedRace)) return false;
-    return true;
-  });
+  const filteredSelections = useMemo(() => {
+    return allSelections.filter((item) => {
+      if (selectedTrack !== 'all' && item.track !== selectedTrack) return false;
+      if (selectedRace !== 'all' && item.race_no !== Number(selectedRace)) return false;
+      return true;
+    });
+  }, [allSelections, selectedRace, selectedTrack]);
+
+  const groupedRaces = useMemo<RaceGroup[]>(() => {
+    const groups = new Map<string, RaceGroup>();
+    filteredSelections.forEach((runner) => {
+      const key = `${runner.track}-${runner.race_no}`;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          key,
+          track: runner.track,
+          raceNo: runner.race_no,
+          eventDate: runner.event_date,
+          selections: [],
+        });
+      }
+      groups.get(key)?.selections.push(runner);
+    });
+    return Array.from(groups.values()).sort((a, b) => a.raceNo - b.raceNo);
+  }, [filteredSelections]);
+
+  const raceOptions = useMemo(() => {
+    if (selectedTrack === 'all') return [];
+    return Array.from(new Set(allSelections.filter((item) => item.track === selectedTrack).map((item) => item.race_no)))
+      .sort((a, b) => a - b);
+  }, [allSelections, selectedTrack]);
+
+  const avgEdge = useMemo(() => {
+    if (!filteredSelections.length) return 0;
+    const total = filteredSelections.reduce((sum, runner) => sum + (runner.model_prob - runner.implied_prob), 0);
+    return total / filteredSelections.length;
+  }, [filteredSelections]);
+
+  const avgOdds = useMemo(() => {
+    if (!filteredSelections.length) return 0;
+    const total = filteredSelections.reduce((sum, runner) => sum + runner.win_odds, 0);
+    return total / filteredSelections.length;
+  }, [filteredSelections]);
+
+  const edgeThreshold = (margin - 1) * 100;
 
   return (
-    <div className="page">
-      <header>
-        <h1>HorseRacingML</h1>
-        <p>Live selections powered by Betfair + Kash + Top5 priors.</p>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.titleRow}>
+          <div className={styles.titleBlock}>
+            <h1>HorseRacingML</h1>
+            <p>
+              ML-powered confidence signals blended with Betfair market intelligence. Track the top value runners
+              across Australia with fast, responsive insights.
+            </p>
+          </div>
+          <div className={styles.metrics}>
+            <div className={styles.metricCard}>
+              <span className={styles.metricLabel}>Selections Shown</span>
+              <span className={styles.metricValue}>{filteredSelections.length}</span>
+              <span className={styles.metricTrend}>{allSelections.length} total for {date}</span>
+            </div>
+            <div className={styles.metricCard}>
+              <span className={styles.metricLabel}>Average Edge</span>
+              <span className={styles.metricValue}>{(avgEdge * 100).toFixed(1)}%</span>
+              <span className={styles.metricTrend}>Threshold ≥ {edgeThreshold.toFixed(1)}%</span>
+            </div>
+            <div className={styles.metricCard}>
+              <span className={styles.metricLabel}>Average Odds</span>
+              <span className={styles.metricValue}>${avgOdds.toFixed(2)}</span>
+              <span className={styles.metricTrend}>{groupedRaces.length} races filtered</span>
+            </div>
+          </div>
+        </div>
       </header>
-      <section className="controls">
-        <label>
-          Race Date
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-        </label>
-        <label>
-          Margin
-          <input
-            type="number"
-            min={1}
-            step={0.01}
-            value={margin}
-            onChange={(e) => setMargin(parseFloat(e.target.value) || 1)}
-          />
-        </label>
-        <label>
-          Track
-          <select value={selectedTrack} onChange={(e) => { setSelectedTrack(e.target.value); setSelectedRace('all'); }}>
-            <option value="all">All Tracks ({tracks.length})</option>
-            {tracks.map(track => (
-              <option key={track} value={track}>{track}</option>
-            ))}
-          </select>
-        </label>
-        {selectedTrack !== 'all' && (
-          <label>
-            Race
-            <select value={selectedRace} onChange={(e) => setSelectedRace(e.target.value)}>
-              <option value="all">All Races ({races.length})</option>
-              {races.map(race => (
-                <option key={race} value={race}>Race {race}</option>
-              ))}
-            </select>
-          </label>
-        )}
-      </section>
 
-      <section className="stats">
-        <span>Showing {selections.length} of {allSelections.length} selections</span>
-      </section>
+      <div className={styles.body}>
+        <aside className={styles.sidebar}>
+          <section className={styles.panel}>
+            <h2>Filters</h2>
+            <div className={styles.controlGroup}>
+              <div className={styles.controlField}>
+                <label htmlFor="date-input">
+                  Race Date
+                </label>
+                <input
+                  id="date-input"
+                  className={styles.controlInput}
+                  type="date"
+                  value={date}
+                  onChange={(event) => setDate(event.target.value)}
+                />
+              </div>
+              <div className={styles.controlField}>
+                <label htmlFor="margin-slider">
+                  Margin Threshold <span>{edgeThreshold.toFixed(1)}% edge</span>
+                </label>
+                <input
+                  id="margin-slider"
+                  className={`${styles.controlInput} ${styles.slider}`}
+                  type="range"
+                  min={0}
+                  max={20}
+                  step={0.5}
+                  value={(margin - 1) * 100}
+                  onChange={(event) => {
+                    const value = Number(event.target.value);
+                    setMargin(1 + value / 100);
+                  }}
+                />
+              </div>
+              <div className={styles.controlField}>
+                <label htmlFor="track-select">
+                  Track
+                </label>
+                <select
+                  id="track-select"
+                  className={styles.controlInput}
+                  value={selectedTrack}
+                  onChange={(event) => {
+                    setSelectedTrack(event.target.value);
+                    setSelectedRace('all');
+                  }}
+                >
+                  <option value="all">All tracks ({tracks.length})</option>
+                  {tracks.map((track) => (
+                    <option key={track} value={track}>
+                      {track}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {selectedTrack !== 'all' && (
+                <div className={styles.controlField}>
+                  <label htmlFor="race-select">
+                    Race
+                  </label>
+                  <select
+                    id="race-select"
+                    className={styles.controlInput}
+                    value={selectedRace}
+                    onChange={(event) => setSelectedRace(event.target.value)}
+                  >
+                    <option value="all">All races ({raceOptions.length})</option>
+                    {raceOptions.map((race) => (
+                      <option key={race} value={race}>
+                        Race {race}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+          </section>
 
-      <section className="content">
-        {error && <p className="error">Failed to load selections – {error.message}</p>}
-        {isLoading && <p>Loading selections…</p>}
-        {!isLoading && !error && <SelectionTable selections={selections} />}
-      </section>
+          <section className={styles.panel}>
+            <h2>Session Snapshot</h2>
+            <div className={styles.summaryList}>
+              <div className={styles.summaryItem}>
+                <strong>{groupedRaces.length}</strong>
+                <span>Races with value edges</span>
+              </div>
+              <div className={styles.summaryItem}>
+                <strong>{(filteredSelections.filter((runner) => runner.model_prob >= 0.6).length)}</strong>
+                <span>High confidence runners</span>
+              </div>
+              <div className={styles.summaryItem}>
+                <strong>{filteredSelections.filter((runner) => (runner.model_prob - runner.implied_prob) >= 0.1).length}</strong>
+                <span>Edges ≥ 10%</span>
+              </div>
+            </div>
+          </section>
+        </aside>
 
-      <style jsx>{`
-        .page {
-          min-height: 100vh;
-          padding: 2rem;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-        header {
-          margin-bottom: 2rem;
-        }
-        h1 {
-          margin: 0 0 0.25rem;
-          font-size: 2.5rem;
-        }
-        p {
-          margin: 0;
-          color: rgba(148, 163, 184, 0.9);
-        }
-        .controls {
-          display: flex;
-          gap: 1.5rem;
-          margin-bottom: 2rem;
-          flex-wrap: wrap;
-        }
-        label {
-          display: flex;
-          flex-direction: column;
-          font-size: 0.9rem;
-          color: rgba(226, 232, 240, 0.9);
-        }
-        input, select {
-          margin-top: 0.5rem;
-          padding: 0.5rem 0.75rem;
-          border-radius: 8px;
-          border: 1px solid rgba(94, 114, 134, 0.7);
-          background: rgba(15, 23, 42, 0.6);
-          color: #f8fafc;
-          min-width: 180px;
-        }
-        select {
-          cursor: pointer;
-        }
-        .stats {
-          margin-bottom: 1rem;
-          padding: 0.75rem 1rem;
-          background: rgba(15, 23, 42, 0.4);
-          border-radius: 8px;
-          border: 1px solid rgba(94, 114, 134, 0.3);
-        }
-        .stats span {
-          color: rgba(226, 232, 240, 0.8);
-          font-size: 0.9rem;
-        }
-        .error {
-          color: #f87171;
-        }
-      `}</style>
+        <main className={styles.main}>
+          <section>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Value Heatmap</h2>
+            </div>
+
+            {error && (
+              <div className={styles.errorBox}>Failed to load selections – {error.message}</div>
+            )}
+
+            {isLoading && (
+              <div className={styles.skeletonGrid}>
+                <div className={styles.skeletonCard} />
+                <div className={styles.skeletonCard} />
+                <div className={styles.skeletonCard} />
+              </div>
+            )}
+
+            {!isLoading && !error && groupedRaces.length === 0 && (
+              <div className={styles.emptyBox}>
+                No selections match the current filters. Try lowering the margin threshold or choosing a different track.
+              </div>
+            )}
+
+            {!isLoading && !error && groupedRaces.length > 0 && (
+              <div className={styles.raceGrid}>
+                {groupedRaces.map((race) => (
+                  <RaceCard
+                    key={race.key}
+                    track={race.track}
+                    raceNo={race.raceNo}
+                    selections={race.selections}
+                    eventDate={race.eventDate}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className={styles.tableSection}>
+            <h3>Detailed Selections</h3>
+            <SelectionTable selections={filteredSelections} />
+          </section>
+        </main>
+      </div>
     </div>
   );
 }
