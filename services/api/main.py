@@ -61,11 +61,21 @@ async def startup_event():
     """Pre-load model and dataset on startup to avoid first-request timeout"""
     global _cached_model, _cached_data
     print("Loading dataset and model at startup...")
-    # Pre-load dataset
-    _load_full_dataset()
-    # Pre-load model
-    _latest_model()
-    print("Dataset and model loaded successfully!")
+    try:
+        # Pre-load dataset
+        _load_full_dataset()
+        print("Dataset loaded successfully!")
+    except Exception as e:
+        print(f"Warning: Could not pre-load dataset at startup: {e}")
+        print("Dataset will be loaded on first request instead.")
+
+    try:
+        # Pre-load model
+        _latest_model()
+        print("Model loaded successfully!")
+    except Exception as e:
+        print(f"Warning: Could not pre-load model at startup: {e}")
+        print("Model will be loaded on first request instead.")
 
 
 def _latest_model() -> Booster:
@@ -191,13 +201,24 @@ def get_races(date_str: Optional[str] = Query(None, description="YYYY-MM-DD")) -
 
 @app.get("/selections")
 def get_selections(
-    date_str: Optional[str] = Query(None, description="YYYY-MM-DD"),
+    date_str: Optional[str] = Query(None, description="YYYY-MM-DD or YYYY-MM-DD:YYYY-MM-DD for date range"),
     margin: float = Query(1.05, ge=1.0),
     top: Optional[int] = Query(None, ge=1),
-    limit: int = Query(500, ge=1, le=10000, description="Max total selections to return"),
+    limit: int = Query(5000, ge=1, le=50000, description="Max total selections to return"),
 ) -> dict:
-    target_date = date.fromisoformat(date_str) if date_str else date.today()
-    subset = _load_dataset(target_date)
+    # Handle date range (e.g., "2025-10-16:2025-10-22" for a week)
+    if date_str and ":" in date_str:
+        start_str, end_str = date_str.split(":")
+        start_date = date.fromisoformat(start_str)
+        end_date = date.fromisoformat(end_str)
+        df = _load_full_dataset()
+        subset = df[(df["event_date"].dt.date >= start_date) & (df["event_date"].dt.date <= end_date)].copy()
+        if subset.empty:
+            raise HTTPException(status_code=404, detail=f"No runners found between {start_date} and {end_date}")
+    else:
+        target_date = date.fromisoformat(date_str) if date_str else date.today()
+        subset = _load_dataset(target_date)
+
     booster = _latest_model()
     scored = _score(subset, booster)
 
@@ -211,7 +232,8 @@ def get_selections(
     limited = len(filtered) > limit
     filtered = filtered.head(limit)
 
-    cols = [
+    # Select only columns that exist in the dataframe
+    desired_cols = [
         "event_date",
         "track",
         "race_no",
@@ -227,9 +249,17 @@ def get_selections(
         "win_rate",
         "model_rank",
     ]
+    cols = [c for c in desired_cols if c in filtered.columns]
     data = filtered[cols].to_dict(orient="records")
+
+    # Prepare response with date info
+    if date_str and ":" in date_str:
+        date_info = {"start_date": start_date.isoformat(), "end_date": end_date.isoformat()}
+    else:
+        date_info = {"date": target_date.isoformat()}
+
     return {
-        "date": target_date.isoformat(),
+        **date_info,
         "margin": margin,
         "selections": data,
         "total": len(data),
