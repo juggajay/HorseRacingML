@@ -211,12 +211,30 @@ def get_top_picks(
     booster = _latest_model()
     scored = _score(subset, booster)
 
-    # Debug: Log probability distribution
+    # Debug: Log probability distribution and feature availability
     print(f"\n[DEBUG] Top Picks for {target_date}:")
     print(f"  Total runners: {len(scored)}")
     print(f"  model_prob stats: min={scored['model_prob'].min():.4f}, max={scored['model_prob'].max():.4f}, mean={scored['model_prob'].mean():.4f}")
     print(f"  Runners with prob > 0.5: {(scored['model_prob'] > 0.5).sum()}")
     print(f"  Runners with prob > 0.6: {(scored['model_prob'] > 0.6).sum()}")
+
+    # Check feature availability
+    key_features = ['win_odds', 'pf_ai_rank', 'neural_rating', 'betfair_horse_rating', 'win_rate']
+    print(f"  Key feature availability:")
+    for feat in key_features:
+        if feat in scored.columns:
+            non_null = scored[feat].notna().sum()
+            print(f"    {feat}: {non_null}/{len(scored)} ({non_null/len(scored)*100:.1f}%)")
+
+    # Show top prediction details
+    if len(scored) > 0:
+        top_runner = scored.nlargest(1, "model_prob").iloc[0]
+        print(f"  Top prediction sample:")
+        print(f"    Horse: {top_runner.get('selection_name', 'Unknown')}")
+        print(f"    Prob: {top_runner.get('model_prob', 0):.4f}")
+        for feat in key_features:
+            if feat in top_runner.index:
+                print(f"    {feat}: {top_runner[feat]}")
 
     # Sort by model_prob (highest first) and take top N
     top_picks = scored.nlargest(limit, "model_prob").copy()
