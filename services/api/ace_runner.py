@@ -107,8 +107,14 @@ def append_pf_schema_day(live_df: pd.DataFrame, schema_dir: Path) -> dict:
     runners_path = schema_dir / "runners.parquet"
     manifest_path = schema_dir / "manifest.json"
 
+    # Select columns for meetings, ensuring they exist
+    meeting_cols = ["event_date", "track", "track_name_norm", "state_code"]
+    missing_cols = [col for col in meeting_cols if col not in live_df.columns]
+    if missing_cols:
+        raise ValueError(f"Missing required columns for meetings: {missing_cols}. Available columns: {list(live_df.columns)}")
+
     live_meetings = (
-        live_df[["event_date", "track", "track_name_norm", "state_code"]]
+        live_df[meeting_cols]
         .drop_duplicates()
         .copy()
     )
@@ -120,21 +126,25 @@ def append_pf_schema_day(live_df: pd.DataFrame, schema_dir: Path) -> dict:
     live_meetings["country"] = "AUS"
     live_meetings["source"] = "puntingform_live"
 
+    # Select columns for races, ensuring they exist
+    race_cols = [
+        "event_date",
+        "track_name_norm",
+        "win_market_id",
+        "win_market_name",
+        "race_no",
+        "racing_type",
+        "race_type",
+        "distance",
+        "scheduled_race_time",
+        "actual_off_time",
+    ]
+    missing_race_cols = [col for col in race_cols if col not in live_df.columns]
+    if missing_race_cols:
+        raise ValueError(f"Missing required columns for races: {missing_race_cols}. Available columns: {list(live_df.columns)}")
+
     live_races = (
-        live_df[
-            [
-                "event_date",
-                "track_name_norm",
-                "win_market_id",
-                "win_market_name",
-                "race_no",
-                "racing_type",
-                "race_type",
-                "distance",
-                "scheduled_race_time",
-                "actual_off_time",
-            ]
-        ]
+        live_df[race_cols]
         .drop_duplicates(subset=["win_market_id"])
         .copy()
     )
