@@ -270,7 +270,7 @@ def _ensure_predictions(df: pd.DataFrame, booster) -> pd.DataFrame:
     preds = booster.predict(engineered[feature_cols])
     engineered["model_prob"] = preds
 
-    # Fix NULL win_odds by generating from pf_ai_rank or pf_ai_price if available
+    # Fix NULL win_odds by generating from available data
     if "win_odds" in engineered.columns and engineered["win_odds"].isna().all():
         # Try pf_ai_price first
         if "pf_ai_price" in engineered.columns:
@@ -281,7 +281,21 @@ def _ensure_predictions(df: pd.DataFrame, booster) -> pd.DataFrame:
         # If still null, try generating from pf_ai_rank
         if engineered["win_odds"].isna().all() and "pf_ai_rank" in engineered.columns:
             ranks = pd.to_numeric(engineered["pf_ai_rank"], errors="coerce")
-            engineered["win_odds"] = 2.0 + (ranks * 1.5)
+            if not ranks.isna().all():
+                engineered["win_odds"] = 2.0 + (ranks * 1.5)
+
+        # Last resort: generate uniform odds based on field size (very basic fallback)
+        if engineered["win_odds"].isna().all():
+            # Count runners per race and generate uniform implied probability
+            if "race_id" in engineered.columns:
+                field_sizes = engineered.groupby("race_id").size()
+                race_to_field = field_sizes.to_dict()
+                engineered["field_size"] = engineered["race_id"].map(race_to_field)
+                # Uniform odds = field_size (e.g., 10 runner race = 10.0 odds per horse)
+                engineered["win_odds"] = engineered["field_size"].fillna(8.0)  # Default to 8.0 if no race_id
+            else:
+                # Absolute fallback: use 8.0 as generic odds
+                engineered["win_odds"] = 8.0
 
     with np.errstate(divide="ignore", invalid="ignore"):
         engineered["implied_prob"] = 1.0 / engineered["win_odds"].replace(0, np.nan)
