@@ -12,10 +12,12 @@ interface RaceCardProps {
 
 type ConfidenceLevel = 'high' | 'mediumHigh' | 'medium' | 'low';
 
+// Thresholds updated to reflect realistic calibrated probabilities
+// After retraining on clean Betfair features, favorites average 52%, long shots 0-5%
 function getConfidenceLevel(prob: number): ConfidenceLevel {
-  if (prob >= 0.8) return 'high';
-  if (prob >= 0.6) return 'mediumHigh';
-  if (prob >= 0.4) return 'medium';
+  if (prob >= 0.25) return 'high';
+  if (prob >= 0.15) return 'mediumHigh';
+  if (prob >= 0.10) return 'medium';
   return 'low';
 }
 

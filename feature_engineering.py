@@ -360,7 +360,32 @@ def engineer_all_features(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def get_feature_columns() -> list[str]:
+def get_feature_columns(clean_betfair_only: bool = False) -> list[str]:
+    """Return list of all engineered feature columns for modeling.
+
+    Args:
+        clean_betfair_only: If True, only return features that are:
+            - Available in Betfair data
+            - Not biased by external model predictions (model_rank, kash, top5)
+            - Always available in production (no 100% NaN features)
+
+    Returns:
+        List of feature column names
+    """
+    if clean_betfair_only:
+        # CLEAN BETFAIR FEATURES ONLY - No biased or missing features
+        # This gives realistic probabilities without NaN-induced baseline bias
+        return [
+            *MARKET_FEATURES,        # win_odds, volume, is_favorite, etc.
+            *FORM_CYCLE_FEATURES,    # days_since_last_run, spell, prep_run
+            *HISTORICAL_PRIORS,      # betfair_horse_rating, win_rate, starts
+            # EXCLUDED: PF_BASE_FEATURES (100% NaN in training - creates baseline bias)
+            # EXCLUDED: PF_ENGINEERED_FEATURES (derived from NaN features)
+            # EXCLUDED: model_rank (68% defaulted to 5.0 - massive bias)
+            # EXCLUDED: kash/top5 external features (not available in production)
+        ]
+
+    # Legacy mode: return all features (for backward compatibility with old models)
     return [
         *MARKET_FEATURES,
         *FORM_CYCLE_FEATURES,

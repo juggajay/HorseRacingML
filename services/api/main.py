@@ -167,7 +167,8 @@ class AceRunResponse(BaseModel):
 
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
-    feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
+    # Use clean Betfair features only (matches retraining)
+    feature_cols = [c for c in get_feature_columns(clean_betfair_only=True) if c in df_feat.columns]
     # LightGBM with objective='binary' already outputs probabilities (0-1 range)
     raw_predictions = booster.predict(df_feat[feature_cols])
 
@@ -274,12 +275,14 @@ def get_top_picks(
     top_picks = scored.nlargest(limit, "model_prob").copy()
 
     # Calculate confidence level based on model_prob
+    # Thresholds updated to reflect realistic calibrated probabilities
+    # After retraining on clean Betfair features, favorites average 52%, long shots 0-5%
     def get_confidence_level(prob):
-        if prob >= 0.7:
+        if prob >= 0.25:
             return "Very High"
-        elif prob >= 0.5:
+        elif prob >= 0.15:
             return "High"
-        elif prob >= 0.35:
+        elif prob >= 0.10:
             return "Medium"
         else:
             return "Low"

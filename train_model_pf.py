@@ -52,8 +52,10 @@ print(f"   Rows: {len(df_raw)}")
 print("\n2. Engineering features...")
 df = engineer_all_features(df_raw)
 
-feature_cols = [col for col in get_feature_columns() if col in df.columns]
-print(f"   Features available: {len(feature_cols)}")
+# USE CLEAN BETFAIR FEATURES ONLY (no biased model_rank or 100% NaN PF features)
+feature_cols = [col for col in get_feature_columns(clean_betfair_only=True) if col in df.columns]
+print(f"   ✓ Using CLEAN Betfair features only: {len(feature_cols)}")
+print(f"   ✓ Excluded: model_rank (68% default), PF features (100% NaN)")
 print_feature_summary(df, feature_cols)
 
 print("\n3. Preparing dataset...")

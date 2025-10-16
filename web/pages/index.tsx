@@ -340,7 +340,7 @@ export default function Dashboard() {
                 <span>Races with value edges</span>
               </div>
               <div className={styles.summaryItem}>
-                <strong>{filteredSelections.filter((runner) => runner.model_prob >= 0.6).length}</strong>
+                <strong>{filteredSelections.filter((runner) => runner.model_prob >= 0.20).length}</strong>
                 <span>High confidence runners</span>
               </div>
               <div className={styles.summaryItem}>
