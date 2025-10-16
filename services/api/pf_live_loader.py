@@ -149,7 +149,25 @@ def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFra
         )
 
         # Map PF AI price into odds placeholders used by feature pipeline
+        # Try multiple price fields as fallback
         pf_ai_price = _coerce_float(df.get("pf_ai_price")).replace({0: np.nan})
+
+        # If pf_ai_price is all null, try other price fields
+        if pf_ai_price.isna().all():
+            # Try common alternative fields from PuntingForm API
+            for alt_field in ["fixed_price", "price", "win_price", "starting_price", "sp"]:
+                if alt_field in df.columns:
+                    alt_price = _coerce_float(df.get(alt_field)).replace({0: np.nan})
+                    if not alt_price.isna().all():
+                        pf_ai_price = alt_price
+                        break
+
+        # If still all null, generate placeholder odds from pf_ai_rank if available
+        if pf_ai_price.isna().all() and "pf_ai_rank" in df.columns:
+            # Convert rank to approximate odds (rank 1 = 3.0, rank 2 = 5.0, etc)
+            ranks = pd.to_numeric(df.get("pf_ai_rank"), errors="coerce")
+            pf_ai_price = 2.0 + (ranks * 1.5)  # Simple linear approximation
+
         df["win_preplay_last_price_taken"] = pf_ai_price
         df["win_preplay_max_price_taken"] = pf_ai_price
         df["win_preplay_min_price_taken"] = pf_ai_price
