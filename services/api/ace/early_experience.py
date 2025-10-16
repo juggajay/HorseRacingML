@@ -100,7 +100,7 @@ class EarlyExperienceRunner:
                 "event_date": pd.to_datetime(bets.get("event_date")).dt.date,
                 "race_id": bets.get("race_id", bets.get("win_market_id")).astype(str),
                 "runner_id": bets.get("runner_id").astype(str),
-                "selection_id": bets.get("selection_id").astype("Int64"),
+                "selection_id": bets.get("selection_id").astype(str),  # Keep as string (can be hash)
                 "strategy_id": strategy.strategy_id,
                 "params": params_json,
                 "action": "bet",
