@@ -10,10 +10,18 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from ace.early_experience import EarlyExperienceRunner, ExperienceConfig, ExperienceWriter
-from ace.playbook import ACEReflector, PlaybookCurator
-from ace.simulator import Simulator
-from ace.strategies import StrategyConfig, StrategyGrid
+# Import from local services/api/ace for Railway/container use, fallback to top-level ace for CLI
+try:
+    from services.api.ace.early_experience import EarlyExperienceRunner, ExperienceConfig, ExperienceWriter
+    from services.api.ace.playbook import ACEReflector, PlaybookCurator
+    from services.api.ace.simulator import Simulator
+    from services.api.ace.strategies import StrategyConfig, StrategyGrid
+except ImportError:
+    from ace.early_experience import EarlyExperienceRunner, ExperienceConfig, ExperienceWriter
+    from ace.playbook import ACEReflector, PlaybookCurator
+    from ace.simulator import Simulator
+    from ace.strategies import StrategyConfig, StrategyGrid
+
 from feature_engineering import engineer_all_features, get_feature_columns
 from services.api.pf_schema_loader import load_pf_dataset
 
