@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
 from feature_engineering import engineer_all_features, get_feature_columns
+from services.api.pf_schema_loader import load_pf_dataset
 
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 OUTPUT_PATH = Path("artifacts/walkforward_results.csv")
@@ -66,10 +67,11 @@ def compute_metrics(df: pd.DataFrame, margins: Iterable[float]) -> list[dict[str
 
 
 def main() -> None:
-    if not DATA_PATH.exists():
-        raise SystemExit(f"❌ Dataset missing: {DATA_PATH}")
-
-    df_raw = pd.read_csv(DATA_PATH)
+    df_raw = load_pf_dataset()
+    if df_raw is None or df_raw.empty:
+        if not DATA_PATH.exists():
+            raise SystemExit(f"❌ Dataset missing: {DATA_PATH}")
+        df_raw = pd.read_csv(DATA_PATH)
     df = engineer_all_features(df_raw)
 
     df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")

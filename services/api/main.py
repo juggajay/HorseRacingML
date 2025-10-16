@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from lightgbm import Booster
 
 from feature_engineering import engineer_all_features, get_feature_columns
+from .pf_schema_loader import load_pf_dataset
 
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 MODEL_DIR = Path("artifacts/models")
@@ -55,11 +56,15 @@ def _latest_model() -> Booster:
 def _load_full_dataset() -> pd.DataFrame:
     global _cached_data
     if _cached_data is None:
-        if not DATA_PATH.exists():
-            raise HTTPException(status_code=500, detail="Training dataset missing. Run data prep pipeline first.")
-        _cached_data = pd.read_csv(DATA_PATH, low_memory=False)
-        _cached_data["event_date"] = pd.to_datetime(_cached_data["event_date"], errors="coerce")
-        _cached_data = _cached_data.dropna(subset=["event_date"]).copy()
+        pf_df = load_pf_dataset()
+        if pf_df is not None and not pf_df.empty:
+            _cached_data = pf_df
+        else:
+            if not DATA_PATH.exists():
+                raise HTTPException(status_code=500, detail="Training dataset missing. Run data prep pipeline first.")
+            _cached_data = pd.read_csv(DATA_PATH, low_memory=False)
+            _cached_data["event_date"] = pd.to_datetime(_cached_data["event_date"], errors="coerce")
+            _cached_data = _cached_data.dropna(subset=["event_date"]).copy()
     return _cached_data
 
 

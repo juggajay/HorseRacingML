@@ -62,11 +62,17 @@ The system analyzes odds vs model predictions to find horses where the market is
 ## 📊 Current Data Status
 
 ### **Dataset in Production**
-- **Location**: `services/api/data/processed/ml/betfair_kash_top5.csv.gz`
-- **Size**: ~4MB compressed (reduced from 58MB for faster startup)
-- **Records**: 36,956 races
-- **Date Range**: **July 18, 2025 - September 30, 2025**
-- **Why limited**: Railway has startup timeout limits, full dataset was too slow to load
+- **PF Schema Root**: `services/api/data/processed/pf_schema/`
+  - `meetings.csv.gz` – 495 AU meetings (2025-07-18 → 2025-09-30)
+  - `races.csv.gz` – 3,814 races (scheduled start + metadata)
+  - `runners.csv.gz` – 36,956 starters (Betfair markets aligned to PF-style rows)
+- **Source**: reshaped from `services/api/data/processed/ml/betfair_kash_top5.csv.gz`
+- **Why limited**: Railway cold-start limits still require a ~4 MB slice; full archive lives outside production build
+
+#### **PF Schema Transform**
+- Run `python3 scripts/build_pf_schema_from_betfair.py` to regenerate PF-aligned tables from the latest Betfair slice
+- Loader utility `services/api/pf_schema_loader.py` merges the `meetings → races → runners` tables for training, scoring, and backtesting
+- API (`services/api/main.py`) and training scripts now prefer the PF schema automatically, falling back to the legacy CSV only if the transform is missing
 
 ### **Model in Production**
 - **Location**: `services/api/artifacts/models/betfair_kash_top5_model_20251015T060239Z.txt`
@@ -681,7 +687,7 @@ If credentials are compromised:
 ### **Most Important Files**
 1. `services/api/main.py` - Backend API logic
 2. `web/pages/index.tsx` - Frontend UI
-3. `services/api/data/processed/ml/betfair_kash_top5.csv.gz` - Production dataset
+3. `services/api/data/processed/pf_schema/` - Production dataset (meetings/races/runners)
 4. `services/api/artifacts/models/betfair_kash_top5_model_*.txt` - Production model
 5. `.env` - Local credentials (not in git)
 6. `fetch_todays_races_simple.py` - Data fetching script

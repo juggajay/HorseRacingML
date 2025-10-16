@@ -40,6 +40,7 @@ All selections rely on **PUNTINGFORM_API_KEY**—store this in Vercel “Environ
 | `unify_betfair_years.py` | Consolidates monthly `ANZ_Thoroughbreds_YYYY_MM.csv` into yearly `betfair_all_raw_YYYY.csv.gz`. Source roots via `MONTH_SRC`. |
 | `scripts/enrich_betfair_with_external_models.py` | Left-joins Kash & Top5 priors onto Betfair rows (IDs + event date). |
 | `scripts/prepare_betfair_training_dataset.py` | Normalises names, injects Betfair horse ratings, converts Kash metrics, outputs `data/processed/ml/betfair_kash_top5.csv.gz`. |
+| `scripts/build_pf_schema_from_betfair.py` | Reshapes the Betfair slice into PF-style `meetings/ races/ runners` tables under `services/api/data/processed/pf_schema/`. |
 | `scripts/pf_smoke_test.py` | Confirms the PF API key works and returns live meetings/starters. |
 | `betfair_client.py` | Handles login and API calls using the free delayed app key. |
 | `betfair_live.py` | Shapes Betfair API responses into runner-level data ready for scoring. |
@@ -157,7 +158,7 @@ Switch to **Pro mode** once PF ratings are included:
 
 - Betfair data source: `OneDrive/ML data/ANZ_Thoroughbreds_*.csv`
 - External priors: `data/processed/external_models/kash_model_results.csv.gz`, `.../top5_model_results.csv.gz`
-- Primary dataset: `data/processed/ml/betfair_kash_top5.csv.gz`
+- Primary dataset: `services/api/data/processed/pf_schema/` (PF-aligned tables built from `betfair_kash_top5.csv.gz`)
 - Walk-forward details: `artifacts/walkforward_results.csv`
 - Model summary: `artifacts/pf_feature_importance.csv`, `artifacts/pf_enhanced_results.csv`
 

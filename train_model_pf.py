@@ -11,6 +11,7 @@ from lightgbm import LGBMClassifier
 from sklearn.metrics import log_loss, roc_auc_score
 
 from feature_engineering import engineer_all_features, get_feature_columns, print_feature_summary
+from services.api.pf_schema_loader import load_pf_dataset
 
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 ARTIFACT_DIR = Path("artifacts")
@@ -22,11 +23,15 @@ print("=" * 70)
 print("TRAINING MODEL WITH PF FEATURES")
 print("=" * 70)
 
-if not DATA_PATH.exists():
-    raise SystemExit(f"❌ Data not found: {DATA_PATH}")
-
 print("1. Loading data...")
-df_raw = pd.read_csv(DATA_PATH)
+df_raw = load_pf_dataset()
+source = "pf_schema"
+if df_raw is None or df_raw.empty:
+    if not DATA_PATH.exists():
+        raise SystemExit(f"❌ Data not found: {DATA_PATH}")
+    df_raw = pd.read_csv(DATA_PATH)
+    source = DATA_PATH.name
+print(f"   Source: {source}")
 pf_fallback_cols = [
     "pf_score",
     "neural_rating",

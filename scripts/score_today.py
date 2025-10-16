@@ -22,6 +22,7 @@ import pandas as pd
 from lightgbm import Booster
 
 from feature_engineering import engineer_all_features, get_feature_columns
+from services.api.pf_schema_loader import load_pf_dataset
 from betfair_live import fetch_live_markets
 
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
@@ -38,11 +39,13 @@ def latest_model_path() -> Path:
 
 
 def load_dataset(target_date: date) -> pd.DataFrame:
-    if not DATA_PATH.exists():
-        raise SystemExit(f"❌ Dataset missing: {DATA_PATH}")
-    df = pd.read_csv(DATA_PATH)
-    df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
-    df = df.dropna(subset=["event_date"]).copy()
+    df = load_pf_dataset()
+    if df is None or df.empty:
+        if not DATA_PATH.exists():
+            raise SystemExit(f"❌ Dataset missing: {DATA_PATH}")
+        df = pd.read_csv(DATA_PATH)
+        df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
+        df = df.dropna(subset=["event_date"]).copy()
     mask = df["event_date"].dt.date == target_date
     upcoming = df.loc[mask].reset_index(drop=True)
     if upcoming.empty:
