@@ -54,20 +54,39 @@ def _make_race_id(win_market_id: str) -> str:
 
 def _ensure_schema_columns(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df["event_date"] = pd.to_datetime(df["event_date"], errors="coerce")
+
+    # Ensure event_date exists and is valid
+    df["event_date"] = pd.to_datetime(df.get("event_date"), errors="coerce")
     df = df.dropna(subset=["event_date"])
+
+    # Ensure track columns exist
+    if "track" not in df.columns:
+        df["track"] = df.get("track_name", df.get("track_name_norm", "Unknown"))
+
     df["track_name_norm"] = _normalise_track(df.get("track_name_norm", df.get("track", "")))
-    df["state_code"] = df.get("state_code")
-    df["win_market_name"] = df.get("win_market_name", df.get("race_name"))
+    df["state_code"] = df.get("state_code", "")
+    df["win_market_name"] = df.get("win_market_name", df.get("race_name", ""))
     df["scheduled_race_time"] = df.get("scheduled_race_time", df.get("race_time"))
     df["actual_off_time"] = df.get("actual_off_time")
     df["racing_type"] = df.get("racing_type", "Thoroughbred")
-    df["race_type"] = df.get("race_type")
+    df["race_type"] = df.get("race_type", "")
     df["distance"] = pd.to_numeric(df.get("distance"), errors="coerce")
+
+    # Ensure required ID columns exist
+    if "win_market_id" not in df.columns:
+        raise ValueError("DataFrame missing required column: win_market_id")
     df["win_market_id"] = df["win_market_id"].astype(str)
+
     df["race_no"] = pd.to_numeric(df.get("race_no"), errors="coerce").astype("Int64")
-    df["selection_id"] = df.get("selection_id").astype(str)
-    df["selection_name"] = df.get("selection_name")
+
+    if "selection_id" not in df.columns:
+        raise ValueError("DataFrame missing required column: selection_id")
+    df["selection_id"] = df["selection_id"].astype(str)
+
+    if "selection_name" not in df.columns:
+        df["selection_name"] = df.get("horse_name", df["selection_id"])
+
+    # Generate meeting_id after ensuring track_name_norm exists
     df["meeting_id"] = df.apply(
         lambda row: _make_meeting_id(row["track_name_norm"], pd.to_datetime(row["event_date"]).date()), axis=1
     )
