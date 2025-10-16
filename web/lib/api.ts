@@ -19,9 +19,69 @@ export interface SelectionResponse {
   date: string;
   margin: number;
   selections: Runner[];
+  total?: number;
+  limited?: boolean;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8000';
+
+export interface PlaybookMetadata {
+  generated_at: string;
+  experience_rows: number;
+  strategies_evaluated: number;
+}
+
+export interface PlaybookGlobal {
+  total_bets: number;
+  total_profit: number;
+  total_staked: number;
+  pot_pct: number;
+  hit_rate: number | null;
+}
+
+export interface PlaybookStrategy {
+  strategy_id: string;
+  bets: number;
+  wins: number;
+  hit_rate: number;
+  mean_edge: number;
+  total_staked: number;
+  total_profit: number;
+  pot_pct: number;
+  roi_pct: number;
+  params?: Record<string, unknown> | null;
+}
+
+export interface PlaybookTrackInsight {
+  track: string;
+  bets: number;
+  profit: number;
+  pot_pct: number;
+  hit_rate?: number;
+}
+
+export interface PlaybookContextInsight {
+  track?: string;
+  distance_band?: string;
+  racing_type?: string;
+  race_type?: string;
+  bets: number;
+  profit: number;
+  pot_pct: number;
+}
+
+export interface PlaybookSnapshot {
+  metadata: PlaybookMetadata;
+  global: PlaybookGlobal;
+  strategies: PlaybookStrategy[];
+  tracks: PlaybookTrackInsight[];
+  contexts: PlaybookContextInsight[];
+}
+
+export interface PlaybookResponse {
+  history: PlaybookSnapshot[];
+  latest: PlaybookSnapshot;
+}
 
 export async function fetchSelections(date?: string, margin?: number, top?: number) {
   const params = new URLSearchParams();
@@ -52,5 +112,29 @@ export async function fetchSelections(date?: string, margin?: number, top?: numb
       throw error;
     }
     throw new Error('Failed to fetch selections');
+  }
+}
+
+export async function fetchPlaybook(): Promise<PlaybookResponse> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const res = await fetch(`${API_BASE}/playbook`, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      const message = await res.text().catch(() => 'Unknown error');
+      throw new Error(`Playbook error (${res.status}): ${message}`);
+    }
+    return (await res.json()) as PlaybookResponse;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Playbook request timeout');
+      }
+      throw error;
+    }
+    throw new Error('Failed to fetch playbook');
   }
 }

@@ -1,0 +1,9 @@
+[
+  {
+    "margins": [1.02, 1.05, 1.08],
+    "top_ns": [1, 2],
+    "stakes": [1.0],
+    "min_model_probs": [0.20, 0.25],
+    "max_win_odds": [10.0, null]
+  }
+]

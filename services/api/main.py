@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import date
 from pathlib import Path
 from typing import Optional
@@ -14,6 +15,7 @@ from .pf_schema_loader import load_pf_dataset
 
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 MODEL_DIR = Path("artifacts/models")
+PLAYBOOK_PATH = Path("artifacts/playbook/playbook.json")
 
 app = FastAPI(title="HorseRacingML API", version="0.1.0")
 
@@ -77,6 +79,15 @@ def _load_dataset(target_date: date) -> pd.DataFrame:
     return subset
 
 
+def _load_playbook() -> dict:
+    if not PLAYBOOK_PATH.exists():
+        raise HTTPException(status_code=404, detail="Playbook artifact not found")
+    try:
+        return json.loads(PLAYBOOK_PATH.read_text())
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=500, detail="Playbook artifact is invalid JSON") from exc
+
+
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
     feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
@@ -137,6 +148,7 @@ def get_selections(
         filtered = filtered.groupby(["event_date", "win_market_id"]).head(top).reset_index(drop=True)
 
     # Apply limit to prevent response size issues
+    limited = len(filtered) > limit
     filtered = filtered.head(limit)
 
     cols = [
@@ -161,5 +173,11 @@ def get_selections(
         "margin": margin,
         "selections": data,
         "total": len(data),
-        "limited": len(filtered) >= limit,
+        "limited": limited,
     }
+
+
+@app.get("/playbook")
+def get_playbook() -> dict:
+    """Return the latest ACE playbook snapshot."""
+    return _load_playbook()

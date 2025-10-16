@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import styles from './RaceCard.module.css';
-import type { Runner } from '../lib/api';
+import type { PlaybookTrackInsight, Runner } from '../lib/api';
 
 interface RaceCardProps {
   track: string;
   raceNo: number;
   eventDate: string;
   selections: Runner[];
+  playbookTrack?: PlaybookTrackInsight;
 }
 
 type ConfidenceLevel = 'high' | 'mediumHigh' | 'medium' | 'low';
@@ -22,7 +23,7 @@ function formatPercent(value: number, decimals = 1) {
   return `${(value * 100).toFixed(decimals)}%`;
 }
 
-export const RaceCard: React.FC<RaceCardProps> = ({ track, raceNo, eventDate, selections }) => {
+export const RaceCard: React.FC<RaceCardProps> = ({ track, raceNo, eventDate, selections, playbookTrack }) => {
   const [expanded, setExpanded] = useState(false);
 
   const sorted = useMemo(() => {
@@ -50,6 +51,11 @@ export const RaceCard: React.FC<RaceCardProps> = ({ track, raceNo, eventDate, se
         <div className={styles.badges}>
           <span className={`${styles.badge} ${styles.edgeBadge}`}>Top edge {formatPercent(bestEdge)}</span>
           <span className={styles.badge}>Selections {sorted.length}</span>
+          {playbookTrack && (
+            <span className={`${styles.badge} ${styles.playbookBadge}`}>
+              Playbook POT {playbookTrack.pot_pct.toFixed(1)}% • {playbookTrack.bets} bets
+            </span>
+          )}
         </div>
       </header>
 

@@ -49,6 +49,13 @@
   flex-wrap: wrap;
 }
 
+.playbookMeta {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+}
+
 .metricCard {
   padding: 1rem 1.25rem;
   border-radius: 16px;
@@ -122,6 +129,35 @@
   flex-direction: column;
 }
 
+.strategyControl {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.inlineButton {
+  padding: 0.55rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(20, 147, 255, 0.35);
+  background: rgba(20, 147, 255, 0.12);
+  color: var(--primary-blue);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.inlineButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(20, 147, 255, 0.25);
+}
+
+.helperText {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
 .controlField label {
   display: flex;
   justify-content: space-between;
@@ -181,6 +217,130 @@
   gap: 2.5rem;
 }
 
+.playbookSection {
+  background: rgba(11, 19, 33, 0.78);
+  border: 1px solid rgba(20, 147, 255, 0.12);
+  border-radius: 22px;
+  padding: 1.75rem 2rem;
+  display: grid;
+  gap: 1.75rem;
+}
+
+.playbookGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.4rem;
+}
+
+.playbookColumn {
+  display: grid;
+  gap: 1rem;
+}
+
+.strategyCard {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: 18px;
+  border: 1px solid rgba(20, 147, 255, 0.22);
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.strategyLabel {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.strategyMetrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statBlock {
+  background: rgba(14, 22, 40, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.statValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.trackGrid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.trackCard {
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trackTitle {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.trackStats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.contextGrid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.contextCard {
+  padding: 0.95rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.7);
+  display: grid;
+  gap: 0.35rem;
+}
+
+.contextMeta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.contextStats {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.sectionMeta {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
 .sectionHeader {
   display: flex;
   justify-content: space-between;
@@ -214,6 +374,12 @@
   letter-spacing: 0.04em;
   color: var(--text-secondary);
   text-transform: uppercase;
+}
+
+.tableFootnote {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
 }
 
 .errorBox,
@@ -271,6 +437,10 @@
   .main {
     order: 1;
   }
+
+  .playbookGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 }
 
 @media (max-width: 767px) {
@@ -294,5 +464,26 @@
 
   .tableSection {
     padding: 1.25rem;
+  }
+
+  .playbookSection {
+    padding: 1.4rem;
+  }
+}
+
+@media (max-width: 599px) {
+  .strategyMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .trackCard,
+  .contextCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+
+  .contextCard {
+    display: flex;
   }
 }
