@@ -16,7 +16,9 @@ export interface Runner {
 }
 
 export interface SelectionResponse {
-  date: string;
+  date?: string;
+  start_date?: string;
+  end_date?: string;
   margin: number;
   selections: Runner[];
   total?: number;
@@ -102,14 +104,15 @@ export interface AceRunResponse {
   schema_runners_added: number;
 }
 
-export async function fetchSelections(date?: string, margin?: number, top?: number) {
+export async function fetchSelections(date?: string, margin?: number, top?: number, limit?: number) {
   const params = new URLSearchParams();
   if (date) params.append('date_str', date);
   if (margin) params.append('margin', margin.toString());
   if (top) params.append('top', top.toString());
+  if (limit) params.append('limit', limit.toString());
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 second timeout for large datasets
 
   try {
     const res = await fetch(`${API_BASE}/selections?${params.toString()}`, {
