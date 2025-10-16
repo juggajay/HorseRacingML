@@ -6,8 +6,14 @@ from typing import Optional
 
 import pandas as pd
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-PF_SCHEMA_DIR = REPO_ROOT / "services" / "api" / "data" / "processed" / "pf_schema"
+# Determine base directory - works in both development and Docker container
+_current_file = Path(__file__).resolve()
+if _current_file.parent.name == "api":  # Development: services/api/
+    REPO_ROOT = _current_file.parents[2]
+    PF_SCHEMA_DIR = REPO_ROOT / "services" / "api" / "data" / "processed" / "pf_schema"
+else:  # Docker container: /app/
+    PF_SCHEMA_DIR = _current_file.parent / "data" / "processed" / "pf_schema"
+
 _TABLE_EXTS = (".parquet", ".csv.gz", ".csv")
 
 
