@@ -11,7 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from lightgbm import Booster
 
 from feature_engineering import engineer_all_features, get_feature_columns
-from .pf_schema_loader import load_pf_dataset
+try:
+    from .pf_schema_loader import load_pf_dataset
+except ImportError:  # Fallback for environments running as top-level module
+    from pf_schema_loader import load_pf_dataset
 
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 MODEL_DIR = Path("artifacts/models")
