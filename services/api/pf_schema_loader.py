@@ -60,26 +60,25 @@ def load_pf_dataset(base_dir: Path = PF_SCHEMA_DIR) -> Optional[pd.DataFrame]:
     except FileNotFoundError:
         return None
 
+    # Check required columns exist before merging
+    race_cols_needed = ["race_id", "meeting_id", "win_market_id", "win_market_name", "race_no", "racing_type", "race_type", "distance", "scheduled_start"]
+    missing_race_cols = [col for col in race_cols_needed if col not in races.columns]
+    if missing_race_cols:
+        raise ValueError(f"races table missing columns: {missing_race_cols}. Available: {list(races.columns)}")
+
+    meeting_cols_needed = ["meeting_id", "event_date", "track", "track_name_norm", "state_code"]
+    missing_meeting_cols = [col for col in meeting_cols_needed if col not in meetings.columns]
+    if missing_meeting_cols:
+        raise ValueError(f"meetings table missing columns: {missing_meeting_cols}. Available: {list(meetings.columns)}")
+
     merged = (
         runners.merge(
-            races[
-                [
-                    "race_id",
-                    "meeting_id",
-                    "win_market_id",
-                    "win_market_name",
-                    "race_no",
-                    "racing_type",
-                    "race_type",
-                    "distance",
-                    "scheduled_start",
-                ]
-            ],
+            races[race_cols_needed],
             on="race_id",
             how="left",
         )
         .merge(
-            meetings[["meeting_id", "event_date", "track", "track_name_norm", "state_code"]],
+            meetings[meeting_cols_needed],
             on="meeting_id",
             how="left",
         )
