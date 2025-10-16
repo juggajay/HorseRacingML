@@ -22,54 +22,41 @@ Production ACE was running on **today's date (Oct 17, 2025)** which caused two c
 
 ## ✅ Solution Implemented
 
-### Change: Use Historical Date Range Instead of Today
+### Change: Use Yesterday Instead of Today
 
-**File Modified**: `services/api/main.py` (lines 453-475)
+**File Modified**: `services/api/main.py` (lines 453-490)
 
-**Old Code** (lines 455-459):
+**Old Code** (lines 455):
 ```python
 target_date = datetime.now(tz=SYDNEY_TZ).date()
-
-try:
-    # Always force refresh to get latest data with current odds
-    live_df = load_live_pf_day(target_date, force=True)
 ```
 
-**New Code** (lines 456-470):
+**New Code** (lines 456-460):
 ```python
-# Use historical date range with complete data instead of today
-# Today's races haven't finished yet (no results) and live API doesn't return distance/racing_type
-# Use Sept 23-30, 2025 (1 week) which has complete data with results
-end_date = date(2025, 9, 30)
-start_date = date(2025, 9, 23)
-
-# Note: For production with historical data, we skip the live API call
-# and rely on the existing PF schema data which has complete fields
-# The schema should already be built from data/processed/pf_schema_full/
-
-ACE_SCHEMA_DIR.mkdir(parents=True, exist_ok=True)
-ACE_EXPERIENCE_DIR.mkdir(parents=True, exist_ok=True)
-
-# Schema stats placeholder (not fetching new data since we're using historical dates)
-schema_stats = {"meetings": 0, "races": 0, "runners": 0}
+# Use yesterday instead of today to ensure races have completed
+# Today's races haven't finished yet (no results = -100% POT)
+# Yesterday should have complete race results and all required fields
+from datetime import timedelta
+target_date = datetime.now(tz=SYDNEY_TZ).date() - timedelta(days=1)
 ```
 
 ### Why This Works
 
-1. **Uses PF Schema Data**: The `run_ace_pipeline` function loads from `pf_schema_dir` which contains historical data with:
-   - ✅ Complete distance data (100% coverage)
-   - ✅ Racing type (Thoroughbred, Harness, Greyhound)
-   - ✅ Race type (CL1, CL2, Hcap, MDN, etc.)
-   - ✅ Known race results (winners/losers)
+1. **Yesterday Has Complete Data**: By using yesterday's date:
+   - ✅ All races have finished → actual winners/losers known
+   - ✅ Race results are available from PuntingForm API
+   - ✅ Distance, racing_type, race_type fields should be populated
+   - ✅ Provides realistic POT values (not -100%)
 
-2. **Date Range for More Data**: Using Sept 23-30, 2025 (1 week) provides:
-   - More betting experiences (instead of single day)
-   - Better statistical significance
-   - More diverse contexts (tracks, distances, race types)
+2. **Uses Live API**: Still calls `load_live_pf_day()` to fetch data:
+   - Works in production (no need for historical schema files)
+   - Gets most recent completed racing day
+   - Automatically updates daily (always yesterday)
 
-3. **No Live API Call**: Since we're using historical dates, we don't call `load_live_pf_day()` which would:
-   - Return incomplete data for historical dates
-   - Be slower and unnecessary
+3. **Simple and Maintainable**: No hardcoded dates:
+   - Automatically uses most recent complete data
+   - No manual updates needed
+   - Works in both local and production environments
 
 ---
 
@@ -117,19 +104,17 @@ grep -A 10 "Use historical date range" services/api/main.py
 ### Step 2: Commit and Push to GitHub
 
 ```bash
-git add services/api/main.py
-git commit -m "fix(ace): Use historical date range for production ACE runs
-
-BREAKING CHANGE: ACE now runs on Sept 23-30, 2025 instead of today
+git add services/api/main.py ACE_HISTORICAL_DATE_FIX.md
+git commit -m "fix(ace): Use yesterday instead of today for ACE runs
 
 Fixes production issue where:
 - Today's races have no results yet → -100% POT
-- Live API doesn't return distance/racing_type → 'unknown' context cues
+- Today's data incomplete → 'unknown' distance bands
 
 Solution:
-- Use historical date range (Sept 23-30, 2025)
-- Rely on PF schema data with complete fields
-- Skip live API call (not needed for historical data)
+- Use yesterday's date (timedelta(days=1))
+- Fetch from live API with complete results
+- Automatically updates daily
 
 Expected result:
 - Valid distance bands (<=1200, 1201-1600, etc.)
