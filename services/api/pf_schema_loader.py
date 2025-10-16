@@ -61,6 +61,10 @@ def load_pf_dataset(base_dir: Path = PF_SCHEMA_DIR) -> Optional[pd.DataFrame]:
         return None
 
     # Check required columns exist before merging
+    # Runners must have race_id to merge with races
+    if "race_id" not in runners.columns:
+        raise ValueError(f"runners table missing 'race_id' column. Available: {list(runners.columns)}")
+
     race_cols_needed = ["race_id", "meeting_id", "win_market_id", "win_market_name", "race_no", "racing_type", "race_type", "distance", "scheduled_start"]
     missing_race_cols = [col for col in race_cols_needed if col not in races.columns]
     if missing_race_cols:
@@ -71,17 +75,21 @@ def load_pf_dataset(base_dir: Path = PF_SCHEMA_DIR) -> Optional[pd.DataFrame]:
     if missing_meeting_cols:
         raise ValueError(f"meetings table missing columns: {missing_meeting_cols}. Available: {list(meetings.columns)}")
 
-    merged = (
-        runners.merge(
-            races[race_cols_needed],
-            on="race_id",
-            how="left",
-        )
-        .merge(
-            meetings[meeting_cols_needed],
-            on="meeting_id",
-            how="left",
-        )
+    # Perform the merge
+    merged = runners.merge(
+        races[race_cols_needed],
+        on="race_id",
+        how="left",
+    )
+
+    # Check that merged has meeting_id from races before second merge
+    if "meeting_id" not in merged.columns:
+        raise ValueError(f"After merging runners+races, 'meeting_id' not found. Merged columns: {list(merged.columns)}")
+
+    merged = merged.merge(
+        meetings[meeting_cols_needed],
+        on="meeting_id",
+        how="left",
     )
 
     for base in [
