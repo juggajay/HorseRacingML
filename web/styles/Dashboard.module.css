@@ -512,3 +512,152 @@
     display: flex;
   }
 }
+
+/* Top Picks Section */
+.topPicksSection {
+  margin-bottom: 2.5rem;
+}
+
+.topPicksList {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+}
+
+.topPickCard {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all var(--transition-medium);
+}
+
+.topPickCard:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.pickHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.pickRank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 51, 234, 0.2));
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.pickTitle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pickTitle strong {
+  color: var(--text-primary);
+  font-size: 1.05rem;
+}
+
+.pickRaceInfo {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.confidenceBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.confidenceVeryHigh {
+  background: rgba(34, 197, 94, 0.2);
+  color: rgb(34, 197, 94);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.confidenceHigh {
+  background: rgba(59, 130, 246, 0.2);
+  color: rgb(59, 130, 246);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.confidenceMedium {
+  background: rgba(251, 191, 36, 0.2);
+  color: rgb(251, 191, 36);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.confidenceLow {
+  background: rgba(148, 163, 184, 0.2);
+  color: rgb(148, 163, 184);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.pickSummary {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+.pickStats {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.pickStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pickStatLabel {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pickStatValue {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.pickStatValue.positive {
+  color: rgb(34, 197, 94);
+}
+
+.pickStatValue.negative {
+  color: rgb(239, 68, 68);
+}
+
+@media (max-width: 768px) {
+  .topPicksList {
+    grid-template-columns: 1fr;
+  }
+
+  .pickStats {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}

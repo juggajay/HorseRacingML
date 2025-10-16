@@ -199,6 +199,81 @@ def get_races(date_str: Optional[str] = Query(None, description="YYYY-MM-DD")) -
     return {"date": target_date.isoformat(), "runners": data}
 
 
+@app.get("/top-picks")
+def get_top_picks(
+    date_str: Optional[str] = Query(None, description="YYYY-MM-DD"),
+    limit: int = Query(10, ge=1, le=50, description="Number of top picks to return"),
+) -> dict:
+    """Get the model's top picks for the day with confidence levels and summaries."""
+    target_date = date.fromisoformat(date_str) if date_str else date.today()
+    subset = _load_dataset(target_date)
+    booster = _latest_model()
+    scored = _score(subset, booster)
+
+    # Sort by model_prob (highest first) and take top N
+    top_picks = scored.nlargest(limit, "model_prob").copy()
+
+    # Calculate confidence level based on model_prob
+    def get_confidence_level(prob):
+        if prob >= 0.7:
+            return "Very High"
+        elif prob >= 0.5:
+            return "High"
+        elif prob >= 0.35:
+            return "Medium"
+        else:
+            return "Low"
+
+    # Generate summary for each pick
+    picks_data = []
+    for _, row in top_picks.iterrows():
+        win_rate = row.get("win_rate", 0) or 0
+        total_starts = row.get("total_starts", 0) or 0
+        betfair_rating = row.get("betfair_horse_rating", 0) or 0
+        model_prob = row.get("model_prob", 0) or 0
+        implied_prob = row.get("implied_prob", 0) or 0
+        edge = row.get("edge", 0) or 0
+
+        # Build summary
+        summary_parts = []
+        summary_parts.append(f"Model rates this horse at {model_prob*100:.1f}% chance to win")
+
+        if not pd.isna(implied_prob) and implied_prob > 0:
+            summary_parts.append(f"Market odds imply {implied_prob*100:.1f}% chance")
+            if edge > 0:
+                summary_parts.append(f"+{edge*100:.1f}% edge over market")
+            elif edge < 0:
+                summary_parts.append(f"{edge*100:.1f}% below market expectations")
+
+        if total_starts > 0:
+            summary_parts.append(f"Career record: {win_rate*100:.0f}% win rate from {int(total_starts)} starts")
+
+        if betfair_rating > 0:
+            summary_parts.append(f"Betfair historical rating: {betfair_rating:.0f}")
+
+        pick_data = {
+            "track": row.get("track", "Unknown"),
+            "race_no": int(row.get("race_no", 0)) if not pd.isna(row.get("race_no")) else None,
+            "selection_name": row.get("selection_name", "Unknown"),
+            "model_prob": float(model_prob),
+            "confidence": get_confidence_level(model_prob),
+            "win_odds": float(row.get("win_odds", 0)) if not pd.isna(row.get("win_odds")) else None,
+            "implied_prob": float(implied_prob) if not pd.isna(implied_prob) and implied_prob > 0 else None,
+            "edge": float(edge) if not pd.isna(edge) else None,
+            "summary": ". ".join(summary_parts) + ".",
+            "win_market_id": str(row.get("win_market_id", "")),
+            "event_date": str(row.get("event_date", "")),
+        }
+        picks_data.append(pick_data)
+
+    return {
+        "date": target_date.isoformat(),
+        "total_races": int(scored["win_market_id"].nunique()) if "win_market_id" in scored.columns else 0,
+        "total_runners": len(scored),
+        "top_picks": picks_data,
+    }
+
+
 @app.get("/selections")
 def get_selections(
     date_str: Optional[str] = Query(None, description="YYYY-MM-DD or YYYY-MM-DD:YYYY-MM-DD for date range"),

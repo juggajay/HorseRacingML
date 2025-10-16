@@ -173,6 +173,58 @@ export async function fetchPlaybook(): Promise<PlaybookResponse> {
   }
 }
 
+export interface TopPick {
+  track: string;
+  race_no: number | null;
+  selection_name: string;
+  model_prob: number;
+  confidence: string;
+  win_odds: number | null;
+  implied_prob: number | null;
+  edge: number | null;
+  summary: string;
+  win_market_id: string;
+  event_date: string;
+}
+
+export interface TopPicksResponse {
+  date: string;
+  total_races: number;
+  total_runners: number;
+  top_picks: TopPick[];
+}
+
+export async function fetchTopPicks(date?: string, limit?: number): Promise<TopPicksResponse> {
+  const params = new URLSearchParams();
+  if (date) params.append('date_str', date);
+  if (limit) params.append('limit', limit.toString());
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const res = await fetch(`${API_BASE}/top-picks?${params.toString()}`, {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      const errorText = await res.text().catch(() => 'Unknown error');
+      throw new Error(`API error (${res.status}): ${errorText}`);
+    }
+    return (await res.json()) as TopPicksResponse;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout - the data might be too large.');
+      }
+      throw error;
+    }
+    throw new Error('Failed to fetch top picks');
+  }
+}
+
 export async function runAce(forceRefresh = false): Promise<AceRunResponse> {
   const res = await fetch(`${API_BASE}/ace/run`, {
     method: 'POST',

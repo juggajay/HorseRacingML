@@ -4,10 +4,12 @@ import useSWR from 'swr';
 import {
   fetchSelections,
   fetchPlaybook,
+  fetchTopPicks,
   type Runner,
   type PlaybookResponse,
   type PlaybookStrategy,
   type PlaybookTrackInsight,
+  type TopPicksResponse,
 } from '../lib/api';
 import { SelectionTable } from '../components/SelectionTable';
 import { RaceCard } from '../components/RaceCard';
@@ -70,6 +72,9 @@ export default function Dashboard() {
     revalidateOnFocus: false,
   });
   const { data: playbookData } = useSWR<PlaybookResponse>('playbook', fetchPlaybook, {
+    revalidateOnFocus: false,
+  });
+  const { data: topPicksData } = useSWR<TopPicksResponse>(['top-picks', date], ([, d]) => fetchTopPicks(d, 10), {
     revalidateOnFocus: false,
   });
 
@@ -343,6 +348,56 @@ export default function Dashboard() {
         </aside>
 
         <main className={styles.main}>
+          {topPicksData && topPicksData.top_picks.length > 0 && (
+            <section className={styles.topPicksSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>🎯 Today&apos;s Top Picks</h2>
+                <span className={styles.sectionMeta}>
+                  {topPicksData.top_picks.length} selections from {topPicksData.total_races} races
+                </span>
+              </div>
+              <div className={styles.topPicksList}>
+                {topPicksData.top_picks.map((pick, idx) => (
+                  <div key={`${pick.win_market_id}-${pick.selection_name}`} className={styles.topPickCard}>
+                    <div className={styles.pickHeader}>
+                      <span className={styles.pickRank}>#{idx + 1}</span>
+                      <div className={styles.pickTitle}>
+                        <strong>{pick.selection_name}</strong>
+                        <span className={styles.pickRaceInfo}>
+                          {pick.track} • Race {pick.race_no}
+                        </span>
+                      </div>
+                      <span className={`${styles.confidenceBadge} ${styles[`confidence${pick.confidence.replace(' ', '')}`]}`}>
+                        {pick.confidence}
+                      </span>
+                    </div>
+                    <p className={styles.pickSummary}>{pick.summary}</p>
+                    <div className={styles.pickStats}>
+                      <div className={styles.pickStat}>
+                        <span className={styles.pickStatLabel}>Win Probability</span>
+                        <span className={styles.pickStatValue}>{(pick.model_prob * 100).toFixed(1)}%</span>
+                      </div>
+                      {pick.win_odds && (
+                        <div className={styles.pickStat}>
+                          <span className={styles.pickStatLabel}>Odds</span>
+                          <span className={styles.pickStatValue}>${pick.win_odds.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {pick.edge !== null && (
+                        <div className={styles.pickStat}>
+                          <span className={styles.pickStatLabel}>Edge</span>
+                          <span className={`${styles.pickStatValue} ${pick.edge > 0 ? styles.positive : styles.negative}`}>
+                            {pick.edge > 0 ? '+' : ''}{(pick.edge * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {playbookSnapshot && (
             <section className={styles.playbookSection}>
               <div className={styles.sectionHeader}>
