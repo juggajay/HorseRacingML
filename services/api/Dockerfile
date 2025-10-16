@@ -6,11 +6,12 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends gcc libgomp1 && \
     rm -rf /var/lib/apt/lists/*
 
-COPY services/api/requirements.txt ./requirements.txt
+# Copy requirements - works from both repo root and services/api directory
+COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY services/api/ ./
-COPY puntingform_api.py ./puntingform_api.py
+# Copy all API files
+COPY . ./
 
 ENV PYTHONPATH=/app
 ENV PORT=8000
