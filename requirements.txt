@@ -6,4 +6,5 @@ fastapi
 uvicorn
 python-dotenv
 requests
-requests
+scipy
+statsmodels

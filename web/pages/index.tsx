@@ -15,7 +15,17 @@ import { SelectionTable } from '../components/SelectionTable';
 import { RaceCard } from '../components/RaceCard';
 import styles from '../styles/Dashboard.module.css';
 
-const todayIso = new Date().toISOString().slice(0, 10);
+// Get today's date in Australian Eastern time (Sydney)
+const getTodayInAustralia = () => {
+  const now = new Date();
+  const australianDate = new Date(now.toLocaleString('en-US', { timeZone: 'Australia/Sydney' }));
+  const year = australianDate.getFullYear();
+  const month = String(australianDate.getMonth() + 1).padStart(2, '0');
+  const day = String(australianDate.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const todayIso = getTodayInAustralia();
 
 const selectionFetcher = async (date: string, margin: number) => {
   const data = await fetchSelections(date, margin);

@@ -28,15 +28,46 @@ class Simulator:
         self.race_id_col = race_id_col
 
     def evaluate(self, runners: pd.DataFrame, strategy: StrategyConfig) -> SimulationResult:
+        # Input validation
+        if runners.empty:
+            return SimulationResult(
+                strategy=strategy,
+                bets=pd.DataFrame(),
+                metrics=self._empty_metrics(strategy),
+                by_track=None,
+            )
+
         df = runners.copy()
         required = {"model_prob", "win_odds", self.win_result_col}
         missing = required - set(df.columns)
         if missing:
             raise ValueError(f"Missing required columns in runners dataset: {sorted(missing)}")
 
+        # Validate critical columns have valid data
+        if df["win_odds"].isna().all():
+            raise ValueError("All win_odds values are null - cannot compute edge")
+
+        if df["model_prob"].isna().all():
+            raise ValueError("All model_prob values are null - cannot evaluate strategy")
+
+        # Drop rows with missing critical data
+        null_count_before = len(df)
+        df = df.dropna(subset=["model_prob", "win_odds"])
+        null_count_after = len(df)
+        if null_count_after < null_count_before:
+            # Could add logging here in future
+            pass
+
         if "implied_prob" not in df.columns:
             df["implied_prob"] = 1.0 / (df["win_odds"].replace(0, np.nan) + 1e-9)
-        df["edge"] = df["model_prob"] - df["implied_prob"] * strategy.margin
+
+        # Calculate edge correctly: fair_odds / margin - market_odds
+        # Fair odds = 1 / model_prob
+        # Apply margin to fair odds (e.g., 5% margin = 1.05x divisor)
+        # Edge is positive when market odds > adjusted fair odds
+        fair_odds = 1.0 / df["model_prob"]
+        adjusted_fair_odds = fair_odds / strategy.margin
+        df["edge"] = df["win_odds"] - adjusted_fair_odds
 
         if strategy.min_model_prob is not None:
             df = df[df["model_prob"] >= strategy.min_model_prob]

@@ -1,6 +1,8 @@
 """Strategy definitions for the Early Experience loop."""
 from __future__ import annotations
 
+import hashlib
+import inspect
 from dataclasses import dataclass, field
 from itertools import product
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
@@ -17,6 +19,8 @@ class StrategyConfig:
     min_model_prob: Optional[float] = None
     max_win_odds: Optional[float] = None
     filters: Mapping[str, Any] = field(default_factory=dict)
+    version: str = "2.0.0"  # Bumped to 2.0.0 after edge calculation fix
+    code_hash: Optional[str] = None
 
     def to_params(self) -> Dict[str, Any]:
         return {
@@ -27,7 +31,24 @@ class StrategyConfig:
             "min_model_prob": self.min_model_prob,
             "max_win_odds": self.max_win_odds,
             "filters": dict(self.filters),
+            "version": self.version,
+            "code_hash": self.code_hash or self._compute_code_hash(),
         }
+
+    def _compute_code_hash(self) -> str:
+        """Compute hash of edge calculation logic for reproducibility.
+
+        This helps track which version of the strategy evaluation code
+        was used to generate experiences, ensuring reproducibility.
+        """
+        try:
+            # Import Simulator to hash its evaluate method
+            from .simulator import Simulator
+            source = inspect.getsource(Simulator.evaluate)
+            return hashlib.sha256(source.encode()).hexdigest()[:16]
+        except Exception:
+            # If source inspection fails, return a fixed hash for this version
+            return "v2_edge_fix_2025"
 
 
 class StrategyGrid:
