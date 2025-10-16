@@ -307,6 +307,13 @@ def run_ace_pipeline(
     experience_runner = EarlyExperienceRunner(simulator=simulator, strategies=strategies, writer=writer)
     experience_output = experience_runner.run(runners, label="ace")
 
+    # Check if experiences were generated
+    if experience_output.experience_path is None:
+        raise ValueError(
+            "No experiences generated. This usually means no bets met the strategy criteria. "
+            "Try adjusting strategy parameters or ensure data has sufficient quality."
+        )
+
     exp_path = Path(experience_output.experience_path)
     if exp_path.suffix == ".parquet":
         exp_df = pd.read_parquet(exp_path)
