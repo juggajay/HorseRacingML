@@ -1,13 +1,13 @@
 {
   "source": "services/api/data/processed/ml/betfair_kash_top5.csv.gz",
   "rows": {
-    "meetings": 495,
-    "races": 3814,
-    "runners": 36956
+    "meetings": 6919,
+    "races": 53900,
+    "runners": 529686
   },
   "outputs": {
-    "meetings": "services/api/data/processed/pf_schema/meetings.csv.gz",
-    "races": "services/api/data/processed/pf_schema/races.csv.gz",
-    "runners": "services/api/data/processed/pf_schema/runners.csv.gz"
+    "meetings": "services/api/data/processed/pf_schema/meetings.parquet",
+    "races": "services/api/data/processed/pf_schema/races.parquet",
+    "runners": "services/api/data/processed/pf_schema/runners.parquet"
   }
 }
