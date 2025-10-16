@@ -150,11 +150,9 @@ class AceRunResponse(BaseModel):
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
     feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
-    # LightGBM booster.predict() returns raw scores, need to convert to probabilities
-    # For binary classification with sigmoid objective, apply sigmoid transform
-    raw_scores = booster.predict(df_feat[feature_cols])
-    # Convert raw scores to probabilities using sigmoid: p = 1 / (1 + exp(-score))
-    df_feat["model_prob"] = 1.0 / (1.0 + np.exp(-raw_scores))
+    # LightGBM with objective='binary' already outputs probabilities (0-1 range)
+    predictions = booster.predict(df_feat[feature_cols])
+    df_feat["model_prob"] = predictions
     df_feat["win_odds"] = pd.to_numeric(df_feat.get("win_odds"), errors="coerce")
     with np.errstate(divide="ignore", invalid="ignore"):
         df_feat["implied_prob"] = 1.0 / df_feat["win_odds"]
@@ -212,6 +210,13 @@ def get_top_picks(
     subset = _load_dataset(target_date)
     booster = _latest_model()
     scored = _score(subset, booster)
+
+    # Debug: Log probability distribution
+    print(f"\n[DEBUG] Top Picks for {target_date}:")
+    print(f"  Total runners: {len(scored)}")
+    print(f"  model_prob stats: min={scored['model_prob'].min():.4f}, max={scored['model_prob'].max():.4f}, mean={scored['model_prob'].mean():.4f}")
+    print(f"  Runners with prob > 0.5: {(scored['model_prob'] > 0.5).sum()}")
+    print(f"  Runners with prob > 0.6: {(scored['model_prob'] > 0.6).sum()}")
 
     # Sort by model_prob (highest first) and take top N
     top_picks = scored.nlargest(limit, "model_prob").copy()
