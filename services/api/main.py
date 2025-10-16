@@ -123,6 +123,7 @@ def get_selections(
     date_str: Optional[str] = Query(None, description="YYYY-MM-DD"),
     margin: float = Query(1.05, ge=1.0),
     top: Optional[int] = Query(None, ge=1),
+    limit: int = Query(500, ge=1, le=10000, description="Max total selections to return"),
 ) -> dict:
     target_date = date.fromisoformat(date_str) if date_str else date.today()
     subset = _load_dataset(target_date)
@@ -134,6 +135,9 @@ def get_selections(
     filtered = filtered.sort_values(["event_date", "edge_margin"], ascending=[True, False])
     if top:
         filtered = filtered.groupby(["event_date", "win_market_id"]).head(top).reset_index(drop=True)
+
+    # Apply limit to prevent response size issues
+    filtered = filtered.head(limit)
 
     cols = [
         "event_date",
@@ -152,4 +156,10 @@ def get_selections(
         "model_rank",
     ]
     data = filtered[cols].to_dict(orient="records")
-    return {"date": target_date.isoformat(), "margin": margin, "selections": data}
+    return {
+        "date": target_date.isoformat(),
+        "margin": margin,
+        "selections": data,
+        "total": len(data),
+        "limited": len(filtered) >= limit,
+    }
