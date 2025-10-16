@@ -264,7 +264,8 @@ def _build_dataset(start: date, end: date, pf_schema_dir: Path, max_races: Optio
 
 def _ensure_predictions(df: pd.DataFrame, booster) -> pd.DataFrame:
     engineered = engineer_all_features(df)
-    feature_cols = [c for c in get_feature_columns() if c in engineered.columns]
+    # Use clean Betfair features only (matches retraining and API scoring)
+    feature_cols = [c for c in get_feature_columns(clean_betfair_only=True) if c in engineered.columns]
     if not feature_cols:
         raise ValueError("No feature columns available for prediction.")
     preds = booster.predict(engineered[feature_cols])
