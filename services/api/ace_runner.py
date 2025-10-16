@@ -309,9 +309,29 @@ def run_ace_pipeline(
 
     # Check if experiences were generated
     if experience_output.experience_path is None:
+        # Provide diagnostic information
+        total_strategies = len(strategies)
+        total_bets = experience_output.strategy_metrics["bets"].sum() if not experience_output.strategy_metrics.empty else 0
+
+        diagnostics = {
+            "runners_count": len(runners),
+            "strategies_evaluated": total_strategies,
+            "total_bets_across_strategies": int(total_bets),
+            "has_model_prob": "model_prob" in runners.columns,
+            "has_win_odds": "win_odds" in runners.columns,
+            "has_win_result": "win_result" in runners.columns,
+        }
+
+        if "model_prob" in runners.columns:
+            diagnostics["model_prob_null_count"] = int(runners["model_prob"].isna().sum())
+            diagnostics["model_prob_mean"] = float(runners["model_prob"].mean()) if not runners["model_prob"].isna().all() else None
+
+        if "win_odds" in runners.columns:
+            diagnostics["win_odds_null_count"] = int(runners["win_odds"].isna().sum())
+            diagnostics["win_odds_mean"] = float(runners["win_odds"].mean()) if not runners["win_odds"].isna().all() else None
+
         raise ValueError(
-            "No experiences generated. This usually means no bets met the strategy criteria. "
-            "Try adjusting strategy parameters or ensure data has sufficient quality."
+            f"No experiences generated. No bets met strategy criteria. Diagnostics: {diagnostics}"
         )
 
     exp_path = Path(experience_output.experience_path)
