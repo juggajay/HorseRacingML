@@ -5310,11 +5310,2329 @@
           "pot_pct": 1079.8857142857146
         }
       ]
+    },
+    {
+      "metadata": {
+        "generated_at": "2025-10-16T02:44:19Z",
+        "experience_rows": 1064522,
+        "strategies_evaluated": 24
+      },
+      "global": {
+        "total_bets": 1064522,
+        "total_profit": 1456861.7099999997,
+        "total_staked": 1064522.0,
+        "pot_pct": 136.85595130960183,
+        "hit_rate": 0.5020469281048208
+      },
+      "strategies": [
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20",
+          "bets": 39985,
+          "wins": 21445,
+          "hit_rate": 0.536326122295861,
+          "mean_edge": 0.1789128621694414,
+          "total_staked": 39985.0,
+          "total_profit": 82933.36,
+          "pot_pct": 207.4111791921971,
+          "roi_pct": 207.4111791921971,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20",
+          "bets": 40783,
+          "wins": 21898,
+          "hit_rate": 0.5369394110291053,
+          "mean_edge": 0.18272770136593489,
+          "total_staked": 40783.0,
+          "total_profit": 83094.66,
+          "pot_pct": 203.74827746855306,
+          "roi_pct": 203.74827746855306,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20",
+          "bets": 41591,
+          "wins": 22357,
+          "hit_rate": 0.5375441802313,
+          "mean_edge": 0.18660984705542488,
+          "total_staked": 41591.0,
+          "total_profit": 83023.31999999999,
+          "pot_pct": 199.61847515087396,
+          "roi_pct": 199.61847515087396,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25",
+          "bets": 34473,
+          "wins": 19601,
+          "hit_rate": 0.5685899109447974,
+          "mean_edge": 0.19298273331979543,
+          "total_staked": 34473.0,
+          "total_profit": 64617.06,
+          "pot_pct": 187.44252023322602,
+          "roi_pct": 187.44252023322602,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25",
+          "bets": 35280,
+          "wins": 20039,
+          "hit_rate": 0.5679988662131519,
+          "mean_edge": 0.19666492194783466,
+          "total_staked": 35280.0,
+          "total_profit": 64755.38,
+          "pot_pct": 183.5469954648526,
+          "roi_pct": 183.5469954648526,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25",
+          "bets": 36110,
+          "wins": 20499,
+          "hit_rate": 0.5676820825256161,
+          "mean_edge": 0.2003607223856909,
+          "total_staked": 36110.0,
+          "total_profit": 64908.28,
+          "pot_pct": 179.7515369703683,
+          "roi_pct": 179.7515369703683,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20",
+          "bets": 57079,
+          "wins": 25545,
+          "hit_rate": 0.4475376232940311,
+          "mean_edge": 0.15131159632209487,
+          "total_staked": 57079.0,
+          "total_profit": 87058.03,
+          "pot_pct": 152.52199583034042,
+          "roi_pct": 152.52199583034042,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20",
+          "bets": 58636,
+          "wins": 26147,
+          "hit_rate": 0.44592059485640223,
+          "mean_edge": 0.1543170763581442,
+          "total_staked": 58636.0,
+          "total_profit": 87154.55,
+          "pot_pct": 148.63658844395934,
+          "roi_pct": 148.63658844395934,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25",
+          "bets": 44873,
+          "wins": 22261,
+          "hit_rate": 0.49608896218215853,
+          "mean_edge": 0.1713457741594998,
+          "total_staked": 44873.0,
+          "total_profit": 65816.42,
+          "pot_pct": 146.6726539344372,
+          "roi_pct": 146.6726539344372,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20",
+          "bets": 60214,
+          "wins": 26815,
+          "hit_rate": 0.44532832896004254,
+          "mean_edge": 0.15739647289379644,
+          "total_staked": 60214.0,
+          "total_profit": 87440.18,
+          "pot_pct": 145.21569734613212,
+          "roi_pct": 145.21569734613212,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25",
+          "bets": 46153,
+          "wins": 22780,
+          "hit_rate": 0.4935757155547852,
+          "mean_edge": 0.17450336813411504,
+          "total_staked": 46153.0,
+          "total_profit": 65825.56,
+          "pot_pct": 142.62466145212662,
+          "roi_pct": 142.62466145212662,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25",
+          "bets": 47413,
+          "wins": 23354,
+          "hit_rate": 0.4925653301837049,
+          "mean_edge": 0.17788719239038273,
+          "total_staked": 47413.0,
+          "total_profit": 65986.66,
+          "pot_pct": 139.17419273195117,
+          "roi_pct": 139.17419273195117,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 38569,
+          "wins": 20551,
+          "hit_rate": 0.5328372527159118,
+          "mean_edge": 0.17388730741131023,
+          "total_staked": 38569.0,
+          "total_profit": 49230.48,
+          "pot_pct": 127.64261453498924,
+          "roi_pct": 127.64261453498924,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 39451,
+          "wins": 21028,
+          "hit_rate": 0.5330156396542547,
+          "mean_edge": 0.17772042547646508,
+          "total_staked": 39451.0,
+          "total_profit": 49432.73,
+          "pot_pct": 125.3015893133254,
+          "roi_pct": 125.3015893133254,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 33677,
+          "wins": 19013,
+          "hit_rate": 0.564569290613772,
+          "mean_edge": 0.1891395104058211,
+          "total_staked": 33677.0,
+          "total_profit": 41815.34,
+          "pot_pct": 124.1658698815215,
+          "roi_pct": 124.1658698815215,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 40320,
+          "wins": 21508,
+          "hit_rate": 0.5334325396825397,
+          "mean_edge": 0.18172592166694107,
+          "total_staked": 40320.0,
+          "total_profit": 49656.78999999999,
+          "pot_pct": 123.15672123015871,
+          "roi_pct": 123.15672123015871,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 34521,
+          "wins": 19465,
+          "hit_rate": 0.5638596796153066,
+          "mean_edge": 0.19285905120262886,
+          "total_staked": 34521.0,
+          "total_profit": 41971.29,
+          "pot_pct": 121.58190666550794,
+          "roi_pct": 121.58190666550794,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 35377,
+          "wins": 19934,
+          "hit_rate": 0.5634734431975578,
+          "mean_edge": 0.19665628661283266,
+          "total_staked": 35377.0,
+          "total_profit": 42157.62,
+          "pot_pct": 119.16674675636713,
+          "roi_pct": 119.16674675636713,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 43360,
+          "wins": 21460,
+          "hit_rate": 0.4949261992619926,
+          "mean_edge": 0.16826900829759658,
+          "total_staked": 43360.0,
+          "total_profit": 42353.3,
+          "pot_pct": 97.67827490774908,
+          "roi_pct": 97.67827490774908,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 44651,
+          "wins": 21984,
+          "hit_rate": 0.4923517950325861,
+          "mean_edge": 0.17152952400300878,
+          "total_staked": 44651.0,
+          "total_profit": 42367.27,
+          "pot_pct": 94.88537770710622,
+          "roi_pct": 94.88537770710622,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 53737,
+          "wins": 24098,
+          "hit_rate": 0.448443344436794,
+          "mean_edge": 0.14766074686355185,
+          "total_staked": 53737.0,
+          "total_profit": 50757.58,
+          "pot_pct": 94.45555204049352,
+          "roi_pct": 94.45555204049352,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 45925,
+          "wins": 22558,
+          "hit_rate": 0.49119216113228087,
+          "mean_edge": 0.17500580570384597,
+          "total_staked": 45925.0,
+          "total_profit": 42524.57,
+          "pot_pct": 92.5956886227545,
+          "roi_pct": 92.5956886227545,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 55357,
+          "wins": 24711,
+          "hit_rate": 0.4463934100475098,
+          "mean_edge": 0.15072053646497244,
+          "total_staked": 55357.0,
+          "total_profit": 50858.01000000001,
+          "pot_pct": 91.87277128457107,
+          "roi_pct": 91.87277128457107,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 56987,
+          "wins": 25389,
+          "hit_rate": 0.4455226630635057,
+          "mean_edge": 0.15388718266790843,
+          "total_staked": 56987.0,
+          "total_profit": 51123.26999999999,
+          "pot_pct": 89.71040763682943,
+          "roi_pct": 89.71040763682943,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        }
+      ],
+      "tracks": [
+        {
+          "track": "Ashburton",
+          "bets": 3542,
+          "profit": 18682.88,
+          "pot_pct": 527.4669678147939,
+          "hit_rate": 0.4556747600225861
+        },
+        {
+          "track": "Phar Lap",
+          "bets": 1885,
+          "profit": 8463.72,
+          "pot_pct": 449.0037135278516,
+          "hit_rate": 0.6344827586206897
+        },
+        {
+          "track": "Kangaroo Island",
+          "bets": 836,
+          "profit": 3733.6,
+          "pot_pct": 446.60287081339715,
+          "hit_rate": 0.47368421052631576
+        },
+        {
+          "track": "Cromwell",
+          "bets": 734,
+          "profit": 2357.48,
+          "pot_pct": 321.18256130790195,
+          "hit_rate": 0.3978201634877384
+        },
+        {
+          "track": "Rotorua",
+          "bets": 3345,
+          "profit": 10709.58,
+          "pot_pct": 320.1668161434977,
+          "hit_rate": 0.5467862481315396
+        },
+        {
+          "track": "Manangatang",
+          "bets": 326,
+          "profit": 954.4,
+          "pot_pct": 292.76073619631904,
+          "hit_rate": 0.7361963190184049
+        },
+        {
+          "track": "Kilmore",
+          "bets": 3660,
+          "profit": 10347.42,
+          "pot_pct": 282.7163934426229,
+          "hit_rate": 0.5942622950819673
+        },
+        {
+          "track": "Te Aroha",
+          "bets": 3173,
+          "profit": 8878.49,
+          "pot_pct": 279.8137409391743,
+          "hit_rate": 0.5515285219035613
+        },
+        {
+          "track": "Cowra",
+          "bets": 778,
+          "profit": 2068.52,
+          "pot_pct": 265.8766066838046,
+          "hit_rate": 0.7686375321336761
+        },
+        {
+          "track": "Ararat",
+          "bets": 2513,
+          "profit": 6462.04,
+          "pot_pct": 257.14444886589735,
+          "hit_rate": 0.5268603263032232
+        },
+        {
+          "track": "Port Augusta",
+          "bets": 3241,
+          "profit": 8320.3,
+          "pot_pct": 256.72014810243746,
+          "hit_rate": 0.4976858994137612
+        },
+        {
+          "track": "Longford",
+          "bets": 512,
+          "profit": 1218.08,
+          "pot_pct": 237.90625,
+          "hit_rate": 0.671875
+        },
+        {
+          "track": "Riverton",
+          "bets": 2120,
+          "profit": 4848.22,
+          "pot_pct": 228.68962264150937,
+          "hit_rate": 0.47264150943396227
+        },
+        {
+          "track": "Cambridge",
+          "bets": 5012,
+          "profit": 11448.98,
+          "pot_pct": 228.4313647246608,
+          "hit_rate": 0.4972067039106145
+        },
+        {
+          "track": "Bundaberg",
+          "bets": 528,
+          "profit": 1161.36,
+          "pot_pct": 219.95454545454544,
+          "hit_rate": 0.6193181818181818
+        },
+        {
+          "track": "Taupo",
+          "bets": 2869,
+          "profit": 6197.4800000000005,
+          "pot_pct": 216.0153363541304,
+          "hit_rate": 0.573719065876612
+        },
+        {
+          "track": "Colac",
+          "bets": 1154,
+          "profit": 2460.16,
+          "pot_pct": 213.1854419410745,
+          "hit_rate": 0.5563258232235702
+        },
+        {
+          "track": "Gatton",
+          "bets": 7708,
+          "profit": 15814.04,
+          "pot_pct": 205.16398546964197,
+          "hit_rate": 0.5495588998443176
+        },
+        {
+          "track": "Murray Bridge",
+          "bets": 8975,
+          "profit": 18006.9,
+          "pot_pct": 200.6339832869081,
+          "hit_rate": 0.4725348189415042
+        },
+        {
+          "track": "Gympie",
+          "bets": 388,
+          "profit": 767.04,
+          "pot_pct": 197.69072164948454,
+          "hit_rate": 0.8144329896907216
+        },
+        {
+          "track": "Forbes",
+          "bets": 741,
+          "profit": 1450.8600000000001,
+          "pot_pct": 195.79757085020245,
+          "hit_rate": 0.573549257759784
+        },
+        {
+          "track": "Geelong",
+          "bets": 11104,
+          "profit": 21720.15,
+          "pot_pct": 195.60653818443805,
+          "hit_rate": 0.5299891930835735
+        },
+        {
+          "track": "Dunkeld",
+          "bets": 285,
+          "profit": 555.3199999999999,
+          "pot_pct": 194.84912280701755,
+          "hit_rate": 0.7157894736842105
+        },
+        {
+          "track": "Tauherenikau",
+          "bets": 1818,
+          "profit": 3534.92,
+          "pot_pct": 194.44004400440045,
+          "hit_rate": 0.5665566556655666
+        },
+        {
+          "track": "Birdsville",
+          "bets": 769,
+          "profit": 1483.52,
+          "pot_pct": 192.91547464239272,
+          "hit_rate": 0.5929778933680104
+        },
+        {
+          "track": "Bowraville",
+          "bets": 649,
+          "profit": 1241.84,
+          "pot_pct": 191.34668721109404,
+          "hit_rate": 0.6194144838212635
+        },
+        {
+          "track": "Blackall",
+          "bets": 236,
+          "profit": 449.2,
+          "pot_pct": 190.33898305084745,
+          "hit_rate": 0.635593220338983
+        },
+        {
+          "track": "Warracknabeal",
+          "bets": 2155,
+          "profit": 4082.9,
+          "pot_pct": 189.46171693735496,
+          "hit_rate": 0.6074245939675174
+        },
+        {
+          "track": "Matamata",
+          "bets": 5650,
+          "profit": 10615.49,
+          "pot_pct": 187.88477876106197,
+          "hit_rate": 0.5166371681415929
+        },
+        {
+          "track": "Oamaru",
+          "bets": 1645,
+          "profit": 3084.74,
+          "pot_pct": 187.52218844984802,
+          "hit_rate": 0.5477203647416413
+        },
+        {
+          "track": "Hanging Rock",
+          "bets": 452,
+          "profit": 844.9200000000001,
+          "pot_pct": 186.92920353982302,
+          "hit_rate": 0.668141592920354
+        },
+        {
+          "track": "Kerang",
+          "bets": 605,
+          "profit": 1127.32,
+          "pot_pct": 186.33388429752068,
+          "hit_rate": 0.5454545454545454
+        },
+        {
+          "track": "Corowa",
+          "bets": 2407,
+          "profit": 4467.82,
+          "pot_pct": 185.6177814707104,
+          "hit_rate": 0.5720814291649357
+        },
+        {
+          "track": "Tauranga",
+          "bets": 6092,
+          "profit": 11297.8,
+          "pot_pct": 185.45305318450426,
+          "hit_rate": 0.4804661851608667
+        },
+        {
+          "track": "Casterton",
+          "bets": 2189,
+          "profit": 4056.52,
+          "pot_pct": 185.31384193695752,
+          "hit_rate": 0.6112380082229328
+        },
+        {
+          "track": "Grafton",
+          "bets": 10494,
+          "profit": 19432.83,
+          "pot_pct": 185.18038879359636,
+          "hit_rate": 0.5194396798170383
+        },
+        {
+          "track": "Flemington",
+          "bets": 11229,
+          "profit": 20594.4,
+          "pot_pct": 183.40368688218007,
+          "hit_rate": 0.4548935791254787
+        },
+        {
+          "track": "Penshurst",
+          "bets": 237,
+          "profit": 425.64,
+          "pot_pct": 179.59493670886076,
+          "hit_rate": 0.6582278481012658
+        },
+        {
+          "track": "Kumara",
+          "bets": 516,
+          "profit": 926.52,
+          "pot_pct": 179.5581395348837,
+          "hit_rate": 0.6453488372093024
+        },
+        {
+          "track": "Te Rapa",
+          "bets": 11404,
+          "profit": 20453.89,
+          "pot_pct": 179.35715538407575,
+          "hit_rate": 0.4470361276745002
+        },
+        {
+          "track": "Pukekohe",
+          "bets": 5865,
+          "profit": 10464.17,
+          "pot_pct": 178.417220801364,
+          "hit_rate": 0.4692242114236999
+        },
+        {
+          "track": "St Arnaud",
+          "bets": 323,
+          "profit": 568.76,
+          "pot_pct": 176.08668730650155,
+          "hit_rate": 0.5634674922600619
+        },
+        {
+          "track": "Woodville",
+          "bets": 2761,
+          "profit": 4852.0599999999995,
+          "pot_pct": 175.73560304237594,
+          "hit_rate": 0.504889532777979
+        },
+        {
+          "track": "Leinster",
+          "bets": 222,
+          "profit": 389.88,
+          "pot_pct": 175.6216216216216,
+          "hit_rate": 0.5135135135135135
+        },
+        {
+          "track": "Penola",
+          "bets": 1318,
+          "profit": 2299.68,
+          "pot_pct": 174.48254931714717,
+          "hit_rate": 0.5766312594840668
+        },
+        {
+          "track": "Traralgon",
+          "bets": 200,
+          "profit": 347.68,
+          "pot_pct": 173.84,
+          "hit_rate": 0.54
+        },
+        {
+          "track": "Gunbower",
+          "bets": 150,
+          "profit": 260.40000000000003,
+          "pot_pct": 173.60000000000002,
+          "hit_rate": 0.48
+        },
+        {
+          "track": "Coonabarabran",
+          "bets": 1048,
+          "profit": 1817.32,
+          "pot_pct": 173.40839694656486,
+          "hit_rate": 0.6087786259541985
+        },
+        {
+          "track": "Katherine",
+          "bets": 422,
+          "profit": 721.2,
+          "pot_pct": 170.90047393364932,
+          "hit_rate": 0.5023696682464455
+        },
+        {
+          "track": "Waverley",
+          "bets": 2908,
+          "profit": 4949.89,
+          "pot_pct": 170.21629986244844,
+          "hit_rate": 0.5223521320495186
+        },
+        {
+          "track": "Tuncurry",
+          "bets": 2749,
+          "profit": 4677.06,
+          "pot_pct": 170.1367770098217,
+          "hit_rate": 0.5652964714441615
+        },
+        {
+          "track": "Kilcoy",
+          "bets": 3861,
+          "profit": 6546.18,
+          "pot_pct": 169.54623154623155,
+          "hit_rate": 0.6021756021756022
+        },
+        {
+          "track": "Camperdown",
+          "bets": 509,
+          "profit": 861.96,
+          "pot_pct": 169.34381139489196,
+          "hit_rate": 0.6836935166994106
+        },
+        {
+          "track": "Moruya",
+          "bets": 5194,
+          "profit": 8789.14,
+          "pot_pct": 169.2171736619176,
+          "hit_rate": 0.4822872545244513
+        },
+        {
+          "track": "Longreach",
+          "bets": 590,
+          "profit": 997.24,
+          "pot_pct": 169.0237288135593,
+          "hit_rate": 0.576271186440678
+        },
+        {
+          "track": "Otaki",
+          "bets": 5513,
+          "profit": 9305.12,
+          "pot_pct": 168.78505350988573,
+          "hit_rate": 0.4797750770905133
+        },
+        {
+          "track": "Cootamundra",
+          "bets": 317,
+          "profit": 533.08,
+          "pot_pct": 168.16403785488956,
+          "hit_rate": 0.5867507886435331
+        },
+        {
+          "track": "Gilgandra",
+          "bets": 1328,
+          "profit": 2228.18,
+          "pot_pct": 167.78463855421685,
+          "hit_rate": 0.5662650602409639
+        },
+        {
+          "track": "Stawell",
+          "bets": 1487,
+          "profit": 2487.04,
+          "pot_pct": 167.25218560860793,
+          "hit_rate": 0.6751849361129791
+        },
+        {
+          "track": "Darwin",
+          "bets": 13226,
+          "profit": 22011.8,
+          "pot_pct": 166.42824739150157,
+          "hit_rate": 0.4789807954029941
+        },
+        {
+          "track": "Leonora",
+          "bets": 198,
+          "profit": 328.68,
+          "pot_pct": 165.99999999999997,
+          "hit_rate": 0.696969696969697
+        },
+        {
+          "track": "Mortlake",
+          "bets": 339,
+          "profit": 561.36,
+          "pot_pct": 165.5929203539823,
+          "hit_rate": 0.5486725663716814
+        },
+        {
+          "track": "Pakenham",
+          "bets": 17214,
+          "profit": 28235.42,
+          "pot_pct": 164.02590914372024,
+          "hit_rate": 0.5464157081445336
+        },
+        {
+          "track": "Dalby",
+          "bets": 3362,
+          "profit": 5507.0,
+          "pot_pct": 163.80130874479477,
+          "hit_rate": 0.5321237358715051
+        },
+        {
+          "track": "Emerald",
+          "bets": 458,
+          "profit": 745.36,
+          "pot_pct": 162.7423580786026,
+          "hit_rate": 0.6681222707423581
+        },
+        {
+          "track": "Dongara",
+          "bets": 280,
+          "profit": 454.64,
+          "pot_pct": 162.37142857142857,
+          "hit_rate": 0.7285714285714285
+        },
+        {
+          "track": "Ballina",
+          "bets": 3729,
+          "profit": 6028.46,
+          "pot_pct": 161.66425315097882,
+          "hit_rate": 0.523196567444355
+        },
+        {
+          "track": "Esperance",
+          "bets": 4040,
+          "profit": 6478.58,
+          "pot_pct": 160.36089108910892,
+          "hit_rate": 0.566089108910891
+        },
+        {
+          "track": "New Plymouth",
+          "bets": 5396,
+          "profit": 8648.96,
+          "pot_pct": 160.28465530022237,
+          "hit_rate": 0.47275759822090435
+        },
+        {
+          "track": "Warren",
+          "bets": 1166,
+          "profit": 1867.48,
+          "pot_pct": 160.16123499142367,
+          "hit_rate": 0.532590051457976
+        },
+        {
+          "track": "Ballarat",
+          "bets": 15593,
+          "profit": 24670.22,
+          "pot_pct": 158.21342910280254,
+          "hit_rate": 0.5420380940165459
+        },
+        {
+          "track": "Werribee",
+          "bets": 3279,
+          "profit": 5132.68,
+          "pot_pct": 156.53186947240013,
+          "hit_rate": 0.5038121378469046
+        },
+        {
+          "track": "Burrumbeet",
+          "bets": 446,
+          "profit": 693.84,
+          "pot_pct": 155.5695067264574,
+          "hit_rate": 0.5829596412556054
+        },
+        {
+          "track": "Naracoorte",
+          "bets": 1887,
+          "profit": 2926.1,
+          "pot_pct": 155.06624271330153,
+          "hit_rate": 0.5506094329623742
+        },
+        {
+          "track": "Chinchilla",
+          "bets": 577,
+          "profit": 891.92,
+          "pot_pct": 154.578856152513,
+          "hit_rate": 0.5909878682842288
+        },
+        {
+          "track": "Strathalbyn",
+          "bets": 4462,
+          "profit": 6879.0,
+          "pot_pct": 154.16853428955625,
+          "hit_rate": 0.48296727924697447
+        },
+        {
+          "track": "Mildura",
+          "bets": 1499,
+          "profit": 2291.32,
+          "pot_pct": 152.8565710473649,
+          "hit_rate": 0.6417611741160774
+        },
+        {
+          "track": "Gold Coast",
+          "bets": 17678,
+          "profit": 26874.46,
+          "pot_pct": 152.02206131915375,
+          "hit_rate": 0.5214956443036542
+        },
+        {
+          "track": "Bendigo",
+          "bets": 9700,
+          "profit": 14723.02,
+          "pot_pct": 151.7837113402062,
+          "hit_rate": 0.48701030927835054
+        },
+        {
+          "track": "Warrnambool",
+          "bets": 7516,
+          "profit": 11297.74,
+          "pot_pct": 150.3158594997339,
+          "hit_rate": 0.464608834486429
+        },
+        {
+          "track": "Moe",
+          "bets": 5306,
+          "profit": 7921.49,
+          "pot_pct": 149.2930644553336,
+          "hit_rate": 0.5618168111571805
+        },
+        {
+          "track": "Launceston",
+          "bets": 10354,
+          "profit": 15451.1,
+          "pot_pct": 149.22831755843154,
+          "hit_rate": 0.5002897430944563
+        },
+        {
+          "track": "Thangool",
+          "bets": 1197,
+          "profit": 1773.22,
+          "pot_pct": 148.1386800334169,
+          "hit_rate": 0.5789473684210527
+        },
+        {
+          "track": "Townsville",
+          "bets": 12851,
+          "profit": 18967.9,
+          "pot_pct": 147.5986304567738,
+          "hit_rate": 0.5273519570461442
+        },
+        {
+          "track": "Warwick",
+          "bets": 4385,
+          "profit": 6459.14,
+          "pot_pct": 147.30079817559866,
+          "hit_rate": 0.5058152793614595
+        },
+        {
+          "track": "Sunshine Coast",
+          "bets": 24747,
+          "profit": 36448.48,
+          "pot_pct": 147.28443851780014,
+          "hit_rate": 0.5093142603143815
+        },
+        {
+          "track": "Goulburn",
+          "bets": 7894,
+          "profit": 11590.54,
+          "pot_pct": 146.82721053965037,
+          "hit_rate": 0.560298961236382
+        },
+        {
+          "track": "Reefton",
+          "bets": 382,
+          "profit": 558.92,
+          "pot_pct": 146.31413612565444,
+          "hit_rate": 0.5497382198952879
+        },
+        {
+          "track": "Ascot Park",
+          "bets": 2799,
+          "profit": 4081.2,
+          "pot_pct": 145.8092175777063,
+          "hit_rate": 0.4565916398713826
+        },
+        {
+          "track": "Gosford",
+          "bets": 7613,
+          "profit": 11083.58,
+          "pot_pct": 145.58754761592013,
+          "hit_rate": 0.5301458032313149
+        },
+        {
+          "track": "Tumut",
+          "bets": 569,
+          "profit": 825.92,
+          "pot_pct": 145.15289982425307,
+          "hit_rate": 0.6291739894551845
+        },
+        {
+          "track": "Gore",
+          "bets": 1804,
+          "profit": 2600.88,
+          "pot_pct": 144.1729490022173,
+          "hit_rate": 0.5049889135254989
+        },
+        {
+          "track": "Swan Hill",
+          "bets": 3780,
+          "profit": 5448.72,
+          "pot_pct": 144.14603174603175,
+          "hit_rate": 0.5378306878306879
+        },
+        {
+          "track": "Avoca",
+          "bets": 710,
+          "profit": 1022.28,
+          "pot_pct": 143.9830985915493,
+          "hit_rate": 0.5746478873239437
+        },
+        {
+          "track": "Wycheproof",
+          "bets": 206,
+          "profit": 295.84,
+          "pot_pct": 143.6116504854369,
+          "hit_rate": 0.5631067961165048
+        },
+        {
+          "track": "Ewan",
+          "bets": 352,
+          "profit": 503.84000000000003,
+          "pot_pct": 143.13636363636363,
+          "hit_rate": 0.5795454545454546
+        },
+        {
+          "track": "Sale",
+          "bets": 7013,
+          "profit": 10029.43,
+          "pot_pct": 143.01197775559675,
+          "hit_rate": 0.5739341223442179
+        },
+        {
+          "track": "Narrogin",
+          "bets": 2332,
+          "profit": 3333.14,
+          "pot_pct": 142.93053173241853,
+          "hit_rate": 0.4695540308747856
+        },
+        {
+          "track": "Awapuni",
+          "bets": 5659,
+          "profit": 8074.0,
+          "pot_pct": 142.67538434352358,
+          "hit_rate": 0.5025622901572716
+        },
+        {
+          "track": "Narrandera",
+          "bets": 1405,
+          "profit": 2000.2,
+          "pot_pct": 142.36298932384344,
+          "hit_rate": 0.4441281138790036
+        },
+        {
+          "track": "Ruakaka",
+          "bets": 4037,
+          "profit": 5735.76,
+          "pot_pct": 142.0797621996532,
+          "hit_rate": 0.46346296755016103
+        },
+        {
+          "track": "Orange",
+          "bets": 3705,
+          "profit": 5263.45,
+          "pot_pct": 142.0634278002699,
+          "hit_rate": 0.5546558704453441
+        },
+        {
+          "track": "Bairnsdale",
+          "bets": 2318,
+          "profit": 3279.16,
+          "pot_pct": 141.46505608283002,
+          "hit_rate": 0.5332182916307161
+        },
+        {
+          "track": "Wanganui",
+          "bets": 5335,
+          "profit": 7537.3,
+          "pot_pct": 141.28022492970948,
+          "hit_rate": 0.4802249297094658
+        },
+        {
+          "track": "Donald",
+          "bets": 2022,
+          "profit": 2852.98,
+          "pot_pct": 141.09693372898118,
+          "hit_rate": 0.5885262116716122
+        },
+        {
+          "track": "Ellerslie",
+          "bets": 6416,
+          "profit": 9029.8,
+          "pot_pct": 140.73877805486285,
+          "hit_rate": 0.4479426433915212
+        },
+        {
+          "track": "Echuca",
+          "bets": 4467,
+          "profit": 6278.04,
+          "pot_pct": 140.54264607118873,
+          "hit_rate": 0.5173494515334677
+        },
+        {
+          "track": "Mount Barker",
+          "bets": 1167,
+          "profit": 1638.72,
+          "pot_pct": 140.42159383033416,
+          "hit_rate": 0.5244215938303342
+        },
+        {
+          "track": "Kyneton",
+          "bets": 3990,
+          "profit": 5575.4,
+          "pot_pct": 139.73433583959897,
+          "hit_rate": 0.5380952380952381
+        },
+        {
+          "track": "Muswellbrook",
+          "bets": 6930,
+          "profit": 9674.42,
+          "pot_pct": 139.60202020202019,
+          "hit_rate": 0.5132756132756133
+        },
+        {
+          "track": "Coffs Harbour",
+          "bets": 5050,
+          "profit": 7033.38,
+          "pot_pct": 139.2748514851485,
+          "hit_rate": 0.49227722772277227
+        },
+        {
+          "track": "Quirindi",
+          "bets": 1878,
+          "profit": 2609.54,
+          "pot_pct": 138.9531416400426,
+          "hit_rate": 0.5878594249201278
+        },
+        {
+          "track": "Wellington",
+          "bets": 2711,
+          "profit": 3759.76,
+          "pot_pct": 138.68535595721136,
+          "hit_rate": 0.5193655477683512
+        },
+        {
+          "track": "Wodonga",
+          "bets": 3380,
+          "profit": 4667.2,
+          "pot_pct": 138.08284023668637,
+          "hit_rate": 0.5346153846153846
+        },
+        {
+          "track": "Tatura",
+          "bets": 1352,
+          "profit": 1860.8,
+          "pot_pct": 137.63313609467457,
+          "hit_rate": 0.5443786982248521
+        },
+        {
+          "track": "Leeton",
+          "bets": 576,
+          "profit": 792.24,
+          "pot_pct": 137.54166666666669,
+          "hit_rate": 0.5416666666666666
+        },
+        {
+          "track": "Taree",
+          "bets": 7794,
+          "profit": 10681.7,
+          "pot_pct": 137.05029509879395,
+          "hit_rate": 0.5173210161662818
+        },
+        {
+          "track": "Queanbeyan",
+          "bets": 4364,
+          "profit": 5980.46,
+          "pot_pct": 137.04078826764436,
+          "hit_rate": 0.5439963336388635
+        },
+        {
+          "track": "Griffith",
+          "bets": 334,
+          "profit": 457.52,
+          "pot_pct": 136.98203592814372,
+          "hit_rate": 0.5029940119760479
+        },
+        {
+          "track": "Murtoa",
+          "bets": 806,
+          "profit": 1089.64,
+          "pot_pct": 135.19106699751862,
+          "hit_rate": 0.4987593052109181
+        },
+        {
+          "track": "Scone",
+          "bets": 8578,
+          "profit": 11577.6,
+          "pot_pct": 134.96852413149915,
+          "hit_rate": 0.5255304266728841
+        },
+        {
+          "track": "Gawler",
+          "bets": 5434,
+          "profit": 7312.45,
+          "pot_pct": 134.56845785793152,
+          "hit_rate": 0.5222672064777328
+        },
+        {
+          "track": "Terang",
+          "bets": 2230,
+          "profit": 2998.7400000000002,
+          "pot_pct": 134.47264573991032,
+          "hit_rate": 0.5452914798206278
+        },
+        {
+          "track": "Riccarton Park",
+          "bets": 14287,
+          "profit": 19114.66,
+          "pot_pct": 133.79057884790367,
+          "hit_rate": 0.4477497025267726
+        },
+        {
+          "track": "Kempsey",
+          "bets": 2109,
+          "profit": 2805.52,
+          "pot_pct": 133.02607871028926,
+          "hit_rate": 0.5519203413940256
+        },
+        {
+          "track": "Collie",
+          "bets": 236,
+          "profit": 308.8,
+          "pot_pct": 130.84745762711867,
+          "hit_rate": 0.4661016949152542
+        },
+        {
+          "track": "Barcaldine",
+          "bets": 749,
+          "profit": 979.68,
+          "pot_pct": 130.79839786381845,
+          "hit_rate": 0.514018691588785
+        },
+        {
+          "track": "Murwillumbah",
+          "bets": 2828,
+          "profit": 3695.52,
+          "pot_pct": 130.67609618104666,
+          "hit_rate": 0.5767326732673267
+        },
+        {
+          "track": "Bunbury",
+          "bets": 7880,
+          "profit": 10249.78,
+          "pot_pct": 130.07335025380712,
+          "hit_rate": 0.5270304568527919
+        },
+        {
+          "track": "Rockhampton",
+          "bets": 13446,
+          "profit": 17447.43,
+          "pot_pct": 129.75925925925927,
+          "hit_rate": 0.5310129406514948
+        },
+        {
+          "track": "Horsham",
+          "bets": 2110,
+          "profit": 2722.84,
+          "pot_pct": 129.0445497630332,
+          "hit_rate": 0.5260663507109005
+        },
+        {
+          "track": "Narromine",
+          "bets": 1840,
+          "profit": 2371.86,
+          "pot_pct": 128.90543478260867,
+          "hit_rate": 0.5157608695652174
+        },
+        {
+          "track": "Bordertown",
+          "bets": 2521,
+          "profit": 3244.46,
+          "pot_pct": 128.69734232447442,
+          "hit_rate": 0.4875049583498612
+        },
+        {
+          "track": "Mount Gambier",
+          "bets": 4447,
+          "profit": 5722.42,
+          "pot_pct": 128.68045873622665,
+          "hit_rate": 0.5122554531144592
+        },
+        {
+          "track": "Yarra Valley",
+          "bets": 2888,
+          "profit": 3713.5,
+          "pot_pct": 128.58379501385042,
+          "hit_rate": 0.5720221606648199
+        },
+        {
+          "track": "Port Lincoln",
+          "bets": 4439,
+          "profit": 5692.08,
+          "pot_pct": 128.2288803784636,
+          "hit_rate": 0.49132687542239245
+        },
+        {
+          "track": "Stony Creek",
+          "bets": 1441,
+          "profit": 1840.8799999999999,
+          "pot_pct": 127.75017349063151,
+          "hit_rate": 0.5454545454545454
+        },
+        {
+          "track": "Bathurst",
+          "bets": 3947,
+          "profit": 5035.82,
+          "pot_pct": 127.58601469470483,
+          "hit_rate": 0.6098302508234101
+        },
+        {
+          "track": "Innisfail",
+          "bets": 834,
+          "profit": 1056.92,
+          "pot_pct": 126.72901678657075,
+          "hit_rate": 0.6211031175059952
+        },
+        {
+          "track": "Hawera",
+          "bets": 2751,
+          "profit": 3475.72,
+          "pot_pct": 126.34387495456197,
+          "hit_rate": 0.4154852780806979
+        },
+        {
+          "track": "Gundagai",
+          "bets": 2020,
+          "profit": 2550.1,
+          "pot_pct": 126.24257425742573,
+          "hit_rate": 0.504950495049505
+        },
+        {
+          "track": "Mount Isa",
+          "bets": 1501,
+          "profit": 1894.5,
+          "pot_pct": 126.21585609593605,
+          "hit_rate": 0.6608927381745503
+        },
+        {
+          "track": "Port Macquarie",
+          "bets": 4984,
+          "profit": 6275.2,
+          "pot_pct": 125.90690208667736,
+          "hit_rate": 0.5220706260032103
+        },
+        {
+          "track": "Hawkesbury",
+          "bets": 11060,
+          "profit": 13816.6,
+          "pot_pct": 124.92405063291142,
+          "hit_rate": 0.5412296564195298
+        },
+        {
+          "track": "Wangaratta",
+          "bets": 3673,
+          "profit": 4577.5,
+          "pot_pct": 124.62564661040021,
+          "hit_rate": 0.5156547781105364
+        },
+        {
+          "track": "Wingatui",
+          "bets": 4969,
+          "profit": 6151.98,
+          "pot_pct": 123.80720466894748,
+          "hit_rate": 0.40631917890923724
+        },
+        {
+          "track": "Caulfield",
+          "bets": 12311,
+          "profit": 15223.58,
+          "pot_pct": 123.6583543172772,
+          "hit_rate": 0.4664121517342214
+        },
+        {
+          "track": "Newcastle",
+          "bets": 19065,
+          "profit": 23388.95,
+          "pot_pct": 122.68004196170995,
+          "hit_rate": 0.5132966168371361
+        },
+        {
+          "track": "York",
+          "bets": 1717,
+          "profit": 2105.48,
+          "pot_pct": 122.62550960978452,
+          "hit_rate": 0.512521840419336
+        },
+        {
+          "track": "Mornington",
+          "bets": 7490,
+          "profit": 9173.85,
+          "pot_pct": 122.48130841121497,
+          "hit_rate": 0.5456608811748999
+        },
+        {
+          "track": "Wagga",
+          "bets": 10644,
+          "profit": 12939.27,
+          "pot_pct": 121.5639797068771,
+          "hit_rate": 0.46044720030063885
+        },
+        {
+          "track": "Albury",
+          "bets": 6804,
+          "profit": 8196.44,
+          "pot_pct": 120.46502057613166,
+          "hit_rate": 0.5163139329805997
+        },
+        {
+          "track": "Benalla",
+          "bets": 4102,
+          "profit": 4937.9,
+          "pot_pct": 120.37786445636274,
+          "hit_rate": 0.5394929302779132
+        },
+        {
+          "track": "Kalgoorlie",
+          "bets": 7700,
+          "profit": 9184.43,
+          "pot_pct": 119.27831168831169,
+          "hit_rate": 0.5363636363636364
+        },
+        {
+          "track": "Balaklava",
+          "bets": 4544,
+          "profit": 5407.08,
+          "pot_pct": 118.99383802816901,
+          "hit_rate": 0.5110035211267606
+        },
+        {
+          "track": "Beaudesert",
+          "bets": 4024,
+          "profit": 4768.72,
+          "pot_pct": 118.506958250497,
+          "hit_rate": 0.4783797216699801
+        },
+        {
+          "track": "Trentham",
+          "bets": 8318,
+          "profit": 9856.539999999999,
+          "pot_pct": 118.49651358499638,
+          "hit_rate": 0.42041356095215193
+        },
+        {
+          "track": "Albany",
+          "bets": 5949,
+          "profit": 7044.59,
+          "pot_pct": 118.41637249957977,
+          "hit_rate": 0.5031097663472852
+        },
+        {
+          "track": "Pinjarra",
+          "bets": 11730,
+          "profit": 13833.76,
+          "pot_pct": 117.93486786018757,
+          "hit_rate": 0.5034100596760444
+        },
+        {
+          "track": "Nowra",
+          "bets": 4137,
+          "profit": 4875.26,
+          "pot_pct": 117.84529852550159,
+          "hit_rate": 0.5723954556441866
+        },
+        {
+          "track": "Toowoomba",
+          "bets": 15687,
+          "profit": 18437.25,
+          "pot_pct": 117.53203289347867,
+          "hit_rate": 0.5087652196085931
+        },
+        {
+          "track": "Canterbury",
+          "bets": 9226,
+          "profit": 10821.039999999999,
+          "pot_pct": 117.28853240841102,
+          "hit_rate": 0.5119228267938435
+        },
+        {
+          "track": "Armidale",
+          "bets": 2957,
+          "profit": 3459.04,
+          "pot_pct": 116.97801826175179,
+          "hit_rate": 0.5147108555968888
+        },
+        {
+          "track": "Cranbourne",
+          "bets": 9530,
+          "profit": 11108.29,
+          "pot_pct": 116.56128016789089,
+          "hit_rate": 0.5499475341028331
+        },
+        {
+          "track": "Moree",
+          "bets": 1931,
+          "profit": 2243.4,
+          "pot_pct": 116.17814603832213,
+          "hit_rate": 0.5784567581563956
+        },
+        {
+          "track": "Oakbank",
+          "bets": 2097,
+          "profit": 2434.14,
+          "pot_pct": 116.07725321888414,
+          "hit_rate": 0.45779685264663805
+        },
+        {
+          "track": "Canberra",
+          "bets": 10259,
+          "profit": 11855.44,
+          "pot_pct": 115.56136075640904,
+          "hit_rate": 0.5194463397992007
+        },
+        {
+          "track": "Edenhope",
+          "bets": 498,
+          "profit": 561.84,
+          "pot_pct": 112.81927710843374,
+          "hit_rate": 0.5542168674698795
+        },
+        {
+          "track": "Nhill",
+          "bets": 250,
+          "profit": 282.0,
+          "pot_pct": 112.79999999999998,
+          "hit_rate": 0.64
+        },
+        {
+          "track": "Randwick",
+          "bets": 21946,
+          "profit": 24664.08,
+          "pot_pct": 112.38530939578968,
+          "hit_rate": 0.44067255991980314
+        },
+        {
+          "track": "Avondale",
+          "bets": 979,
+          "profit": 1094.3999999999999,
+          "pot_pct": 111.78753830439223,
+          "hit_rate": 0.4351378958120531
+        },
+        {
+          "track": "Roma",
+          "bets": 592,
+          "profit": 661.76,
+          "pot_pct": 111.7837837837838,
+          "hit_rate": 0.6587837837837838
+        },
+        {
+          "track": "Eagle Farm",
+          "bets": 17986,
+          "profit": 20095.06,
+          "pot_pct": 111.72612031580115,
+          "hit_rate": 0.4678638941398866
+        },
+        {
+          "track": "Hobart",
+          "bets": 11303,
+          "profit": 12598.4,
+          "pot_pct": 111.46067415730336,
+          "hit_rate": 0.48783508802972664
+        },
+        {
+          "track": "Devonport",
+          "bets": 7261,
+          "profit": 8076.86,
+          "pot_pct": 111.23619336179588,
+          "hit_rate": 0.494009089657072
+        },
+        {
+          "track": "Kembla Grange",
+          "bets": 13765,
+          "profit": 15240.26,
+          "pot_pct": 110.71747184889212,
+          "hit_rate": 0.5054849255357792
+        },
+        {
+          "track": "Broome",
+          "bets": 3657,
+          "profit": 4047.14,
+          "pot_pct": 110.66830735575608,
+          "hit_rate": 0.4703308722996992
+        },
+        {
+          "track": "Geraldton",
+          "bets": 6943,
+          "profit": 7676.86,
+          "pot_pct": 110.56978251476308,
+          "hit_rate": 0.5069854529742186
+        },
+        {
+          "track": "Hastings",
+          "bets": 3882,
+          "profit": 4239.24,
+          "pot_pct": 109.20247295208654,
+          "hit_rate": 0.4371458011334364
+        },
+        {
+          "track": "Tamworth",
+          "bets": 8102,
+          "profit": 8814.9,
+          "pot_pct": 108.79906196000991,
+          "hit_rate": 0.48778079486546533
+        },
+        {
+          "track": "Sapphire Coast",
+          "bets": 4227,
+          "profit": 4575.95,
+          "pot_pct": 108.25526378045896,
+          "hit_rate": 0.5308729595457772
+        },
+        {
+          "track": "Morphettville",
+          "bets": 21656,
+          "profit": 23315.46,
+          "pot_pct": 107.66281861839677,
+          "hit_rate": 0.4496213520502401
+        },
+        {
+          "track": "Cairns",
+          "bets": 8588,
+          "profit": 9201.75,
+          "pot_pct": 107.14659990684676,
+          "hit_rate": 0.4878900791802515
+        },
+        {
+          "track": "Sandown",
+          "bets": 17394,
+          "profit": 18629.93,
+          "pot_pct": 107.10549614809706,
+          "hit_rate": 0.47292169713694376
+        },
+        {
+          "track": "Derby",
+          "bets": 288,
+          "profit": 306.96,
+          "pot_pct": 106.58333333333334,
+          "hit_rate": 0.5833333333333334
+        },
+        {
+          "track": "Newman",
+          "bets": 312,
+          "profit": 331.2,
+          "pot_pct": 106.15384615384617,
+          "hit_rate": 0.5384615384615384
+        },
+        {
+          "track": "Alice Springs",
+          "bets": 11812,
+          "profit": 12530.24,
+          "pot_pct": 106.08059600406365,
+          "hit_rate": 0.4903487978327125
+        },
+        {
+          "track": "Doomben",
+          "bets": 19638,
+          "profit": 20806.99,
+          "pot_pct": 105.95269375700171,
+          "hit_rate": 0.466289846216519
+        },
+        {
+          "track": "Mackay",
+          "bets": 9413,
+          "profit": 9850.82,
+          "pot_pct": 104.65122702645277,
+          "hit_rate": 0.5405290555614576
+        },
+        {
+          "track": "Wyong",
+          "bets": 10346,
+          "profit": 10786.89,
+          "pot_pct": 104.26145370191378,
+          "hit_rate": 0.5168180939493524
+        },
+        {
+          "track": "Hamilton",
+          "bets": 2882,
+          "profit": 2997.88,
+          "pot_pct": 104.02081887578072,
+          "hit_rate": 0.48056904927133937
+        },
+        {
+          "track": "Mount Magnet",
+          "bets": 328,
+          "profit": 339.92,
+          "pot_pct": 103.63414634146342,
+          "hit_rate": 0.34146341463414637
+        },
+        {
+          "track": "Walcha",
+          "bets": 566,
+          "profit": 586.0,
+          "pot_pct": 103.53356890459364,
+          "hit_rate": 0.4134275618374558
+        },
+        {
+          "track": "Lismore",
+          "bets": 2891,
+          "profit": 2953.18,
+          "pot_pct": 102.1508128675199,
+          "hit_rate": 0.4922172258734002
+        },
+        {
+          "track": "Ipswich",
+          "bets": 18883,
+          "profit": 19214.57,
+          "pot_pct": 101.75591802150082,
+          "hit_rate": 0.4810146692792459
+        },
+        {
+          "track": "Roebourne",
+          "bets": 1136,
+          "profit": 1148.54,
+          "pot_pct": 101.10387323943661,
+          "hit_rate": 0.5017605633802817
+        },
+        {
+          "track": "Coleraine",
+          "bets": 612,
+          "profit": 617.32,
+          "pot_pct": 100.86928104575162,
+          "hit_rate": 0.5032679738562091
+        },
+        {
+          "track": "Moonee Valley",
+          "bets": 11514,
+          "profit": 11586.99,
+          "pot_pct": 100.63392391870767,
+          "hit_rate": 0.4722945978808407
+        },
+        {
+          "track": "Port Hedland",
+          "bets": 2162,
+          "profit": 2170.5,
+          "pot_pct": 100.3931544865865,
+          "hit_rate": 0.5120259019426457
+        },
+        {
+          "track": "Toodyay",
+          "bets": 246,
+          "profit": 243.4,
+          "pot_pct": 98.94308943089433,
+          "hit_rate": 0.5772357723577236
+        },
+        {
+          "track": "Belmont",
+          "bets": 21126,
+          "profit": 20818.56,
+          "pot_pct": 98.54473161033798,
+          "hit_rate": 0.4647827321783584
+        },
+        {
+          "track": "Dubbo",
+          "bets": 7070,
+          "profit": 6946.38,
+          "pot_pct": 98.25148514851485,
+          "hit_rate": 0.4801980198019802
+        },
+        {
+          "track": "Warwick Farm",
+          "bets": 8581,
+          "profit": 8424.6,
+          "pot_pct": 98.1773686050577,
+          "hit_rate": 0.4590374082274793
+        },
+        {
+          "track": "Ascot",
+          "bets": 21678,
+          "profit": 21166.510000000002,
+          "pot_pct": 97.64051111726175,
+          "hit_rate": 0.4485653658086539
+        },
+        {
+          "track": "Seymour",
+          "bets": 4943,
+          "profit": 4811.37,
+          "pot_pct": 97.33704228201498,
+          "hit_rate": 0.4557960752579405
+        },
+        {
+          "track": "Yeppoon",
+          "bets": 574,
+          "profit": 554.72,
+          "pot_pct": 96.6411149825784,
+          "hit_rate": 0.4912891986062718
+        },
+        {
+          "track": "Towong",
+          "bets": 379,
+          "profit": 365.56,
+          "pot_pct": 96.45382585751979,
+          "hit_rate": 0.5488126649076517
+        },
+        {
+          "track": "Clare",
+          "bets": 818,
+          "profit": 787.84,
+          "pot_pct": 96.31295843520782,
+          "hit_rate": 0.5819070904645477
+        },
+        {
+          "track": "Northam",
+          "bets": 7489,
+          "profit": 7135.97,
+          "pot_pct": 95.28601949525972,
+          "hit_rate": 0.4841767926291895
+        },
+        {
+          "track": "Gunnedah",
+          "bets": 2665,
+          "profit": 2514.23,
+          "pot_pct": 94.34258911819887,
+          "hit_rate": 0.4926829268292683
+        },
+        {
+          "track": "Rosehill",
+          "bets": 14278,
+          "profit": 13412.73,
+          "pot_pct": 93.93983751225662,
+          "hit_rate": 0.4293318391931643
+        },
+        {
+          "track": "Laverton",
+          "bets": 244,
+          "profit": 228.08,
+          "pot_pct": 93.47540983606557,
+          "hit_rate": 0.4180327868852459
+        },
+        {
+          "track": "Junction",
+          "bets": 282,
+          "profit": 260.88,
+          "pot_pct": 92.51063829787233,
+          "hit_rate": 0.40425531914893614
+        },
+        {
+          "track": "Moora",
+          "bets": 204,
+          "profit": 188.4,
+          "pot_pct": 92.3529411764706,
+          "hit_rate": 0.5882352941176471
+        },
+        {
+          "track": "Mudgee",
+          "bets": 2375,
+          "profit": 2125.4,
+          "pot_pct": 89.49052631578945,
+          "hit_rate": 0.42736842105263156
+        },
+        {
+          "track": "Coonamble",
+          "bets": 1417,
+          "profit": 1251.44,
+          "pot_pct": 88.31616090331687,
+          "hit_rate": 0.48694424841213835
+        },
+        {
+          "track": "Kununurra",
+          "bets": 800,
+          "profit": 705.0,
+          "pot_pct": 88.125,
+          "hit_rate": 0.465
+        },
+        {
+          "track": "Carnarvon",
+          "bets": 3302,
+          "profit": 2805.2,
+          "pot_pct": 84.95457298606904,
+          "hit_rate": 0.4760751059963658
+        },
+        {
+          "track": "Inverell",
+          "bets": 1497,
+          "profit": 1151.28,
+          "pot_pct": 76.90581162324649,
+          "hit_rate": 0.46893787575150303
+        },
+        {
+          "track": "Pingrup",
+          "bets": 366,
+          "profit": 280.56,
+          "pot_pct": 76.65573770491804,
+          "hit_rate": 0.4918032786885246
+        },
+        {
+          "track": "Glen Innes",
+          "bets": 354,
+          "profit": 267.84000000000003,
+          "pot_pct": 75.66101694915255,
+          "hit_rate": 0.4406779661016949
+        },
+        {
+          "track": "Parkes",
+          "bets": 887,
+          "profit": 627.08,
+          "pot_pct": 70.69673055242389,
+          "hit_rate": 0.48027057497181513
+        },
+        {
+          "track": "Kurow",
+          "bets": 348,
+          "profit": 229.20000000000002,
+          "pot_pct": 65.86206896551725,
+          "hit_rate": 0.41379310344827586
+        },
+        {
+          "track": "Omoto",
+          "bets": 462,
+          "profit": 294.96,
+          "pot_pct": 63.844155844155836,
+          "hit_rate": 0.4155844155844156
+        },
+        {
+          "track": "Great Western",
+          "bets": 304,
+          "profit": 193.84,
+          "pot_pct": 63.76315789473686,
+          "hit_rate": 0.5394736842105263
+        },
+        {
+          "track": "Home Hill",
+          "bets": 973,
+          "profit": 545.28,
+          "pot_pct": 56.04110996916752,
+          "hit_rate": 0.44809866392600206
+        },
+        {
+          "track": "Casino",
+          "bets": 654,
+          "profit": 345.36,
+          "pot_pct": 52.80733944954129,
+          "hit_rate": 0.30275229357798167
+        },
+        {
+          "track": "Marble Bar",
+          "bets": 336,
+          "profit": 175.8,
+          "pot_pct": 52.32142857142858,
+          "hit_rate": 0.44642857142857145
+        },
+        {
+          "track": "Tennant Creek",
+          "bets": 336,
+          "profit": 170.88000000000002,
+          "pot_pct": 50.857142857142854,
+          "hit_rate": 0.35714285714285715
+        },
+        {
+          "track": "Cloncurry",
+          "bets": 318,
+          "profit": 130.07999999999998,
+          "pot_pct": 40.90566037735849,
+          "hit_rate": 0.4339622641509434
+        },
+        {
+          "track": "Bowen",
+          "bets": 858,
+          "profit": 341.64,
+          "pot_pct": 39.81818181818182,
+          "hit_rate": 0.46853146853146854
+        },
+        {
+          "track": "Nanango",
+          "bets": 146,
+          "profit": 47.08,
+          "pot_pct": 32.246575342465746,
+          "hit_rate": 0.3424657534246575
+        },
+        {
+          "track": "Mingenew",
+          "bets": 92,
+          "profit": 27.599999999999994,
+          "pot_pct": 29.999999999999993,
+          "hit_rate": 0.6086956521739131
+        },
+        {
+          "track": "Halidon",
+          "bets": 108,
+          "profit": -2.3999999999999915,
+          "pot_pct": -2.2222222222222143,
+          "hit_rate": 0.1111111111111111
+        }
+      ],
+      "contexts": [
+        {
+          "track": "Kilmore",
+          "distance_band": "2001-2400",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 72,
+          "profit": 5198.76,
+          "pot_pct": 7220.499999999998
+        },
+        {
+          "track": "Corowa",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "CL2",
+          "bets": 34,
+          "profit": 1106.0,
+          "pot_pct": 3252.9411764705883
+        },
+        {
+          "track": "Kangaroo Island",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 102,
+          "profit": 2931.36,
+          "pot_pct": 2873.8823529411766
+        },
+        {
+          "track": "Ashburton",
+          "distance_band": "2001-2400",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 426,
+          "profit": 11911.2,
+          "pot_pct": 2796.0563380281687
+        },
+        {
+          "track": "Phar Lap",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 170,
+          "profit": 4723.84,
+          "pot_pct": 2778.729411764706
+        },
+        {
+          "track": "Darwin",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 340,
+          "profit": 9160.16,
+          "pot_pct": 2694.1647058823532
+        },
+        {
+          "track": "Rotorua",
+          "distance_band": "1601-2000",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 138,
+          "profit": 3656.16,
+          "pot_pct": 2649.391304347826
+        },
+        {
+          "track": "Flemington",
+          "distance_band": "2400+",
+          "racing_type": "Thoroughbred",
+          "race_type": "Grp1",
+          "bets": 126,
+          "profit": 3325.2000000000003,
+          "pot_pct": 2639.0476190476197
+        },
+        {
+          "track": "Sunshine Coast",
+          "distance_band": "1601-2000",
+          "racing_type": "Thoroughbred",
+          "race_type": "CL3",
+          "bets": 222,
+          "profit": 5704.88,
+          "pot_pct": 2569.7657657657655
+        },
+        {
+          "track": "Sunshine Coast",
+          "distance_band": "1601-2000",
+          "racing_type": "Thoroughbred",
+          "race_type": "3yo",
+          "bets": 36,
+          "profit": 904.8000000000001,
+          "pot_pct": 2513.333333333334
+        },
+        {
+          "track": "Gatton",
+          "distance_band": "1601-2000",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 210,
+          "profit": 5119.32,
+          "pot_pct": 2437.7714285714283
+        },
+        {
+          "track": "Geelong",
+          "distance_band": "2001-2400",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 246,
+          "profit": 3742.7999999999997,
+          "pot_pct": 1521.4634146341464
+        },
+        {
+          "track": "Port Augusta",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 342,
+          "profit": 4672.8,
+          "pot_pct": 1366.315789473684
+        },
+        {
+          "track": "Eagle Farm",
+          "distance_band": "2001-2400",
+          "racing_type": "Thoroughbred",
+          "race_type": "Grp1",
+          "bets": 132,
+          "profit": 1788.0,
+          "pot_pct": 1354.5454545454545
+        },
+        {
+          "track": "Waverley",
+          "distance_band": "2400+",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 30,
+          "profit": 395.0,
+          "pot_pct": 1316.6666666666665
+        },
+        {
+          "track": "Cambridge",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 377,
+          "profit": 4789.4800000000005,
+          "pot_pct": 1270.419098143236
+        },
+        {
+          "track": "Geelong",
+          "distance_band": "2001-2400",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 250,
+          "profit": 2974.48,
+          "pot_pct": 1189.7920000000001
+        },
+        {
+          "track": "Beaudesert",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "2yo",
+          "bets": 114,
+          "profit": 1284.0,
+          "pot_pct": 1126.3157894736842
+        },
+        {
+          "track": "Kilcoy",
+          "distance_band": "2001-2400",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 36,
+          "profit": 398.4,
+          "pot_pct": 1106.666666666667
+        },
+        {
+          "track": "Grafton",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Mdn",
+          "bets": 525,
+          "profit": 5669.4,
+          "pot_pct": 1079.8857142857146
+        }
+      ]
     }
   ],
   "latest": {
     "metadata": {
-      "generated_at": "2025-10-16T02:33:44Z",
+      "generated_at": "2025-10-16T02:44:19Z",
       "experience_rows": 1064522,
       "strategies_evaluated": 24
     },

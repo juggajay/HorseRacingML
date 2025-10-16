@@ -39,6 +39,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--end-date", type=str, help="Inclusive end date (YYYY-MM-DD)")
     parser.add_argument("--strategies", type=Path, help="Path to strategy JSON config", default=None)
     parser.add_argument("--max-races", type=int, default=None, help="Limit number of races to process")
+    parser.add_argument(
+        "--pf-schema-dir",
+        type=Path,
+        default=Path("services/api/data/processed/pf_schema"),
+        help="Directory containing PF schema tables (meetings/races/runners)",
+    )
     parser.add_argument("--output-experiences", type=Path, default=Path("data/experiences"))
     parser.add_argument("--playbook-path", type=Path, default=Path("artifacts/playbook/playbook.json"))
     parser.add_argument("--min-bets", type=int, default=30, help="Minimum bets required for context insights")
@@ -52,8 +58,8 @@ def load_latest_model(model_dir: Path = MODEL_DIR) -> Booster:
     return Booster(model_file=str(models[-1]))
 
 
-def build_dataset(start: str, end: str, max_races: Optional[int]) -> pd.DataFrame:
-    df = load_pf_dataset()
+def build_dataset(start: str, end: str, max_races: Optional[int], base_dir: Path) -> pd.DataFrame:
+    df = load_pf_dataset(base_dir)
     if df is None or df.empty:
         raise SystemExit("❌ PF dataset is empty. Run the schema builder first.")
 
@@ -111,7 +117,7 @@ def read_experiences(path: Optional[Path]) -> pd.DataFrame:
 def main() -> None:
     args = parse_args()
 
-    dataset = build_dataset(args.start_date, args.end_date, args.max_races)
+    dataset = build_dataset(args.start_date, args.end_date, args.max_races, args.pf_schema_dir)
     booster = load_latest_model()
     runners = ensure_predictions(dataset, booster)
 
