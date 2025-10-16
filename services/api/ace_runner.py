@@ -269,6 +269,20 @@ def _ensure_predictions(df: pd.DataFrame, booster) -> pd.DataFrame:
         raise ValueError("No feature columns available for prediction.")
     preds = booster.predict(engineered[feature_cols])
     engineered["model_prob"] = preds
+
+    # Fix NULL win_odds by generating from pf_ai_rank or pf_ai_price if available
+    if "win_odds" in engineered.columns and engineered["win_odds"].isna().all():
+        # Try pf_ai_price first
+        if "pf_ai_price" in engineered.columns:
+            odds_from_price = pd.to_numeric(engineered["pf_ai_price"], errors="coerce").replace(0, np.nan)
+            if not odds_from_price.isna().all():
+                engineered["win_odds"] = odds_from_price
+
+        # If still null, try generating from pf_ai_rank
+        if engineered["win_odds"].isna().all() and "pf_ai_rank" in engineered.columns:
+            ranks = pd.to_numeric(engineered["pf_ai_rank"], errors="coerce")
+            engineered["win_odds"] = 2.0 + (ranks * 1.5)
+
     with np.errstate(divide="ignore", invalid="ignore"):
         engineered["implied_prob"] = 1.0 / engineered["win_odds"].replace(0, np.nan)
     return engineered
