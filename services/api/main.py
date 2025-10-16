@@ -5,6 +5,7 @@ from datetime import date
 from pathlib import Path
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -106,7 +107,18 @@ def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
     predictions = booster.predict(df_feat[feature_cols])
     df_feat["model_prob"] = predictions
-    df_feat["implied_prob"] = 1.0 / (df_feat["win_odds"] + 1e-9)
+    df_feat["win_odds"] = pd.to_numeric(df_feat.get("win_odds"), errors="coerce")
+    with np.errstate(divide="ignore", invalid="ignore"):
+        df_feat["implied_prob"] = 1.0 / df_feat["win_odds"]
+    df_feat.loc[~np.isfinite(df_feat["implied_prob"]), "implied_prob"] = np.nan
+
+    missing_implied = df_feat["implied_prob"].isna()
+    if missing_implied.any():
+        field_sizes = df_feat.groupby(["event_date", "win_market_id"])['selection_id'].transform("count")
+        uniform_probs = 1.0 / field_sizes.replace(0, 1)
+        df_feat.loc[missing_implied, "implied_prob"] = uniform_probs[missing_implied]
+        df_feat.loc[missing_implied, "win_odds"] = 1.0 / df_feat.loc[missing_implied, "implied_prob"].replace(0, np.nan)
+
     df_feat["edge"] = df_feat["model_prob"] - df_feat["implied_prob"]
     return df_feat
 

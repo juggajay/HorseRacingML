@@ -21,8 +21,34 @@ def _make_win_market_id(meeting_id: str, race_no: int) -> str:
     return f"pf_{digest}"
 
 
-def _coerce_float(series: pd.Series) -> pd.Series:
+def _coerce_float(series: pd.Series | None) -> pd.Series:
+    if series is None:
+        return pd.Series(dtype="float64")
     return pd.to_numeric(series, errors="coerce")
+
+
+def _pick_column(frame: pd.DataFrame, *candidates: str) -> Optional[pd.Series]:
+    for column in candidates:
+        if column in frame.columns:
+            return frame[column]
+    return None
+
+
+def _safe_int(value: object, default: int = 0) -> int:
+    if value is None:
+        return default
+    try:
+        if pd.isna(value):
+            return default
+    except TypeError:
+        pass
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        try:
+            return int(float(value))
+        except (TypeError, ValueError):
+            return default
 
 
 def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFrame:
@@ -58,20 +84,67 @@ def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFra
         df = form_df.copy()
         df["meeting_id"] = meeting_id
         df["event_date"] = pd.to_datetime(target_date)
-        df["track"] = df.get("track_name") or track_name or track_info
-        df["track"].fillna(track_name, inplace=True)
-        df["state_code"] = df.get("state_code") or state_code
-        df["race_no"] = _coerce_float(df.get("race_number") or df.get("race_no")).astype("Int64")
+
+        track_series = _pick_column(df, "track", "track_name")
+        if track_series is not None:
+            df["track"] = track_series.fillna(track_name).fillna(track_info)
+        else:
+            fallback_track = track_name or track_info
+            df["track"] = fallback_track if fallback_track is not None else ""
+
+        state_series = _pick_column(df, "state_code")
+        if state_series is not None:
+            df["state_code"] = state_series.fillna(state_code)
+        else:
+            df["state_code"] = state_code
+
+        race_no_series = _pick_column(df, "race_number", "race_no")
+        if race_no_series is not None:
+            df["race_no"] = _coerce_float(race_no_series).astype("Int64", copy=False)
+        else:
+            df["race_no"] = pd.Series(pd.NA, index=df.index, dtype="Int64")
+
+        if df["race_no"].isna().all() and "race_id" in df.columns:
+            race_times = pd.to_datetime(df.get("race_time"), errors="coerce") if "race_time" in df.columns else None
+            race_lookup = pd.DataFrame({
+                "race_id": df["race_id"],
+                "race_time": race_times,
+            }).dropna(subset=["race_id"]).drop_duplicates(subset=["race_id"])
+            if "race_time" in race_lookup.columns:
+                race_lookup = race_lookup.sort_values("race_time", na_position="last")
+            mapping = {rid: idx + 1 for idx, rid in enumerate(race_lookup["race_id"].astype(str))}
+            df["race_no"] = df["race_id"].astype(str).map(mapping).astype("Int64")
+
         df["win_market_id"] = df.apply(
-            lambda row: _make_win_market_id(meeting_id, int(row.get("race_no") or 0)), axis=1
+            lambda row: _make_win_market_id(meeting_id, _safe_int(row.get("race_no"))), axis=1
         )
 
-        df["selection_name"] = df.get("horse_name")
-        df["tab_number"] = _coerce_float(df.get("tab_no") or df.get("tab_number")).astype("Int64")
+        selection_name_series = _pick_column(df, "horse_name", "runnerName", "runner_name")
+        if selection_name_series is not None:
+            df["selection_name"] = selection_name_series
+        else:
+            df["selection_name"] = df.index.astype(str)
+
+        tab_series = _pick_column(df, "tab_no", "tab_number")
+        if tab_series is not None:
+            df["tab_number"] = _coerce_float(tab_series).astype("Int64", copy=False)
+        else:
+            df["tab_number"] = pd.Series(pd.NA, index=df.index, dtype="Int64")
+
+        runner_ids = _pick_column(df, "runner_id")
+        if runner_ids is None:
+            runner_ids = pd.Series([None] * len(df), index=df.index)
+        else:
+            runner_ids = runner_ids.copy()
+
+        horse_names = _pick_column(df, "horse_name")
+        if horse_names is None:
+            horse_names = pd.Series([None] * len(df), index=df.index)
+
+        index_fallback = pd.Series(df.index.astype(str), index=df.index)
         df["selection_id"] = (
-            df.get("runner_id")
-            .fillna(df.get("horse_name"))
-            .fillna(df.index.astype(str))
+            runner_ids.fillna(horse_names)
+            .fillna(index_fallback)
             .apply(lambda val: hashlib.sha1(str(val).encode("utf-8")).hexdigest()[:16])
         )
 
@@ -92,13 +165,14 @@ def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFra
             "win_inplay_max_price_taken",
             "win_inplay_min_price_taken",
             "value_pct",
-            "win_result",
             "place_result",
         ]:
             if column not in df.columns:
                 df[column] = np.nan
         if "win_result" in df.columns:
-            df["win_result"].fillna("UNKNOWN", inplace=True)
+            df["win_result"] = df["win_result"].astype("string").fillna("UNKNOWN")
+        else:
+            df["win_result"] = "UNKNOWN"
 
         df["track_name_norm"] = df["track"].astype(str).str.lower()
         df["horse_name_norm"] = df["selection_name"].astype(str).str.lower()

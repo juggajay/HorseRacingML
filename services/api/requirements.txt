@@ -6,4 +6,4 @@ fastapi
 uvicorn
 python-dotenv
 requests
-requests
+pyarrow
