@@ -159,6 +159,11 @@ export default function Dashboard() {
 
   const edgeThreshold = (margin - 1) * 100;
 
+  const dateRangeHint = 'Available PF window: Jul 18, 2025 → Sep 30, 2025.';
+  const noSelectionsMessage = data?.message
+    ? `${data.message} ${dateRangeHint}`
+    : `No selections match the current filters. ${dateRangeHint} Try lowering the margin threshold or choosing a different track.`;
+
   const handleApplyStrategyMargin = () => {
     if (recommendedMargin) {
       const sliderPercent = Math.max(0, Math.min((recommendedMargin - 1) * 100, 20));
@@ -430,9 +435,7 @@ export default function Dashboard() {
             )}
 
             {!isLoading && !error && groupedRaces.length === 0 && (
-              <div className={styles.emptyBox}>
-                No selections match the current filters. Try lowering the margin threshold or choosing a different track.
-              </div>
+              <div className={styles.emptyBox}>{noSelectionsMessage}</div>
             )}
 
             {!isLoading && !error && groupedRaces.length > 0 && (
@@ -453,7 +456,7 @@ export default function Dashboard() {
 
           <section className={styles.tableSection}>
             <h3>Detailed Selections</h3>
-            <SelectionTable selections={filteredSelections} />
+            <SelectionTable selections={filteredSelections} emptyMessage={noSelectionsMessage} />
             <div className={styles.tableFootnote}>
               Showing {filteredSelections.length.toLocaleString()} runners filtered by current settings. Average edge{' '}
               {(avgEdge * 100).toFixed(1)}% • Average odds ${avgOdds.toFixed(2)}

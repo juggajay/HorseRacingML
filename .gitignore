@@ -42,6 +42,7 @@ artifacts/*.csv
 *.csv.gz
 *.zip
 archive.zip
+services/api/data/live_cache/
 
 # Keep structure but ignore large files
 !data/.gitkeep

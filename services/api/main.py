@@ -16,6 +16,11 @@ try:
 except ImportError:  # Fallback for environments running as top-level module
     from pf_schema_loader import load_pf_dataset
 
+try:
+    from .pf_live_loader import load_live_pf_day
+except ImportError:
+    from pf_live_loader import load_live_pf_day
+
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 MODEL_DIR = Path("artifacts/models")
 PLAYBOOK_PATH = Path("artifacts/playbook/playbook.json")
@@ -78,7 +83,12 @@ def _load_dataset(target_date: date) -> pd.DataFrame:
     mask = df["event_date"].dt.date == target_date
     subset = df.loc[mask]
     if subset.empty:
-        raise HTTPException(status_code=404, detail=f"No runners found on {target_date}")
+        live_df = load_live_pf_day(target_date)
+        if live_df is None or live_df.empty:
+            raise HTTPException(status_code=404, detail=f"No runners found on {target_date}")
+        live_df = live_df.copy()
+        live_df["event_date"] = pd.to_datetime(live_df["event_date"], errors="coerce")
+        return live_df
     return subset
 
 

@@ -3,11 +3,12 @@ import styles from './SelectionTable.module.css';
 
 interface Props {
   selections: Runner[];
+  emptyMessage?: string;
 }
 
-export const SelectionTable: React.FC<Props> = ({ selections }) => {
+export const SelectionTable: React.FC<Props> = ({ selections, emptyMessage }) => {
   if (!selections.length) {
-    return <p className={styles.empty}>No selections at the current settings.</p>;
+    return <p className={styles.empty}>{emptyMessage ?? 'No selections at the current settings.'}</p>;
   }
 
   return (

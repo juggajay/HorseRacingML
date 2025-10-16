@@ -21,9 +21,11 @@ export interface SelectionResponse {
   selections: Runner[];
   total?: number;
   limited?: boolean;
+  message?: string;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8000';
+const todayIso = new Date().toISOString().slice(0, 10);
 
 export interface PlaybookMetadata {
   generated_at: string;
@@ -97,6 +99,18 @@ export async function fetchSelections(date?: string, margin?: number, top?: numb
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
+
+    if (res.status === 404) {
+      const payload = await res.json().catch(() => ({ detail: 'No runners found' }));
+      return {
+        date: date ?? todayIso,
+        margin: margin ?? 1.05,
+        selections: [],
+        total: 0,
+        limited: false,
+        message: typeof payload.detail === 'string' ? payload.detail : 'No runners found for the selected date.',
+      };
+    }
 
     if (!res.ok) {
       const errorText = await res.text().catch(() => 'Unknown error');
