@@ -317,7 +317,8 @@ async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
         target_date = datetime.now(tz=SYDNEY_TZ).date()
 
         try:
-            live_df = load_live_pf_day(target_date, force=payload.force_refresh)
+            # Always force refresh to get latest data with current odds
+            live_df = load_live_pf_day(target_date, force=True)
         except Exception as e:
             raise HTTPException(
                 status_code=500,

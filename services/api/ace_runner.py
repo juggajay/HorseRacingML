@@ -270,6 +270,13 @@ def _ensure_predictions(df: pd.DataFrame, booster) -> pd.DataFrame:
     preds = booster.predict(engineered[feature_cols])
     engineered["model_prob"] = preds
 
+    # Debug: Log win_odds state before repair
+    print(f"DEBUG: win_odds before repair - null_count: {engineered['win_odds'].isna().sum() if 'win_odds' in engineered.columns else 'N/A'}")
+    if "pf_ai_price" in engineered.columns:
+        print(f"DEBUG: pf_ai_price available - null_count: {engineered['pf_ai_price'].isna().sum()}, sample: {engineered['pf_ai_price'].head(5).tolist()}")
+    if "pf_ai_rank" in engineered.columns:
+        print(f"DEBUG: pf_ai_rank available - null_count: {engineered['pf_ai_rank'].isna().sum()}, sample: {engineered['pf_ai_rank'].head(5).tolist()}")
+
     # Fix NULL win_odds by generating from available data
     if "win_odds" in engineered.columns and engineered["win_odds"].isna().all():
         # Try pf_ai_price first
