@@ -74,9 +74,13 @@ export default function Dashboard() {
   const { data: playbookData } = useSWR<PlaybookResponse>('playbook', fetchPlaybook, {
     revalidateOnFocus: false,
   });
-  const { data: topPicksData } = useSWR<TopPicksResponse>(['top-picks', date], ([, d]) => fetchTopPicks(d, 10), {
-    revalidateOnFocus: false,
-  });
+  const { data: topPicksData } = useSWR<TopPicksResponse>(
+    ['top-picks', date],
+    ([, d]: [string, string]) => fetchTopPicks(d, 10),
+    {
+      revalidateOnFocus: false,
+    }
+  );
 
   const playbookSnapshot = playbookData?.latest;
   const playbookStrategies = playbookSnapshot?.strategies ?? [];
