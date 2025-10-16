@@ -174,6 +174,10 @@ def append_pf_schema_day(live_df: pd.DataFrame, schema_dir: Path) -> dict:
     if "win_result" in live_runners.columns:
         live_runners["win_result"] = live_runners["win_result"].astype(str)
 
+    # Remove meeting_id from runners - it should come from the races table during merge
+    if "meeting_id" in live_runners.columns:
+        live_runners = live_runners.drop(columns=["meeting_id"])
+
     if runners_path.exists():
         # Read just the schema to get column names (read first row then get columns)
         try:
