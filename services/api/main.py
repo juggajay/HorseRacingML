@@ -273,6 +273,40 @@ def get_playbook() -> dict:
     return _load_playbook()
 
 
+@app.get("/ace/status")
+def get_ace_status() -> dict:
+    """Check ACE system readiness and configuration."""
+    status = {
+        "playbook_exists": PLAYBOOK_PATH.exists(),
+        "strategies_config_exists": ACE_STRATEGIES_PATH.exists(),
+        "schema_dir_exists": ACE_SCHEMA_DIR.exists(),
+        "experience_dir_exists": ACE_EXPERIENCE_DIR.exists(),
+        "model_available": False,
+        "pf_credentials_configured": False,
+    }
+
+    # Check model availability
+    try:
+        models = list(MODEL_DIR.glob("betfair_kash_top5_model_*.txt"))
+        status["model_available"] = len(models) > 0
+        if models:
+            status["latest_model"] = str(models[-1].name)
+    except Exception:
+        pass
+
+    # Check PuntingForm credentials
+    import os
+    status["pf_credentials_configured"] = bool(os.getenv("PUNTINGFORM_API_KEY"))
+
+    # Check if ACE is ready to run
+    status["ready"] = (
+        status["model_available"]
+        and status["pf_credentials_configured"]
+    )
+
+    return status
+
+
 @app.post("/ace/run", response_model=AceRunResponse)
 async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
     if _ace_lock.locked():
@@ -282,25 +316,47 @@ async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
         started_at = datetime.utcnow()
         target_date = datetime.now(tz=SYDNEY_TZ).date()
 
-        live_df = load_live_pf_day(target_date, force=payload.force_refresh)
+        try:
+            live_df = load_live_pf_day(target_date, force=payload.force_refresh)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to fetch PuntingForm data: {str(e)}. Check API credentials."
+            ) from e
+
         if live_df is None or live_df.empty:
-            raise HTTPException(status_code=404, detail=f"No PF live data available for {target_date}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"No PF live data available for {target_date}. Meetings may not be published yet."
+            )
 
         ACE_SCHEMA_DIR.mkdir(parents=True, exist_ok=True)
         ACE_EXPERIENCE_DIR.mkdir(parents=True, exist_ok=True)
 
-        schema_stats = append_pf_schema_day(live_df, ACE_SCHEMA_DIR)
+        try:
+            schema_stats = append_pf_schema_day(live_df, ACE_SCHEMA_DIR)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to append schema data: {str(e)}"
+            ) from e
 
-        result = await run_ace_pipeline_async(
-            start=target_date,
-            end=target_date,
-            pf_schema_dir=ACE_SCHEMA_DIR,
-            strategies_path=ACE_STRATEGIES_PATH,
-            experience_dir=ACE_EXPERIENCE_DIR,
-            playbook_path=PLAYBOOK_PATH,
-            max_races=None,
-            min_bets=ACE_MIN_BETS,
-        )
+        try:
+            result = await run_ace_pipeline_async(
+                start=target_date,
+                end=target_date,
+                pf_schema_dir=ACE_SCHEMA_DIR,
+                strategies_path=ACE_STRATEGIES_PATH,
+                experience_dir=ACE_EXPERIENCE_DIR,
+                playbook_path=PLAYBOOK_PATH,
+                max_races=None,
+                min_bets=ACE_MIN_BETS,
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"ACE pipeline failed: {str(e)}. Check model artifacts and config files."
+            ) from e
 
         finished_at = datetime.utcnow()
         duration = (finished_at - started_at).total_seconds()
@@ -312,7 +368,7 @@ async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
 
         return AceRunResponse(
             status="completed",
-            message="ACE run finished",
+            message="ACE run finished successfully",
             target_date=target_date.isoformat(),
             started_at=started_at.isoformat() + "Z",
             finished_at=finished_at.isoformat() + "Z",
