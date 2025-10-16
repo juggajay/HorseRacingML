@@ -169,8 +169,24 @@ def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
     feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
     # LightGBM with objective='binary' already outputs probabilities (0-1 range)
-    predictions = booster.predict(df_feat[feature_cols])
-    df_feat["model_prob"] = predictions
+    raw_predictions = booster.predict(df_feat[feature_cols])
+
+    # IMPORTANT: Calibrate predictions within each race
+    # The model was trained on data with 15.4% win rate (favorites bias)
+    # This causes inflated baseline predictions (~40-60%) when features are sparse
+    # Solution: Normalize predictions within each race so they sum to 1.0
+    race_col_name = "win_market_id" if "win_market_id" in df_feat.columns else ("race_id" if "race_id" in df_feat.columns else None)
+    if race_col_name is not None:
+        # Add raw predictions as temporary column
+        df_feat["_raw_prob"] = raw_predictions
+        # Calculate sum per race
+        race_sums = df_feat.groupby(race_col_name)["_raw_prob"].transform("sum")
+        # Normalize so each race sums to 1.0
+        df_feat["model_prob"] = df_feat["_raw_prob"] / race_sums
+        df_feat.drop(columns=["_raw_prob"], inplace=True)
+    else:
+        # Fallback: use raw predictions
+        df_feat["model_prob"] = raw_predictions
     df_feat["win_odds"] = pd.to_numeric(df_feat.get("win_odds"), errors="coerce")
     with np.errstate(divide="ignore", invalid="ignore"):
         df_feat["implied_prob"] = 1.0 / df_feat["win_odds"]
