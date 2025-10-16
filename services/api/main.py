@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from datetime import date
+import asyncio
+from datetime import date, datetime
 from pathlib import Path
 from typing import Optional
 
@@ -10,6 +11,8 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from lightgbm import Booster
+from pydantic import BaseModel
+from zoneinfo import ZoneInfo
 
 from feature_engineering import engineer_all_features, get_feature_columns
 try:
@@ -22,9 +25,19 @@ try:
 except ImportError:
     from pf_live_loader import load_live_pf_day
 
+try:
+    from .ace_runner import append_pf_schema_day, run_ace_pipeline_async
+except ImportError:
+    from ace_runner import append_pf_schema_day, run_ace_pipeline_async
+
 DATA_PATH = Path("data/processed/ml/betfair_kash_top5.csv.gz")
 MODEL_DIR = Path("artifacts/models")
 PLAYBOOK_PATH = Path("artifacts/playbook/playbook.json")
+ACE_SCHEMA_DIR = Path("data/processed/pf_schema_full")
+ACE_STRATEGIES_PATH = Path("configs/strategies_default.json")
+ACE_EXPERIENCE_DIR = Path("data/experiences")
+ACE_MIN_BETS = 30
+SYDNEY_TZ = ZoneInfo("Australia/Sydney")
 
 app = FastAPI(title="HorseRacingML API", version="0.1.0")
 
@@ -40,6 +53,7 @@ app.add_middleware(
 # Cache model and dataset at startup
 _cached_model: Optional[Booster] = None
 _cached_data: Optional[pd.DataFrame] = None
+_ace_lock = asyncio.Lock()
 
 
 @app.on_event("startup")
@@ -100,6 +114,27 @@ def _load_playbook() -> dict:
         return json.loads(PLAYBOOK_PATH.read_text())
     except json.JSONDecodeError as exc:
         raise HTTPException(status_code=500, detail="Playbook artifact is invalid JSON") from exc
+
+
+class AceRunRequest(BaseModel):
+    force_refresh: bool = False
+
+
+class AceRunResponse(BaseModel):
+    status: str
+    message: str
+    target_date: str
+    started_at: str
+    finished_at: str
+    duration_seconds: float
+    experience_rows: int
+    strategies_evaluated: int
+    global_pot_pct: Optional[float]
+    global_total_bets: Optional[int]
+    playbook_generated_at: Optional[str]
+    schema_meetings_added: int
+    schema_races_added: int
+    schema_runners_added: int
 
 
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
@@ -206,3 +241,58 @@ def get_selections(
 def get_playbook() -> dict:
     """Return the latest ACE playbook snapshot."""
     return _load_playbook()
+
+
+@app.post("/ace/run", response_model=AceRunResponse)
+async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
+    if _ace_lock.locked():
+        raise HTTPException(status_code=409, detail="ACE run already in progress")
+
+    async with _ace_lock:
+        started_at = datetime.utcnow()
+        target_date = datetime.now(tz=SYDNEY_TZ).date()
+
+        live_df = load_live_pf_day(target_date, force=payload.force_refresh)
+        if live_df is None or live_df.empty:
+            raise HTTPException(status_code=404, detail=f"No PF live data available for {target_date}")
+
+        ACE_SCHEMA_DIR.mkdir(parents=True, exist_ok=True)
+        ACE_EXPERIENCE_DIR.mkdir(parents=True, exist_ok=True)
+
+        schema_stats = append_pf_schema_day(live_df, ACE_SCHEMA_DIR)
+
+        result = await run_ace_pipeline_async(
+            start=target_date,
+            end=target_date,
+            pf_schema_dir=ACE_SCHEMA_DIR,
+            strategies_path=ACE_STRATEGIES_PATH,
+            experience_dir=ACE_EXPERIENCE_DIR,
+            playbook_path=PLAYBOOK_PATH,
+            max_races=None,
+            min_bets=ACE_MIN_BETS,
+        )
+
+        finished_at = datetime.utcnow()
+        duration = (finished_at - started_at).total_seconds()
+
+        playbook_dict = result.get("playbook", {})
+        latest = playbook_dict.get("latest", playbook_dict)
+        metadata = latest.get("metadata", {})
+        global_stats = latest.get("global", {})
+
+        return AceRunResponse(
+            status="completed",
+            message="ACE run finished",
+            target_date=target_date.isoformat(),
+            started_at=started_at.isoformat() + "Z",
+            finished_at=finished_at.isoformat() + "Z",
+            duration_seconds=duration,
+            experience_rows=result.get("experience_rows", 0),
+            strategies_evaluated=result.get("strategies_evaluated", 0),
+            global_pot_pct=global_stats.get("pot_pct"),
+            global_total_bets=global_stats.get("total_bets"),
+            playbook_generated_at=metadata.get("generated_at"),
+            schema_meetings_added=schema_stats.get("meetings", 0),
+            schema_races_added=schema_stats.get("races", 0),
+            schema_runners_added=schema_stats.get("runners", 0),
+        )

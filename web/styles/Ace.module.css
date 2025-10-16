@@ -1,0 +1,253 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 65%);
+}
+
+.header {
+  padding: 3rem clamp(1.5rem, 3vw, 3.5rem) 2.5rem;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(20, 147, 255, 0.18), rgba(34, 197, 94, 0.08));
+  border-radius: 0 0 36px 36px;
+  z-index: -1;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.titleBlock h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  letter-spacing: 0.03em;
+}
+
+.titleBlock p {
+  margin: 0;
+  max-width: 620px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.headerLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.backLink {
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.backLink:hover {
+  transform: translateY(-2px);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.runPanel {
+  margin-top: 2.5rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.runCard {
+  padding: 1.75rem;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.runCard h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.runDescription {
+  margin: 0;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.runButton {
+  align-self: flex-start;
+  padding: 0.75rem 1.8rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(14, 165, 233, 0.85));
+  color: #f8fafc;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.runButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.runButton:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.35);
+}
+
+.statusCard {
+  padding: 1.75rem;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.statusTitle {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.95rem;
+  color: var(--text-tertiary);
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.statusItem {
+  background: rgba(30, 41, 59, 0.75);
+  border-radius: 16px;
+  padding: 1rem;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.statusItem strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.statusItem span {
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+}
+
+.body {
+  padding: 2.5rem clamp(1.5rem, 3vw, 3.5rem) 4rem;
+  display: grid;
+  gap: 2.5rem;
+}
+
+.infoSection {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.infoCard {
+  padding: 1.75rem;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.28);
+}
+
+.infoCard h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.infoCard p {
+  margin: 0;
+  color: var(--text-tertiary);
+  line-height: 1.55;
+}
+
+.historySection {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 22px;
+  padding: 1.75rem;
+}
+
+.historySection h2 {
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.historyList {
+  display: grid;
+  gap: 1rem;
+}
+
+.historyItem {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+}
+
+.historyItem span {
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+}
+
+.errorBox {
+  margin-top: 1rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+  font-size: 0.9rem;
+}
+
+.successMessage {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding-inline: 1.25rem;
+  }
+
+  .body {
+    padding-inline: 1.25rem;
+  }
+}

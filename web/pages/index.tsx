@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import useSWR from 'swr';
 import {
   fetchSelections,
@@ -183,25 +184,32 @@ export default function Dashboard() {
             </p>
             {lastUpdated && <span className={styles.playbookMeta}>Playbook refreshed {lastUpdated}</span>}
           </div>
-          <div className={styles.metrics}>
-            <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>Playbook POT</span>
-              <span className={styles.metricValue}>{formatPercent(globalStats?.pot_pct ?? null, 1)}</span>
-              <span className={styles.metricTrend}>
-                {globalStats ? `${globalStats.total_bets} bets analysed` : 'Awaiting ACE run'}
-              </span>
+          <div>
+            <div className={styles.headerActions}>
+              <Link className={styles.secondaryButton} href="/ace">
+                Explore ACE Console
+              </Link>
             </div>
-            <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>Hit Rate</span>
-              <span className={styles.metricValue}>{formatRatioPercent(globalStats?.hit_rate ?? null, 1)}</span>
-              <span className={styles.metricTrend}>
-                {strategiesEvaluated ? `${strategiesEvaluated} strategies evaluated` : '—'}
-              </span>
-            </div>
-            <div className={styles.metricCard}>
-              <span className={styles.metricLabel}>Experiences Logged</span>
-              <span className={styles.metricValue}>{experienceRows.toLocaleString()}</span>
-              <span className={styles.metricTrend}>Margin threshold ≥ {edgeThreshold.toFixed(1)}%</span>
+            <div className={styles.metrics}>
+              <div className={styles.metricCard}>
+                <span className={styles.metricLabel}>Playbook POT</span>
+                <span className={styles.metricValue}>{formatPercent(globalStats?.pot_pct ?? null, 1)}</span>
+                <span className={styles.metricTrend}>
+                  {globalStats ? `${globalStats.total_bets} bets analysed` : 'Awaiting ACE run'}
+                </span>
+              </div>
+              <div className={styles.metricCard}>
+                <span className={styles.metricLabel}>Hit Rate</span>
+                <span className={styles.metricValue}>{formatRatioPercent(globalStats?.hit_rate ?? null, 1)}</span>
+                <span className={styles.metricTrend}>
+                  {strategiesEvaluated ? `${strategiesEvaluated} strategies evaluated` : '—'}
+                </span>
+              </div>
+              <div className={styles.metricCard}>
+                <span className={styles.metricLabel}>Experiences Logged</span>
+                <span className={styles.metricValue}>{experienceRows.toLocaleString()}</span>
+                <span className={styles.metricTrend}>Margin threshold ≥ {edgeThreshold.toFixed(1)}%</span>
+              </div>
             </div>
           </div>
         </div>

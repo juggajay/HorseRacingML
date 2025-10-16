@@ -85,6 +85,23 @@ export interface PlaybookResponse {
   latest: PlaybookSnapshot;
 }
 
+export interface AceRunResponse {
+  status: string;
+  message: string;
+  target_date: string;
+  started_at: string;
+  finished_at: string;
+  duration_seconds: number;
+  experience_rows: number;
+  strategies_evaluated: number;
+  global_pot_pct: number | null;
+  global_total_bets: number | null;
+  playbook_generated_at?: string | null;
+  schema_meetings_added: number;
+  schema_races_added: number;
+  schema_runners_added: number;
+}
+
 export async function fetchSelections(date?: string, margin?: number, top?: number) {
   const params = new URLSearchParams();
   if (date) params.append('date_str', date);
@@ -151,4 +168,21 @@ export async function fetchPlaybook(): Promise<PlaybookResponse> {
     }
     throw new Error('Failed to fetch playbook');
   }
+}
+
+export async function runAce(forceRefresh = false): Promise<AceRunResponse> {
+  const res = await fetch(`${API_BASE}/ace/run`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ force_refresh: forceRefresh }),
+  });
+
+  if (!res.ok) {
+    const message = await res.text().catch(() => 'Unknown error');
+    throw new Error(`ACE run failed (${res.status}): ${message}`);
+  }
+
+  return (await res.json()) as AceRunResponse;
 }

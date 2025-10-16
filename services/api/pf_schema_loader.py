@@ -17,6 +17,27 @@ else:  # Docker container: /app/
 _TABLE_EXTS = (".parquet", ".csv.gz", ".csv")
 
 
+def _resolve_column(frame: pd.DataFrame, base_name: str) -> None:
+    if base_name in frame.columns:
+        return
+    candidates = [f"{base_name}_x", f"{base_name}_y"]
+    values = [frame[c] for c in candidates if c in frame.columns]
+    if not values:
+        return
+    combined = values[0]
+    for extra in values[1:]:
+        combined = combined.fillna(extra)
+    frame[base_name] = combined
+    frame.drop(columns=[c for c in candidates if c in frame.columns], inplace=True)
+
+
+def _convert_to_int_or_str(series: pd.Series) -> pd.Series:
+    numeric = pd.to_numeric(series, errors="coerce")
+    if numeric.notna().sum() == 0:
+        return series.astype(str)
+    return numeric.astype("Int64")
+
+
 def read_table(name: str, base_dir: Path = PF_SCHEMA_DIR) -> pd.DataFrame:
     """Read a PF schema table with flexible extension support."""
     for ext in _TABLE_EXTS:
@@ -64,6 +85,17 @@ def load_pf_dataset(base_dir: Path = PF_SCHEMA_DIR) -> Optional[pd.DataFrame]:
         )
     )
 
+    for base in [
+        "event_date",
+        "meeting_id",
+        "track_name_norm",
+        "win_market_id",
+        "race_no",
+        "selection_id",
+        "tab_number",
+    ]:
+        _resolve_column(merged, base)
+
     merged["event_date"] = pd.to_datetime(merged["event_date"], errors="coerce")
     merged = merged.dropna(subset=["event_date"]).copy()
 
@@ -71,10 +103,13 @@ def load_pf_dataset(base_dir: Path = PF_SCHEMA_DIR) -> Optional[pd.DataFrame]:
         merged["track"] = merged["track_name_norm"].str.title()
     else:
         merged["track"] = merged["track"].fillna(merged["track_name_norm"].str.title())
-    merged["win_market_id"] = pd.to_numeric(merged["win_market_id"], errors="coerce").astype("Int64")
-    merged["race_no"] = pd.to_numeric(merged["race_no"], errors="coerce").astype("Int64")
-    merged["selection_id"] = pd.to_numeric(merged.get("selection_id"), errors="coerce").astype("Int64")
-    merged["tab_number"] = pd.to_numeric(merged.get("tab_number"), errors="coerce").astype("Int64")
+
+    merged["win_market_id"] = _convert_to_int_or_str(merged.get("win_market_id"))
+    merged["race_no"] = pd.to_numeric(merged.get("race_no"), errors="coerce").astype("Int64")
+    if "selection_id" in merged.columns:
+        merged["selection_id"] = _convert_to_int_or_str(merged["selection_id"])
+    if "tab_number" in merged.columns:
+        merged["tab_number"] = pd.to_numeric(merged.get("tab_number"), errors="coerce").astype("Int64")
     if "scheduled_start" in merged.columns:
         merged["scheduled_start"] = pd.to_datetime(merged["scheduled_start"], errors="coerce")
 
