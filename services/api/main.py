@@ -452,38 +452,27 @@ async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
 
     async with _ace_lock:
         started_at = datetime.utcnow()
-        target_date = datetime.now(tz=SYDNEY_TZ).date()
 
-        try:
-            # Always force refresh to get latest data with current odds
-            live_df = load_live_pf_day(target_date, force=True)
-        except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to fetch PuntingForm data: {str(e)}. Check API credentials."
-            ) from e
+        # Use historical date range with complete data instead of today
+        # Today's races haven't finished yet (no results) and live API doesn't return distance/racing_type
+        # Use Sept 23-30, 2025 (1 week) which has complete data with results
+        end_date = date(2025, 9, 30)
+        start_date = date(2025, 9, 23)
 
-        if live_df is None or live_df.empty:
-            raise HTTPException(
-                status_code=404,
-                detail=f"No PF live data available for {target_date}. Meetings may not be published yet."
-            )
+        # Note: For production with historical data, we skip the live API call
+        # and rely on the existing PF schema data which has complete fields
+        # The schema should already be built from data/processed/pf_schema_full/
 
         ACE_SCHEMA_DIR.mkdir(parents=True, exist_ok=True)
         ACE_EXPERIENCE_DIR.mkdir(parents=True, exist_ok=True)
 
-        try:
-            schema_stats = append_pf_schema_day(live_df, ACE_SCHEMA_DIR)
-        except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Failed to append schema data: {str(e)}"
-            ) from e
+        # Schema stats placeholder (not fetching new data since we're using historical dates)
+        schema_stats = {"meetings": 0, "races": 0, "runners": 0}
 
         try:
             result = await run_ace_pipeline_async(
-                start=target_date,
-                end=target_date,
+                start=start_date,
+                end=end_date,
                 pf_schema_dir=ACE_SCHEMA_DIR,
                 strategies_path=ACE_STRATEGIES_PATH,
                 experience_dir=ACE_EXPERIENCE_DIR,
@@ -507,8 +496,8 @@ async def run_ace_endpoint(payload: AceRunRequest) -> AceRunResponse:
 
         return AceRunResponse(
             status="completed",
-            message="ACE run finished successfully",
-            target_date=target_date.isoformat(),
+            message=f"ACE run finished successfully (historical data: {start_date} to {end_date})",
+            target_date=end_date.isoformat(),
             started_at=started_at.isoformat() + "Z",
             finished_at=finished_at.isoformat() + "Z",
             duration_seconds=duration,
