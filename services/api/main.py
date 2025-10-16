@@ -150,8 +150,11 @@ class AceRunResponse(BaseModel):
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
     feature_cols = [c for c in get_feature_columns() if c in df_feat.columns]
-    predictions = booster.predict(df_feat[feature_cols])
-    df_feat["model_prob"] = predictions
+    # LightGBM booster.predict() returns raw scores, need to convert to probabilities
+    # For binary classification with sigmoid objective, apply sigmoid transform
+    raw_scores = booster.predict(df_feat[feature_cols])
+    # Convert raw scores to probabilities using sigmoid: p = 1 / (1 + exp(-score))
+    df_feat["model_prob"] = 1.0 / (1.0 + np.exp(-raw_scores))
     df_feat["win_odds"] = pd.to_numeric(df_feat.get("win_odds"), errors="coerce")
     with np.errstate(divide="ignore", invalid="ignore"):
         df_feat["implied_prob"] = 1.0 / df_feat["win_odds"]
