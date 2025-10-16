@@ -23,7 +23,12 @@ except ImportError:
     from ace.strategies import StrategyConfig, StrategyGrid
 
 from feature_engineering import engineer_all_features, get_feature_columns
-from services.api.pf_schema_loader import load_pf_dataset
+
+# Import pf_schema_loader - use relative import for Railway/container, fallback for CLI
+try:
+    from pf_schema_loader import load_pf_dataset
+except ImportError:
+    from services.api.pf_schema_loader import load_pf_dataset
 
 
 def _normalise_track(value: pd.Series) -> pd.Series:
