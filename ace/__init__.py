@@ -1,11 +1,4 @@
-"""Core modules for the Early Experience + ACE two-loop architecture."""
+"""Re-export ACE helpers from the services.api package for backwards compatibility."""
 
-from .strategies import StrategyConfig, StrategyGrid
-from .simulator import Simulator, SimulationResult
+from services.api.ace import *  # type: ignore  # noqa: F401,F403
 
-__all__ = [
-    "StrategyConfig",
-    "StrategyGrid",
-    "Simulator",
-    "SimulationResult",
-]

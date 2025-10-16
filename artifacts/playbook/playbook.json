@@ -8255,11 +8255,638 @@
           "pot_pct": -100.0
         }
       ]
+    },
+    {
+      "metadata": {
+        "generated_at": "2025-10-16T03:48:35Z",
+        "experience_rows": 582,
+        "strategies_evaluated": 24
+      },
+      "global": {
+        "total_bets": 582,
+        "total_profit": 730.1600000000001,
+        "total_staked": 582.0,
+        "pot_pct": 125.45704467353953,
+        "hit_rate": 0.5807560137457045
+      },
+      "strategies": [
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20",
+          "bets": 21,
+          "wins": 14,
+          "hit_rate": 0.6666666666666666,
+          "mean_edge": 0.18490514924315038,
+          "total_staked": 21.0,
+          "total_profit": 35.43,
+          "pot_pct": 168.7142857142857,
+          "roi_pct": 168.7142857142857,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 21,
+          "wins": 14,
+          "hit_rate": 0.6666666666666666,
+          "mean_edge": 0.18490514924315038,
+          "total_staked": 21.0,
+          "total_profit": 35.43,
+          "pot_pct": 168.7142857142857,
+          "roi_pct": 168.7142857142857,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 22,
+          "wins": 14,
+          "hit_rate": 0.6363636363636364,
+          "mean_edge": 0.18486836719290697,
+          "total_staked": 22.0,
+          "total_profit": 34.43000000000001,
+          "pot_pct": 156.50000000000003,
+          "roi_pct": 156.50000000000003,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20",
+          "bets": 22,
+          "wins": 14,
+          "hit_rate": 0.6363636363636364,
+          "mean_edge": 0.18486836719290697,
+          "total_staked": 22.0,
+          "total_profit": 34.43000000000001,
+          "pot_pct": 156.50000000000003,
+          "roi_pct": 156.50000000000003,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.20",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 20,
+          "wins": 13,
+          "hit_rate": 0.65,
+          "mean_edge": 0.18517788391939055,
+          "total_staked": 20.0,
+          "total_profit": 31.230000000000004,
+          "pot_pct": 156.15,
+          "roi_pct": 156.15,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20",
+          "bets": 20,
+          "wins": 13,
+          "hit_rate": 0.65,
+          "mean_edge": 0.18517788391939055,
+          "total_staked": 20.0,
+          "total_profit": 31.230000000000004,
+          "pot_pct": 156.15,
+          "roi_pct": 156.15,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.20",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 18,
+          "wins": 12,
+          "hit_rate": 0.6666666666666666,
+          "mean_edge": 0.19799828062411304,
+          "total_staked": 18.0,
+          "total_profit": 25.43,
+          "pot_pct": 141.27777777777777,
+          "roi_pct": 141.27777777777777,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25",
+          "bets": 18,
+          "wins": 12,
+          "hit_rate": 0.6666666666666666,
+          "mean_edge": 0.19799828062411304,
+          "total_staked": 18.0,
+          "total_profit": 25.43,
+          "pot_pct": 141.27777777777777,
+          "roi_pct": 141.27777777777777,
+          "params": {
+            "strategy_id": "margin_1.08_top1_stake1.00_minprob0.25",
+            "margin": 1.08,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 18,
+          "wins": 12,
+          "hit_rate": 0.6666666666666666,
+          "mean_edge": 0.2072267308923725,
+          "total_staked": 18.0,
+          "total_profit": 25.43,
+          "pot_pct": 141.27777777777777,
+          "roi_pct": 141.27777777777777,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25",
+          "bets": 18,
+          "wins": 12,
+          "hit_rate": 0.6666666666666666,
+          "mean_edge": 0.2072267308923725,
+          "total_staked": 18.0,
+          "total_profit": 25.43,
+          "pot_pct": 141.27777777777777,
+          "roi_pct": 141.27777777777777,
+          "params": {
+            "strategy_id": "margin_1.05_top1_stake1.00_minprob0.25",
+            "margin": 1.05,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25",
+          "bets": 19,
+          "wins": 12,
+          "hit_rate": 0.631578947368421,
+          "mean_edge": 0.2052161668489774,
+          "total_staked": 19.0,
+          "total_profit": 24.43,
+          "pot_pct": 128.57894736842107,
+          "roi_pct": 128.57894736842107,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 19,
+          "wins": 12,
+          "hit_rate": 0.631578947368421,
+          "mean_edge": 0.2052161668489774,
+          "total_staked": 19.0,
+          "total_profit": 24.43,
+          "pot_pct": 128.57894736842107,
+          "roi_pct": 128.57894736842107,
+          "params": {
+            "strategy_id": "margin_1.02_top1_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 1,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20",
+          "bets": 32,
+          "wins": 17,
+          "hit_rate": 0.53125,
+          "mean_edge": 0.14514852439795495,
+          "total_staked": 32.0,
+          "total_profit": 39.35,
+          "pot_pct": 122.96875,
+          "roi_pct": 122.96875,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 32,
+          "wins": 17,
+          "hit_rate": 0.53125,
+          "mean_edge": 0.14478340254435995,
+          "total_staked": 32.0,
+          "total_profit": 39.35,
+          "pot_pct": 122.96875,
+          "roi_pct": 122.96875,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 30,
+          "wins": 16,
+          "hit_rate": 0.5333333333333333,
+          "mean_edge": 0.14605487297486872,
+          "total_staked": 30.0,
+          "total_profit": 36.15,
+          "pot_pct": 120.49999999999999,
+          "roi_pct": 120.49999999999999,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20",
+          "bets": 30,
+          "wins": 16,
+          "hit_rate": 0.5333333333333333,
+          "mean_edge": 0.14660035480388853,
+          "total_staked": 30.0,
+          "total_profit": 36.15,
+          "pot_pct": 120.49999999999999,
+          "roi_pct": 120.49999999999999,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.20",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20",
+          "bets": 33,
+          "wins": 17,
+          "hit_rate": 0.5151515151515151,
+          "mean_edge": 0.14842026025090932,
+          "total_staked": 33.0,
+          "total_profit": 38.35,
+          "pot_pct": 116.21212121212122,
+          "roi_pct": 116.21212121212122,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20_maxodds10.00",
+          "bets": 33,
+          "wins": 17,
+          "hit_rate": 0.5151515151515151,
+          "mean_edge": 0.14820440125673645,
+          "total_staked": 33.0,
+          "total_profit": 38.35,
+          "pot_pct": 116.21212121212122,
+          "roi_pct": 116.21212121212122,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.20_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.2,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 25,
+          "wins": 14,
+          "hit_rate": 0.56,
+          "mean_edge": 0.1637252999222924,
+          "total_staked": 25.0,
+          "total_profit": 25.949999999999996,
+          "pot_pct": 103.79999999999998,
+          "roi_pct": 103.79999999999998,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25",
+          "bets": 25,
+          "wins": 14,
+          "hit_rate": 0.56,
+          "mean_edge": 0.1637252999222924,
+          "total_staked": 25.0,
+          "total_profit": 25.949999999999996,
+          "pot_pct": 103.79999999999998,
+          "roi_pct": 103.79999999999998,
+          "params": {
+            "strategy_id": "margin_1.08_top2_stake1.00_minprob0.25",
+            "margin": 1.08,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25",
+          "bets": 26,
+          "wins": 14,
+          "hit_rate": 0.5384615384615384,
+          "mean_edge": 0.16605314614315686,
+          "total_staked": 26.0,
+          "total_profit": 24.949999999999996,
+          "pot_pct": 95.96153846153844,
+          "roi_pct": 95.96153846153844,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 26,
+          "wins": 14,
+          "hit_rate": 0.5384615384615384,
+          "mean_edge": 0.16605314614315686,
+          "total_staked": 26.0,
+          "total_profit": 24.949999999999996,
+          "pot_pct": 95.96153846153844,
+          "roi_pct": 95.96153846153844,
+          "params": {
+            "strategy_id": "margin_1.05_top2_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.05,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25",
+          "bets": 27,
+          "wins": 14,
+          "hit_rate": 0.5185185185185185,
+          "mean_edge": 0.16837604407725631,
+          "total_staked": 27.0,
+          "total_profit": 23.950000000000003,
+          "pot_pct": 88.70370370370372,
+          "roi_pct": 88.70370370370372,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": null,
+            "filters": {}
+          }
+        },
+        {
+          "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25_maxodds10.00",
+          "bets": 27,
+          "wins": 14,
+          "hit_rate": 0.5185185185185185,
+          "mean_edge": 0.16837604407725631,
+          "total_staked": 27.0,
+          "total_profit": 23.950000000000003,
+          "pot_pct": 88.70370370370372,
+          "roi_pct": 88.70370370370372,
+          "params": {
+            "strategy_id": "margin_1.02_top2_stake1.00_minprob0.25_maxodds10.00",
+            "margin": 1.02,
+            "top_n": 2,
+            "stake": 1.0,
+            "min_model_prob": 0.25,
+            "max_win_odds": 10.0,
+            "filters": {}
+          }
+        }
+      ],
+      "tracks": [
+        {
+          "track": "Grafton",
+          "bets": 150,
+          "profit": 302.16,
+          "pot_pct": 201.44000000000003,
+          "hit_rate": 0.72
+        },
+        {
+          "track": "Tatura",
+          "bets": 92,
+          "profit": 170.8,
+          "pot_pct": 185.6521739130435,
+          "hit_rate": 0.5217391304347826
+        },
+        {
+          "track": "Cairns",
+          "bets": 154,
+          "profit": 251.20000000000002,
+          "pot_pct": 163.11688311688312,
+          "hit_rate": 0.7532467532467533
+        },
+        {
+          "track": "Tamworth",
+          "bets": 186,
+          "profit": 6.000000000000001,
+          "pot_pct": 3.2258064516129044,
+          "hit_rate": 0.3548387096774194
+        }
+      ],
+      "contexts": [
+        {
+          "track": "Tatura",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 36,
+          "profit": 141.60000000000002,
+          "pot_pct": 393.3333333333334
+        },
+        {
+          "track": "Grafton",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 36,
+          "profit": 117.60000000000001,
+          "pot_pct": 326.66666666666674
+        },
+        {
+          "track": "Tatura",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 32,
+          "profit": 53.199999999999996,
+          "pot_pct": 166.25
+        },
+        {
+          "track": "Grafton",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "CL2",
+          "bets": 36,
+          "profit": 55.199999999999996,
+          "pot_pct": 153.3333333333333
+        },
+        {
+          "track": "Cairns",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 62,
+          "profit": 86.80000000000001,
+          "pot_pct": 140.0
+        },
+        {
+          "track": "Grafton",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 36,
+          "profit": 42.0,
+          "pot_pct": 116.66666666666667
+        },
+        {
+          "track": "Cairns",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 68,
+          "profit": 70.8,
+          "pot_pct": 104.11764705882351
+        },
+        {
+          "track": "Tamworth",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "CL2",
+          "bets": 30,
+          "profit": 14.400000000000002,
+          "pot_pct": 48.00000000000001
+        },
+        {
+          "track": "Tamworth",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 36,
+          "profit": 6.0,
+          "pot_pct": 16.666666666666664
+        },
+        {
+          "track": "Tamworth",
+          "distance_band": "<=1200",
+          "racing_type": "Thoroughbred",
+          "race_type": "CL3",
+          "bets": 36,
+          "profit": -36.0,
+          "pot_pct": -100.0
+        },
+        {
+          "track": "Tamworth",
+          "distance_band": "1201-1600",
+          "racing_type": "Thoroughbred",
+          "race_type": "Hcap",
+          "bets": 36,
+          "profit": -36.0,
+          "pot_pct": -100.0
+        }
+      ]
     }
   ],
   "latest": {
     "metadata": {
-      "generated_at": "2025-10-16T03:33:14Z",
+      "generated_at": "2025-10-16T03:48:35Z",
       "experience_rows": 582,
       "strategies_evaluated": 24
     },
