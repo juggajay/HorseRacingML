@@ -175,7 +175,16 @@ def append_pf_schema_day(live_df: pd.DataFrame, schema_dir: Path) -> dict:
         live_runners["win_result"] = live_runners["win_result"].astype(str)
 
     if runners_path.exists():
-        template_cols = pd.read_parquet(runners_path, columns=None, engine="pyarrow", nrows=0).columns
+        # Read just the schema to get column names (read first row then get columns)
+        try:
+            import pyarrow.parquet as pq
+            parquet_file = pq.ParquetFile(runners_path)
+            template_cols = parquet_file.schema.names
+        except Exception:
+            # Fallback: read the file and get columns (less efficient but works)
+            template_df = pd.read_parquet(runners_path, engine="pyarrow")
+            template_cols = template_df.columns
+
         for col in template_cols:
             if col not in live_runners.columns:
                 live_runners[col] = np.nan
