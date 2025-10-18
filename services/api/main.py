@@ -167,10 +167,29 @@ class AceRunResponse(BaseModel):
 
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
-    # Use clean Betfair features only (matches retraining)
-    feature_cols = [c for c in get_feature_columns(clean_betfair_only=True) if c in df_feat.columns]
+
+    # Debug: Check PuntingForm feature availability
+    pf_features = ['pf_score', 'neural_rating', 'pf_ai_rank', 'pf_ai_score', 'pf_ai_price']
+    pf_available = {feat: df_feat[feat].notna().sum() if feat in df_feat.columns else 0 for feat in pf_features}
+    total_runners = len(df_feat)
+    pf_coverage = sum(pf_available.values()) / (len(pf_features) * total_runners) if total_runners > 0 else 0
+
+    print(f"\n[DEBUG] Feature availability for {total_runners} runners:")
+    print(f"  PuntingForm feature coverage: {pf_coverage*100:.1f}%")
+    for feat, count in pf_available.items():
+        if count > 0:
+            print(f"    {feat}: {count}/{total_runners} ({count/total_runners*100:.1f}%)")
+
+    # Use PF features if available (>50% coverage), otherwise fall back to Betfair-only
+    use_pf_features = pf_coverage > 0.5
+    feature_cols = [c for c in get_feature_columns(clean_betfair_only=not use_pf_features) if c in df_feat.columns]
+
+    print(f"  Using {'PF+Betfair' if use_pf_features else 'Betfair-only'} features ({len(feature_cols)} total)")
+
     # LightGBM with objective='binary' already outputs probabilities (0-1 range)
     raw_predictions = booster.predict(df_feat[feature_cols])
+
+    print(f"  Raw predictions: min={raw_predictions.min():.4f}, max={raw_predictions.max():.4f}, mean={raw_predictions.mean():.4f}")
 
     # IMPORTANT: Calibrate predictions within each race
     # The model was trained on data with 15.4% win rate (favorites bias)
@@ -185,6 +204,7 @@ def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
         # Normalize so each race sums to 1.0
         df_feat["model_prob"] = df_feat["_raw_prob"] / race_sums
         df_feat.drop(columns=["_raw_prob"], inplace=True)
+        print(f"  Normalized predictions: min={df_feat['model_prob'].min():.4f}, max={df_feat['model_prob'].max():.4f}, mean={df_feat['model_prob'].mean():.4f}")
     else:
         # Fallback: use raw predictions
         df_feat["model_prob"] = raw_predictions
