@@ -34,8 +34,12 @@ export default function Dashboard() {
 
   const { data: selectionsData, error: selectionsError, isLoading: selectionsLoading } = useSWR(
     ['selections', date, margin],
-    ([, d, m]) => fetchSelections(d, m),
-    { revalidateOnFocus: false }
+    ([, d, m]) => fetchSelections(d, m, undefined, 500), // Limit to 500 selections for performance
+    {
+      revalidateOnFocus: false,
+      errorRetryCount: 2,
+      errorRetryInterval: 2000,
+    }
   );
 
   const { data: playbookData, error: playbookError } = useSWR<PlaybookResponse>('playbook', fetchPlaybook, {

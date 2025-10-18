@@ -173,7 +173,22 @@ export default function RacesTab({
       </div>
 
       {/* Race Cards */}
-      {error && <div className={styles.error}>Failed to load races: {error.message}</div>}
+      {error && (
+        <div className={styles.error}>
+          <strong>Failed to load races:</strong> {error.message}
+          {error.message.includes('timeout') && (
+            <div style={{ marginTop: '0.75rem', fontSize: '0.95rem' }}>
+              <strong>Troubleshooting:</strong>
+              <ul style={{ marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
+                <li>Make sure you've selected a specific date (not a date range)</li>
+                <li>Try lowering the margin threshold to reduce data size</li>
+                <li>The backend API might be loading a large dataset - this can take up to 2 minutes</li>
+                <li>Check that the Railway backend is running: <a href="https://horseracingml-production.up.railway.app/health" target="_blank" style={{ color: '#60a5fa' }}>Health Check</a></li>
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       {isLoading && (
         <div className={styles.loading}>
