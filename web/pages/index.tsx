@@ -34,11 +34,12 @@ export default function Dashboard() {
 
   const { data: selectionsData, error: selectionsError, isLoading: selectionsLoading } = useSWR(
     ['selections', date, margin],
-    ([, d, m]) => fetchSelections(d, m, undefined, 500), // Limit to 500 selections for performance
+    ([, d, m]) => fetchSelections(d, m, undefined, 2000), // Increased to 2000 to cover all ~950 daily runners
     {
       revalidateOnFocus: false,
-      errorRetryCount: 2,
-      errorRetryInterval: 2000,
+      errorRetryCount: 1,
+      errorRetryInterval: 3000,
+      dedupingInterval: 30000, // Cache for 30 seconds
     }
   );
 

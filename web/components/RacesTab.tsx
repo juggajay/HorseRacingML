@@ -194,6 +194,9 @@ export default function RacesTab({
         <div className={styles.loading}>
           <div className={styles.spinner} />
           <p>Loading race cards...</p>
+          <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}>
+            Analyzing ~950 horses across all tracks. This may take up to 2 minutes.
+          </p>
         </div>
       )}
 
