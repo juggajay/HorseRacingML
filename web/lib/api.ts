@@ -112,7 +112,7 @@ export async function fetchSelections(date?: string, margin?: number, top?: numb
   if (limit) params.append('limit', limit.toString());
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 second timeout for large datasets
+  const timeoutId = setTimeout(() => controller.abort(), 180000); // 180 second (3 min) timeout for large datasets
 
   try {
     const res = await fetch(`${API_BASE}/selections?${params.toString()}`, {
