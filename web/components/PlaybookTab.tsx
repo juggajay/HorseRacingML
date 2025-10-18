@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { PlaybookResponse, PlaybookStrategy } from '../lib/api';
+import { runAce } from '../lib/api';
 import styles from '../styles/PlaybookTab.module.css';
 
 interface PlaybookTabProps {
@@ -10,6 +11,8 @@ interface PlaybookTabProps {
 export default function PlaybookTab({ playbookData, error }: PlaybookTabProps) {
   const [selectedStrategyId, setSelectedStrategyId] = useState<string>('');
   const [showRawData, setShowRawData] = useState(false);
+  const [aceRunning, setAceRunning] = useState(false);
+  const [aceResult, setAceResult] = useState<string>('');
 
   const playbook = playbookData?.latest;
   const strategies = playbook?.strategies ?? [];
@@ -46,6 +49,21 @@ export default function PlaybookTab({ playbookData, error }: PlaybookTabProps) {
     return parts.length ? parts.join(' • ') : strategy.strategy_id;
   };
 
+  const handleRunAce = async () => {
+    setAceRunning(true);
+    setAceResult('');
+    try {
+      const result = await runAce(true);
+      setAceResult(`✓ ACE completed! Processed ${result.experience_rows} experiences, evaluated ${result.strategies_evaluated} strategies. POT: ${result.global_pot_pct?.toFixed(1)}%`);
+      // Refresh the page after 2 seconds to show updated playbook
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (err) {
+      setAceResult(`✗ ACE run failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    } finally {
+      setAceRunning(false);
+    }
+  };
+
   return (
     <div className={styles.playbookTab}>
       <div className={styles.header}>
@@ -53,10 +71,25 @@ export default function PlaybookTab({ playbookData, error }: PlaybookTabProps) {
           <h2 className={styles.title}>ACE Playbook Insights</h2>
           <p className={styles.subtitle}>Strategic intelligence from autonomous strategy evaluation</p>
         </div>
-        <button onClick={() => setShowRawData(!showRawData)} className={styles.rawDataButton}>
-          {showRawData ? 'Hide' : 'Show'} Raw Data
-        </button>
+        <div className={styles.headerActions}>
+          <button
+            onClick={handleRunAce}
+            className={styles.aceRunButton}
+            disabled={aceRunning}
+          >
+            {aceRunning ? 'Running ACE...' : 'Run ACE Daily Update'}
+          </button>
+          <button onClick={() => setShowRawData(!showRawData)} className={styles.rawDataButton}>
+            {showRawData ? 'Hide' : 'Show'} Raw Data
+          </button>
+        </div>
       </div>
+
+      {aceResult && (
+        <div className={aceResult.startsWith('✓') ? styles.aceSuccess : styles.aceError}>
+          {aceResult}
+        </div>
+      )}
 
       {error && <div className={styles.error}>Failed to load playbook: {error.message}</div>}
 
