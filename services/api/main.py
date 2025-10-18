@@ -108,28 +108,32 @@ def _load_full_dataset() -> pd.DataFrame:
 
 
 def _load_dataset(target_date: date) -> pd.DataFrame:
-    # IMPORTANT: Always try live PF data first for today/future dates
+    # IMPORTANT: Always try live PF data first to get AI features
     # Cached schema data is Betfair-only and missing PF AI features the model needs
-    from datetime import date as date_type
+    from datetime import date as date_type, timedelta
     today = date_type.today()
 
-    # For today or future dates, ALWAYS use live PF API (has all features)
-    if target_date >= today:
-        print(f"[INFO] Loading LIVE PF data for {target_date} (today or future)")
+    # For recent dates (within 30 days), ALWAYS try live PF API first (has all features)
+    # PuntingForm keeps recent historical data available with complete AI ratings
+    days_ago = (today - target_date).days
+    if days_ago <= 30:
+        print(f"[INFO] Loading LIVE PF data for {target_date} ({days_ago} days ago)")
         live_df = load_live_pf_day(target_date)
         if live_df is not None and not live_df.empty:
             live_df = live_df.copy()
             live_df["event_date"] = pd.to_datetime(live_df["event_date"], errors="coerce")
+            print(f"[INFO] Successfully loaded {len(live_df)} runners from PF API")
             return live_df
         # If live data fails, fall through to cached data
-        print(f"[WARN] Live PF data not available, falling back to cached data")
+        print(f"[WARN] Live PF data not available for {target_date}, falling back to cached data")
 
-    # For past dates, use cached data
+    # For older dates (>30 days), use cached historical data
     df = _load_full_dataset()
     mask = df["event_date"].dt.date == target_date
     subset = df.loc[mask]
     if subset.empty:
-        # Last resort: try live PF data
+        # Last resort: try live PF data even for old dates
+        print(f"[INFO] No cached data for {target_date}, trying PF API...")
         live_df = load_live_pf_day(target_date)
         if live_df is None or live_df.empty:
             raise HTTPException(status_code=404, detail=f"No runners found on {target_date}")
