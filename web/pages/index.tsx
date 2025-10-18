@@ -1,19 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
+import { useState } from 'react';
 import useSWR from 'swr';
 import {
   fetchSelections,
   fetchPlaybook,
   fetchTopPicks,
-  type Runner,
   type PlaybookResponse,
-  type PlaybookStrategy,
-  type PlaybookTrackInsight,
   type TopPicksResponse,
 } from '../lib/api';
-import { SelectionTable } from '../components/SelectionTable';
-import { RaceCard } from '../components/RaceCard';
-import styles from '../styles/Dashboard.module.css';
+import styles from '../styles/TabbedDashboard.module.css';
+import TodayTab from '../components/TodayTab';
+import RacesTab from '../components/RacesTab';
+import PlaybookTab from '../components/PlaybookTab';
+import HistoryTab from '../components/HistoryTab';
 
 // Get today's date in Australian Eastern time (Sydney)
 const getTodayInAustralia = () => {
@@ -27,520 +25,93 @@ const getTodayInAustralia = () => {
 
 const todayIso = getTodayInAustralia();
 
-const selectionFetcher = async (date: string, margin: number) => {
-  const data = await fetchSelections(date, margin);
-  return data;
-};
-
-const formatPercent = (value: number | null | undefined, decimals = 1) => {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
-  return `${value.toFixed(decimals)}%`;
-};
-
-const formatRatioPercent = (value: number | null | undefined, decimals = 1) => {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
-  return `${(value * 100).toFixed(decimals)}%`;
-};
-
-const formatCurrency = (value: number | null | undefined, decimals = 1) => {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
-  return `$${value.toFixed(decimals)}`;
-};
-
-const getStrategyLabel = (strategy: PlaybookStrategy) => {
-  const params = (strategy.params ?? {}) as Record<string, unknown>;
-  const parts: string[] = [];
-  if (typeof params.margin === 'number') parts.push(`Margin ${(params.margin * 100 - 100).toFixed(0)}%`);
-  if (typeof params.top_n === 'number') parts.push(`Top ${params.top_n}`);
-  if (typeof params.stake === 'number') parts.push(`Stake ${params.stake}`);
-  return parts.length ? parts.join(' • ') : strategy.strategy_id;
-};
-
-const formatTimestamp = (iso: string | undefined) => {
-  if (!iso) return null;
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleString('en-AU', {
-    timeZone: 'Australia/Sydney',
-    hour12: false,
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
+type Tab = 'today' | 'races' | 'playbook' | 'history';
 
 export default function Dashboard() {
+  const [activeTab, setActiveTab] = useState<Tab>('today');
   const [date, setDate] = useState<string>(todayIso);
   const [margin, setMargin] = useState<number>(1.05);
-  const [selectedTrack, setSelectedTrack] = useState<string>('all');
-  const [selectedRace, setSelectedRace] = useState<string>('all');
-  const [selectedStrategyId, setSelectedStrategyId] = useState<string>('');
 
-  const { data, error, isLoading } = useSWR(['selections', date, margin], ([, d, m]) => selectionFetcher(d, m), {
+  const { data: selectionsData, error: selectionsError, isLoading: selectionsLoading } = useSWR(
+    ['selections', date, margin],
+    ([, d, m]) => fetchSelections(d, m),
+    { revalidateOnFocus: false }
+  );
+
+  const { data: playbookData, error: playbookError } = useSWR<PlaybookResponse>('playbook', fetchPlaybook, {
     revalidateOnFocus: false,
   });
-  const { data: playbookData } = useSWR<PlaybookResponse>('playbook', fetchPlaybook, {
-    revalidateOnFocus: false,
-  });
-  const { data: topPicksData } = useSWR<TopPicksResponse>(
+
+  const { data: topPicksData, error: topPicksError } = useSWR<TopPicksResponse>(
     ['top-picks', date],
     ([, d]: [string, string]) => fetchTopPicks(d, 10),
-    {
-      revalidateOnFocus: false,
-    }
+    { revalidateOnFocus: false }
   );
 
-  const playbookSnapshot = playbookData?.latest;
-  const playbookStrategies = playbookSnapshot?.strategies ?? [];
-
-  useEffect(() => {
-    if (!selectedStrategyId && playbookStrategies.length) {
-      setSelectedStrategyId(playbookStrategies[0].strategy_id);
-    }
-  }, [selectedStrategyId, playbookStrategies]);
-
-  const selectedStrategy = useMemo(
-    () => playbookStrategies.find((strategy) => strategy.strategy_id === selectedStrategyId),
-    [playbookStrategies, selectedStrategyId],
-  );
-
-  const strategyParams = useMemo(() => (selectedStrategy?.params ?? {}) as Record<string, unknown>, [selectedStrategy]);
-  const recommendedMargin = typeof strategyParams.margin === 'number' ? (strategyParams.margin as number) : undefined;
-  const recommendedTopN = typeof strategyParams.top_n === 'number' ? (strategyParams.top_n as number) : undefined;
-  const recommendedStake = typeof strategyParams.stake === 'number' ? (strategyParams.stake as number) : undefined;
-
-  const allSelections = data?.selections ?? [];
-
-  const tracks = useMemo(() => {
-    return Array.from(new Set(allSelections.map((item) => item.track))).sort();
-  }, [allSelections]);
-
-  const filteredSelections = useMemo(() => {
-    return allSelections.filter((item) => {
-      if (selectedTrack !== 'all' && item.track !== selectedTrack) return false;
-      if (selectedRace !== 'all' && item.race_no !== Number(selectedRace)) return false;
-      return true;
-    });
-  }, [allSelections, selectedRace, selectedTrack]);
-
-  const groupedRaces = useMemo(() => {
-    const groups = new Map<string, { key: string; track: string; raceNo: number; eventDate: string; selections: Runner[] }>();
-    filteredSelections.forEach((runner) => {
-      const key = `${runner.track}-${runner.race_no}`;
-      if (!groups.has(key)) {
-        groups.set(key, {
-          key,
-          track: runner.track,
-          raceNo: runner.race_no,
-          eventDate: runner.event_date,
-          selections: [],
-        });
-      }
-      groups.get(key)?.selections.push(runner);
-    });
-    return Array.from(groups.values()).sort((a, b) => a.raceNo - b.raceNo);
-  }, [filteredSelections]);
-
-  const raceOptions = useMemo(() => {
-    if (selectedTrack === 'all') return [];
-    return Array.from(new Set(allSelections.filter((item) => item.track === selectedTrack).map((item) => item.race_no)))
-      .sort((a, b) => a - b);
-  }, [allSelections, selectedTrack]);
-
-  const avgEdge = useMemo(() => {
-    if (!filteredSelections.length) return 0;
-    const total = filteredSelections.reduce((sum, runner) => sum + (runner.model_prob - runner.implied_prob), 0);
-    return total / filteredSelections.length;
-  }, [filteredSelections]);
-
-  const avgOdds = useMemo(() => {
-    if (!filteredSelections.length) return 0;
-    const total = filteredSelections.reduce((sum, runner) => sum + runner.win_odds, 0);
-    return total / filteredSelections.length;
-  }, [filteredSelections]);
-
-  const playbookTrackMap = useMemo(() => {
-    const map = new Map<string, PlaybookTrackInsight>();
-    (playbookSnapshot?.tracks ?? []).forEach((track) => {
-      map.set(track.track, track);
-    });
-    return map;
-  }, [playbookSnapshot]);
-
-  const topTracks = useMemo(() => (playbookSnapshot?.tracks ?? []).slice(0, 6), [playbookSnapshot]);
-  const topContexts = useMemo(() => (playbookSnapshot?.contexts ?? []).slice(0, 6), [playbookSnapshot]);
-
-  const lastUpdated = formatTimestamp(playbookSnapshot?.metadata.generated_at);
-  const experienceRows = playbookSnapshot?.metadata.experience_rows ?? 0;
-  const strategiesEvaluated = playbookSnapshot?.metadata.strategies_evaluated ?? 0;
-  const globalStats = playbookSnapshot?.global;
-
-  const edgeThreshold = (margin - 1) * 100;
-
-  const dateRangeHint = 'Available PF window: Jul 18, 2025 → Sep 30, 2025.';
-  const noSelectionsMessage = data?.message
-    ? `${data.message} ${dateRangeHint}`
-    : `No selections match the current filters. ${dateRangeHint} Try lowering the margin threshold or choosing a different track.`;
-
-  const handleApplyStrategyMargin = () => {
-    if (recommendedMargin) {
-      const sliderPercent = Math.max(0, Math.min((recommendedMargin - 1) * 100, 20));
-      setMargin(1 + sliderPercent / 100);
-    }
-  };
+  const tabs: { id: Tab; label: string; icon: string }[] = [
+    { id: 'today', label: 'Today', icon: '🎯' },
+    { id: 'races', label: 'Races', icon: '🏇' },
+    { id: 'playbook', label: 'Playbook', icon: '📊' },
+    { id: 'history', label: 'History', icon: '📈' },
+  ];
 
   return (
-    <div className={styles.page}>
+    <div className={styles.dashboard}>
       <header className={styles.header}>
-        <div className={styles.titleRow}>
-          <div className={styles.titleBlock}>
-            <h1>HorseRacingML</h1>
-            <p>
-              ACE-powered intelligence surfaces the best value contexts across Australian racing. Explore the playbook,
-              apply strategy-aligned margins, and scan today&apos;s runners with confidence.
-            </p>
-            {lastUpdated && <span className={styles.playbookMeta}>Playbook refreshed {lastUpdated}</span>}
-          </div>
-          <div>
-            <div className={styles.headerActions}>
-              <Link className={styles.secondaryButton} href="/ace">
-                Explore ACE Console
-              </Link>
-            </div>
-            <div className={styles.metrics}>
-              <div className={styles.metricCard}>
-                <span className={styles.metricLabel}>Playbook POT</span>
-                <span className={styles.metricValue}>{formatPercent(globalStats?.pot_pct ?? null, 1)}</span>
-                <span className={styles.metricTrend}>
-                  {globalStats ? `${globalStats.total_bets} bets analysed` : 'Awaiting ACE run'}
-                </span>
-              </div>
-              <div className={styles.metricCard}>
-                <span className={styles.metricLabel}>Hit Rate</span>
-                <span className={styles.metricValue}>{formatRatioPercent(globalStats?.hit_rate ?? null, 1)}</span>
-                <span className={styles.metricTrend}>
-                  {strategiesEvaluated ? `${strategiesEvaluated} strategies evaluated` : '—'}
-                </span>
-              </div>
-              <div className={styles.metricCard}>
-                <span className={styles.metricLabel}>Experiences Logged</span>
-                <span className={styles.metricValue}>{experienceRows.toLocaleString()}</span>
-                <span className={styles.metricTrend}>Margin threshold ≥ {edgeThreshold.toFixed(1)}%</span>
-              </div>
-            </div>
-          </div>
+        <div className={styles.headerContent}>
+          <h1 className={styles.title}>HorseRacingML</h1>
+          <p className={styles.subtitle}>ACE-powered betting intelligence for Australian racing</p>
         </div>
       </header>
 
-      <div className={styles.body}>
-        <aside className={styles.sidebar}>
-          <section className={styles.panel}>
-            <h2>Filters</h2>
-            <div className={styles.controlGroup}>
-              <div className={styles.controlField}>
-                <label htmlFor="date-input">Race Date</label>
-                <input
-                  id="date-input"
-                  className={styles.controlInput}
-                  type="date"
-                  value={date}
-                  onChange={(event) => setDate(event.target.value)}
-                />
-              </div>
+      <nav className={styles.tabs}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`${styles.tab} ${activeTab === tab.id ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            <span className={styles.tabIcon}>{tab.icon}</span>
+            <span className={styles.tabLabel}>{tab.label}</span>
+          </button>
+        ))}
+      </nav>
 
-              {playbookStrategies.length > 0 && (
-                <div className={styles.controlField}>
-                  <label htmlFor="strategy-select">Strategy</label>
-                  <div className={styles.strategyControl}>
-                    <select
-                      id="strategy-select"
-                      className={styles.controlInput}
-                      value={selectedStrategyId}
-                      onChange={(event) => setSelectedStrategyId(event.target.value)}
-                    >
-                      {playbookStrategies.map((strategy) => (
-                        <option key={strategy.strategy_id} value={strategy.strategy_id}>
-                          {getStrategyLabel(strategy)}
-                        </option>
-                      ))}
-                    </select>
-                    {recommendedMargin && (
-                      <button type="button" className={styles.inlineButton} onClick={handleApplyStrategyMargin}>
-                        Apply {formatPercent((recommendedMargin - 1) * 100, 1)} margin
-                      </button>
-                    )}
-                  </div>
-                  {(recommendedTopN || recommendedStake) && (
-                    <p className={styles.helperText}>
-                      {recommendedTopN ? `Top ${recommendedTopN} runners per race` : ''}
-                      {recommendedTopN && recommendedStake ? ' • ' : ''}
-                      {recommendedStake ? `Stake ${recommendedStake}u` : ''}
-                    </p>
-                  )}
-                </div>
-              )}
+      <main className={styles.main}>
+        {activeTab === 'today' && (
+          <TodayTab
+            topPicksData={topPicksData}
+            playbookData={playbookData}
+            date={date}
+            setDate={setDate}
+            topPicksError={topPicksError}
+          />
+        )}
 
-              <div className={styles.controlField}>
-                <label htmlFor="margin-slider">
-                  Margin Threshold <span>{edgeThreshold.toFixed(1)}% edge</span>
-                </label>
-                <input
-                  id="margin-slider"
-                  className={`${styles.controlInput} ${styles.slider}`}
-                  type="range"
-                  min={0}
-                  max={20}
-                  step={0.5}
-                  value={Math.min(Math.max((margin - 1) * 100, 0), 20)}
-                  onChange={(event) => {
-                    const value = Number(event.target.value);
-                    setMargin(1 + value / 100);
-                  }}
-                />
-              </div>
+        {activeTab === 'races' && (
+          <RacesTab
+            selectionsData={selectionsData}
+            playbookData={playbookData}
+            date={date}
+            setDate={setDate}
+            margin={margin}
+            setMargin={setMargin}
+            isLoading={selectionsLoading}
+            error={selectionsError}
+          />
+        )}
 
-              <div className={styles.controlField}>
-                <label htmlFor="track-select">Track</label>
-                <select
-                  id="track-select"
-                  className={styles.controlInput}
-                  value={selectedTrack}
-                  onChange={(event) => {
-                    setSelectedTrack(event.target.value);
-                    setSelectedRace('all');
-                  }}
-                >
-                  <option value="all">All tracks ({tracks.length})</option>
-                  {tracks.map((track) => (
-                    <option key={track} value={track}>
-                      {track}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        {activeTab === 'playbook' && (
+          <PlaybookTab
+            playbookData={playbookData}
+            error={playbookError}
+          />
+        )}
 
-              {selectedTrack !== 'all' && (
-                <div className={styles.controlField}>
-                  <label htmlFor="race-select">Race</label>
-                  <select
-                    id="race-select"
-                    className={styles.controlInput}
-                    value={selectedRace}
-                    onChange={(event) => setSelectedRace(event.target.value)}
-                  >
-                    <option value="all">All races ({raceOptions.length})</option>
-                    {raceOptions.map((race) => (
-                      <option key={race} value={race}>
-                        Race {race}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-          </section>
-
-          <section className={styles.panel}>
-            <h2>Session Snapshot</h2>
-            <div className={styles.summaryList}>
-              <div className={styles.summaryItem}>
-                <strong>{groupedRaces.length}</strong>
-                <span>Races with value edges</span>
-              </div>
-              <div className={styles.summaryItem}>
-                <strong>{filteredSelections.filter((runner) => runner.model_prob >= 0.20).length}</strong>
-                <span>High confidence runners</span>
-              </div>
-              <div className={styles.summaryItem}>
-                <strong>{filteredSelections.filter((runner) => runner.model_prob - runner.implied_prob >= 0.1).length}</strong>
-                <span>Edges ≥ 10%</span>
-              </div>
-            </div>
-          </section>
-        </aside>
-
-        <main className={styles.main}>
-          {topPicksData && topPicksData.top_picks.length > 0 && (
-            <section className={styles.topPicksSection}>
-              <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>🎯 Today&apos;s Top Picks</h2>
-                <span className={styles.sectionMeta}>
-                  {topPicksData.top_picks.length} selections from {topPicksData.total_races} races
-                </span>
-              </div>
-              <div className={styles.topPicksList}>
-                {topPicksData.top_picks.map((pick, idx) => (
-                  <div key={`${pick.win_market_id}-${pick.selection_name}`} className={styles.topPickCard}>
-                    <div className={styles.pickHeader}>
-                      <span className={styles.pickRank}>#{idx + 1}</span>
-                      <div className={styles.pickTitle}>
-                        <strong>{pick.selection_name}</strong>
-                        <span className={styles.pickRaceInfo}>
-                          {pick.track} • Race {pick.race_no}
-                        </span>
-                      </div>
-                      <span className={`${styles.confidenceBadge} ${styles[`confidence${pick.confidence.replace(' ', '')}`]}`}>
-                        {pick.confidence}
-                      </span>
-                    </div>
-                    <p className={styles.pickSummary}>{pick.summary}</p>
-                    <div className={styles.pickStats}>
-                      <div className={styles.pickStat}>
-                        <span className={styles.pickStatLabel}>Win Probability</span>
-                        <span className={styles.pickStatValue}>{(pick.model_prob * 100).toFixed(1)}%</span>
-                      </div>
-                      {pick.win_odds && (
-                        <div className={styles.pickStat}>
-                          <span className={styles.pickStatLabel}>Odds</span>
-                          <span className={styles.pickStatValue}>${pick.win_odds.toFixed(2)}</span>
-                        </div>
-                      )}
-                      {pick.edge !== null && (
-                        <div className={styles.pickStat}>
-                          <span className={styles.pickStatLabel}>Edge</span>
-                          <span className={`${styles.pickStatValue} ${pick.edge > 0 ? styles.positive : styles.negative}`}>
-                            {pick.edge > 0 ? '+' : ''}{(pick.edge * 100).toFixed(1)}%
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {playbookSnapshot && (
-            <section className={styles.playbookSection}>
-              <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>ACE Playbook Insights</h2>
-                {lastUpdated && <span className={styles.sectionMeta}>Updated {lastUpdated}</span>}
-              </div>
-              <div className={styles.playbookGrid}>
-                <div className={styles.playbookColumn}>
-                  <h3>Strategy Focus</h3>
-                  {selectedStrategy ? (
-                    <div className={styles.strategyCard}>
-                      <span className={styles.strategyLabel}>{getStrategyLabel(selectedStrategy)}</span>
-                      <div className={styles.strategyMetrics}>
-                        <div className={styles.statBlock}>
-                          <span className={styles.statLabel}>POT</span>
-                          <span className={styles.statValue}>{formatPercent(selectedStrategy.pot_pct, 1)}</span>
-                        </div>
-                        <div className={styles.statBlock}>
-                          <span className={styles.statLabel}>Hit Rate</span>
-                          <span className={styles.statValue}>{formatRatioPercent(selectedStrategy.hit_rate, 1)}</span>
-                        </div>
-                        <div className={styles.statBlock}>
-                          <span className={styles.statLabel}>Profit</span>
-                          <span className={styles.statValue}>{formatCurrency(selectedStrategy.total_profit, 1)}</span>
-                        </div>
-                        <div className={styles.statBlock}>
-                          <span className={styles.statLabel}>Bets</span>
-                          <span className={styles.statValue}>{selectedStrategy.bets}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className={styles.helperText}>Playbook will surface strategy stats after the next ACE run.</p>
-                  )}
-                </div>
-
-                <div className={styles.playbookColumn}>
-                  <h3>Hot Tracks</h3>
-                  <div className={styles.trackGrid}>
-                    {topTracks.length > 0 ? (
-                      topTracks.map((track) => (
-                        <div key={track.track} className={styles.trackCard}>
-                          <div className={styles.trackTitle}>{track.track}</div>
-                          <div className={styles.trackStats}>
-                            <span>{formatPercent(track.pot_pct, 1)}</span>
-                            <span>{track.bets} bets</span>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className={styles.helperText}>Run ACE to populate track insights.</p>
-                    )}
-                  </div>
-                </div>
-
-                <div className={styles.playbookColumn}>
-                  <h3>Context Cues</h3>
-                  <div className={styles.contextGrid}>
-                    {topContexts.length > 0 ? (
-                      topContexts.map((context, index) => (
-                        <div key={`${context.track ?? 'ctx'}-${index}`} className={styles.contextCard}>
-                          <div className={styles.contextMeta}>
-                            <span>{context.track ?? 'Multi-track cluster'}</span>
-                            <span>{context.distance_band ?? 'Distance mix'}</span>
-                          </div>
-                          <div className={styles.contextMeta}>
-                            <span>{context.racing_type ?? 'Type'}</span>
-                            <span>{context.race_type ?? ''}</span>
-                          </div>
-                          <div className={styles.contextStats}>
-                            <span>{formatPercent(context.pot_pct, 1)}</span>
-                            <span>{context.bets} bets</span>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className={styles.helperText}>Contextual patterns will appear once enough experiences accumulate.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
-
-          <section>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Value Heatmap</h2>
-            </div>
-
-            {error && <div className={styles.errorBox}>Failed to load selections – {error.message}</div>}
-
-            {isLoading && (
-              <div className={styles.skeletonGrid}>
-                <div className={styles.skeletonCard} />
-                <div className={styles.skeletonCard} />
-                <div className={styles.skeletonCard} />
-              </div>
-            )}
-
-            {!isLoading && !error && groupedRaces.length === 0 && (
-              <div className={styles.emptyBox}>{noSelectionsMessage}</div>
-            )}
-
-            {!isLoading && !error && groupedRaces.length > 0 && (
-              <div className={styles.raceGrid}>
-                {groupedRaces.map((race) => (
-                  <RaceCard
-                    key={race.key}
-                    track={race.track}
-                    raceNo={race.raceNo}
-                    selections={race.selections}
-                    eventDate={race.eventDate}
-                    playbookTrack={playbookTrackMap.get(race.track)}
-                  />
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className={styles.tableSection}>
-            <h3>Detailed Selections</h3>
-            <SelectionTable selections={filteredSelections} emptyMessage={noSelectionsMessage} />
-            <div className={styles.tableFootnote}>
-              Showing {filteredSelections.length.toLocaleString()} runners filtered by current settings. Average edge{' '}
-              {(avgEdge * 100).toFixed(1)}% • Average odds ${avgOdds.toFixed(2)}
-            </div>
-          </section>
-        </main>
-      </div>
+        {activeTab === 'history' && (
+          <HistoryTab playbookData={playbookData} />
+        )}
+      </main>
     </div>
   );
 }
