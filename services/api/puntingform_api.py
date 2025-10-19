@@ -177,6 +177,10 @@ class PuntingFormClient:
             "career_seconds": safe_number(safe_get(runner_json, ["careerSeconds", "career_seconds"])),
             "career_thirds": safe_number(safe_get(runner_json, ["careerThirds", "career_thirds"])),
             "prize_money": safe_number(safe_get(runner_json, ["prizeMoney", "prize_money", "prizemoney"])),
+
+            # Race results (for historical data)
+            "win_result": safe_get(runner_json, ["winResult", "win_result", "result", "finishPosition", "position"]),
+            "place_result": safe_get(runner_json, ["placeResult", "place_result", "placing"]),
         }
 
         if features["jockey"] and isinstance(features["jockey"], dict):

@@ -187,8 +187,21 @@ def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFra
         ]:
             if column not in df.columns:
                 df[column] = np.nan
-        if "win_result" in df.columns:
-            df["win_result"] = df["win_result"].astype("string").fillna("UNKNOWN")
+        # Normalize win_result to standard format
+        if "win_result" in df.columns and df["win_result"].notna().any():
+            # Convert to string and normalize
+            result_series = df["win_result"].astype(str).str.strip().str.upper()
+            # Map common values to standard format
+            df["win_result"] = result_series.replace({
+                "1": "WINNER",
+                "1.0": "WINNER",
+                "FIRST": "WINNER",
+                "WIN": "WINNER",
+                "WON": "WINNER",
+                "NAN": "UNKNOWN",
+                "NONE": "UNKNOWN",
+                "": "UNKNOWN",
+            }).fillna("UNKNOWN")
         else:
             df["win_result"] = "UNKNOWN"
 
