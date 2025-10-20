@@ -197,10 +197,17 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
 
         scratched_count = is_exact_default.sum()
         if scratched_count > 0:
-            print(f"[WARN] Filtering {scratched_count} horses with exact default pattern (rating=50.0, win_rate=0.1)")
-            if "selection_name" in df.columns:
-                print(f"[DEBUG] Scratched horses: {df[is_exact_default]['selection_name'].head(10).tolist()}")
-            df = df[~is_exact_default]
+            percent_scratched = (scratched_count / len(df)) * 100
+            print(f"[WARN] Found {scratched_count}/{len(df)} horses ({percent_scratched:.1f}%) with exact default pattern (rating=50.0, win_rate=0.1)")
+
+            # Only filter if < 90% are defaults (otherwise we have NO real data for this date)
+            if percent_scratched < 90:
+                if "selection_name" in df.columns:
+                    print(f"[DEBUG] Filtering scratched horses: {df[is_exact_default]['selection_name'].head(10).tolist()}")
+                df = df[~is_exact_default]
+            else:
+                print(f"[ERROR] {percent_scratched:.1f}% of horses have default values - NO REAL DATA FOR THIS DATE")
+                print(f"[ERROR] This date likely has no PuntingForm data. All picks may be scratched/invalid.")
 
     filtered_count = initial_count - len(df)
     if filtered_count > 0:
