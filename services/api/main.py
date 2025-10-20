@@ -221,7 +221,8 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
         all_have_defaults = ((df["betfair_horse_rating"] == 50.0) & (df["win_rate"] == 0.1)).all()
         if all_have_defaults:
             print(f"[ERROR] All {len(df)} runners have default values - PuntingForm likely returned scratched-only data. Returning empty set.")
-            return pd.DataFrame()
+            # Return empty DataFrame with same columns to avoid breaking downstream code
+            return df.iloc[0:0]
 
     return df
 
