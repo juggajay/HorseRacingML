@@ -2,6 +2,7 @@ export interface Runner {
   event_date: string;
   track: string;
   race_no: number;
+  race_time?: string;
   win_market_id: string;
   selection_id: string;
   selection_name: string;

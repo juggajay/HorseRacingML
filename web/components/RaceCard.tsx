@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import styles from './RaceCard.module.css';
 import type { PlaybookTrackInsight, Runner } from '../lib/api';
 
@@ -8,6 +8,54 @@ interface RaceCardProps {
   eventDate: string;
   selections: Runner[];
   playbookTrack?: PlaybookTrackInsight;
+}
+
+function useCountdown(targetTime: string | undefined, eventDate: string): string {
+  const [countdown, setCountdown] = useState<string>('');
+
+  useEffect(() => {
+    if (!targetTime) return;
+
+    const updateCountdown = () => {
+      try {
+        // Combine event_date and race_time to create full datetime
+        // race_time is typically "HH:MM:SS" format
+        const dateStr = eventDate.split('T')[0]; // Get YYYY-MM-DD part
+        const fullDateTime = `${dateStr}T${targetTime}`;
+        const target = new Date(fullDateTime);
+
+        // Use Sydney timezone offset (AEDT is UTC+11, AEST is UTC+10)
+        // For simplicity, we'll assume AEDT (UTC+11) - adjust if needed
+        const now = new Date();
+        const diff = target.getTime() - now.getTime();
+
+        if (diff <= 0) {
+          setCountdown('Started');
+          return;
+        }
+
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        if (hours > 0) {
+          setCountdown(`${hours}h ${minutes}m`);
+        } else if (minutes > 0) {
+          setCountdown(`${minutes}m ${seconds}s`);
+        } else {
+          setCountdown(`${seconds}s`);
+        }
+      } catch (e) {
+        setCountdown('');
+      }
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, [targetTime, eventDate]);
+
+  return countdown;
 }
 
 type ConfidenceLevel = 'high' | 'mediumHigh' | 'medium' | 'low';
@@ -43,11 +91,44 @@ export const RaceCard: React.FC<RaceCardProps> = ({ track, raceNo, eventDate, se
     return date.toLocaleDateString('en-AU', { weekday: 'short', month: 'short', day: 'numeric' });
   }, [eventDate]);
 
+  // Get race_time from first runner (all runners in same race have same time)
+  const raceTime = sorted[0]?.race_time;
+  const countdown = useCountdown(raceTime, eventDate);
+
+  const formatRaceTime = (time: string | undefined) => {
+    if (!time) return null;
+    try {
+      // race_time is "HH:MM:SS", we want "HH:MM"
+      const parts = time.split(':');
+      return `${parts[0]}:${parts[1]}`;
+    } catch {
+      return null;
+    }
+  };
+
+  const formattedTime = formatRaceTime(raceTime);
+
   return (
     <article className={styles.card}>
       <header className={styles.header}>
         <div className={styles.identity}>
-          <span className={styles.meta}>{raceLabel}</span>
+          <div className={styles.metaRow}>
+            <span className={styles.meta}>{raceLabel}</span>
+            {formattedTime && (
+              <>
+                <span className={styles.meta}>•</span>
+                <span className={styles.meta}>{formattedTime}</span>
+                {countdown && (
+                  <>
+                    <span className={styles.meta}>•</span>
+                    <span className={`${styles.countdown} ${countdown === 'Started' ? styles.countdownStarted : ''}`}>
+                      {countdown === 'Started' ? '🏁 Started' : `⏱️ ${countdown}`}
+                    </span>
+                  </>
+                )}
+              </>
+            )}
+          </div>
           <h3 className={styles.track}>{track} • Race {raceNo}</h3>
         </div>
         <div className={styles.badges}>
