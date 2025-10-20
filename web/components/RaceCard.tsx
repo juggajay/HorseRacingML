@@ -77,10 +77,12 @@ export const RaceCard: React.FC<RaceCardProps> = ({ track, raceNo, eventDate, se
               <div className={styles.runnerMain}>
                 <h4 className={styles.horseName}>{runner.selection_name}</h4>
                 <div className={styles.secondaryLine}>
-                  {runner.betfair_horse_rating !== undefined && (
+                  {/* Only show betfair_horse_rating if it's not the default 50.0 */}
+                  {runner.betfair_horse_rating !== undefined && runner.betfair_horse_rating !== 50.0 && (
                     <span className={styles.tag}>Rating {runner.betfair_horse_rating.toFixed(1)}</span>
                   )}
-                  {runner.win_rate !== undefined && (
+                  {/* Only show win_rate if it's not the default 0.1 (10%) */}
+                  {runner.win_rate !== undefined && runner.win_rate !== 0.1 && (
                     <span className={styles.tag}>Win {formatPercent(runner.win_rate, 0)}</span>
                   )}
                   <span className={`${styles.confidence} ${confidenceClass}`}>
