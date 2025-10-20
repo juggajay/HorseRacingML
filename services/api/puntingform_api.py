@@ -181,6 +181,11 @@ class PuntingFormClient:
             # Race results (for historical data)
             "win_result": safe_get(runner_json, ["winResult", "win_result", "result", "finishPosition", "position"]),
             "place_result": safe_get(runner_json, ["placeResult", "place_result", "placing"]),
+
+            # Runner status (for upcoming races - scratched/withdrawn filtering)
+            "runner_status": safe_get(runner_json, ["runnerStatus", "runner_status", "status", "entryStatus", "entry_status"]),
+            "is_scratched": safe_get(runner_json, ["isScratched", "is_scratched", "scratched", "withdrawn"]),
+            "emergency_runner": safe_get(runner_json, ["emergencyRunner", "emergency_runner", "isEmergency", "is_emergency"]),
         }
 
         if features["jockey"] and isinstance(features["jockey"], dict):

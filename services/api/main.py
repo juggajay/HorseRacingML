@@ -173,6 +173,34 @@ class AceRunResponse(BaseModel):
     schema_runners_added: int
 
 
+def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
+    """Filter out scratched/withdrawn horses from the dataset."""
+    if df is None or df.empty:
+        return df
+
+    initial_count = len(df)
+
+    # Check for various scratched indicators
+    # is_scratched: explicit True/False or boolean-like values
+    if "is_scratched" in df.columns:
+        # Handle boolean, string, or numeric representations
+        df = df[~df["is_scratched"].isin([True, "true", "True", "TRUE", 1, "1", "yes", "Yes", "YES"])]
+
+    # runner_status: check for "SCRATCHED", "WITHDRAWN", "REMOVED" etc.
+    if "runner_status" in df.columns:
+        scratched_statuses = ["SCRATCHED", "WITHDRAWN", "REMOVED", "LATE SCRATCHING", "scratched", "withdrawn"]
+        df = df[~df["runner_status"].isin(scratched_statuses)]
+
+    # emergency_runner: sometimes emergency runners indicate scratching
+    # (Only filter if explicitly marked as scratched emergency)
+
+    filtered_count = initial_count - len(df)
+    if filtered_count > 0:
+        print(f"[INFO] Filtered {filtered_count} scratched/withdrawn runners ({initial_count} → {len(df)})")
+
+    return df
+
+
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
     df_feat = engineer_all_features(df_raw)
 
@@ -279,6 +307,8 @@ def get_top_picks(
     """Get the model's top picks for the day with confidence levels and summaries."""
     target_date = date.fromisoformat(date_str) if date_str else date.today()
     subset = _load_dataset(target_date)
+    # Filter out scratched/withdrawn horses BEFORE scoring
+    subset = _filter_scratched_runners(subset)
     booster = _latest_model()
     scored = _score(subset, booster)
 
@@ -392,6 +422,9 @@ def get_selections(
     else:
         target_date = date.fromisoformat(date_str) if date_str else date.today()
         subset = _load_dataset(target_date)
+
+    # Filter out scratched/withdrawn horses BEFORE scoring
+    subset = _filter_scratched_runners(subset)
 
     booster = _latest_model()
     scored = _score(subset, booster)
