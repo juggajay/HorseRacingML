@@ -127,6 +127,43 @@ export default function PlaybookTab({ playbookData, error }: PlaybookTabProps) {
             </div>
           </div>
         </div>
+
+        {/* Cutting-Edge Research Section */}
+        <div className={styles.explainerCard} style={{ marginTop: '1.5rem' }}>
+          <h3 className={styles.explainerTitle}>🧬 Built on Cutting-Edge Research</h3>
+          <p className={styles.explainerText}>
+            ACE implements a <strong>two-loop autonomous learning architecture</strong> based on the latest advances in
+            reinforcement learning and meta-learning research. This isn't just basic prediction - it's adaptive intelligence
+            that learns and evolves betting strategies over time.
+          </p>
+          <div className={styles.explainerPoints}>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🧠</span>
+              <span><strong>Experience Replay:</strong> Inspired by DeepMind's DQN research, ACE stores every betting decision as a trajectory (state → action → reward) and continuously learns from past experiences to improve future decisions</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🎰</span>
+              <span><strong>Contextual Multi-Armed Bandits:</strong> Uses advanced exploration-exploitation algorithms similar to those used in modern recommendation systems to balance trying new strategies vs. doubling down on proven winners</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📚</span>
+              <span><strong>Meta-Learning (Learning to Learn):</strong> The two-loop architecture (Early Experience + ACE Reflector) enables meta-learning - the system learns which types of strategies work best in which contexts, not just memorizing specific bets</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🛡️</span>
+              <span><strong>Anti-Catastrophic-Forgetting:</strong> Persistent playbook snapshots prevent "knowledge erosion" - a common problem in online learning where models forget old patterns. Your system accumulates wisdom without losing historical insights</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>⚡</span>
+              <span><strong>Statistical Rigor:</strong> Every strategy insight is backed by statistical analysis including confidence intervals, sample sizes, and profit distributions - not just cherry-picked winners</span>
+            </div>
+          </div>
+          <p className={styles.explainerText} style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-tertiary)' }}>
+            This architecture draws from research in autonomous agents, reinforcement learning (Sutton & Barto),
+            experience replay (Mnih et al.), and contextual bandits (Li et al.) - the same techniques powering
+            self-driving cars, game-playing AIs, and modern recommendation engines.
+          </p>
+        </div>
       </div>
 
       {error && <div className={styles.error}>Failed to load playbook: {error.message}</div>}
