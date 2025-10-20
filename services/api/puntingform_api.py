@@ -217,6 +217,12 @@ class PuntingFormClient:
                 date_hint = dt.date.fromisoformat(str(date_str)[:10])
             except ValueError:
                 pass
+
+        # Some PuntingForm endpoints now expect the meeting date to be supplied to return full fields.
+        # When we know the date, include it to avoid receiving empty or scratched-only runner lists.
+        if date_hint is not None:
+            params["meetingDate"] = date_hint.isoformat()
+
         response = self._make_request("v2/form/form", params, date_hint=date_hint, force=force)
 
         if not response:
