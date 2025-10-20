@@ -317,10 +317,10 @@ def get_top_picks(
     """Get the model's top picks for the day with confidence levels and summaries."""
     target_date = date.fromisoformat(date_str) if date_str else date.today()
     subset = _load_dataset(target_date)
-    # Filter out scratched/withdrawn horses BEFORE scoring
-    subset = _filter_scratched_runners(subset)
     booster = _latest_model()
     scored = _score(subset, booster)
+    # Filter out scratched/withdrawn horses AFTER scoring (defaults added during feature engineering)
+    scored = _filter_scratched_runners(scored)
 
     # Debug: Log probability distribution and feature availability
     print(f"\n[DEBUG] Top Picks for {target_date}:")
@@ -433,11 +433,10 @@ def get_selections(
         target_date = date.fromisoformat(date_str) if date_str else date.today()
         subset = _load_dataset(target_date)
 
-    # Filter out scratched/withdrawn horses BEFORE scoring
-    subset = _filter_scratched_runners(subset)
-
     booster = _latest_model()
     scored = _score(subset, booster)
+    # Filter out scratched/withdrawn horses AFTER scoring (defaults added during feature engineering)
+    scored = _filter_scratched_runners(scored)
 
     scored["edge_margin"] = scored["model_prob"] - scored["implied_prob"] * margin
     filtered = scored[scored["edge_margin"] > 0].copy()
