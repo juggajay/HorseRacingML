@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useState } from 'react';
 import useSWR from 'swr';
 import {
@@ -66,6 +67,11 @@ export default function Dashboard() {
         <div className={styles.headerContent}>
           <h1 className={styles.title}>HorseRacingML</h1>
           <p className={styles.subtitle}>ACE-powered betting intelligence for Australian racing</p>
+          <div className={styles.headerLinks}>
+            <Link href="/pf-live" className={styles.headerLink}>
+              PF Live Data Explorer →
+            </Link>
+          </div>
         </div>
       </header>
 

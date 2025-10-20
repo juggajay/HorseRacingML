@@ -226,6 +226,56 @@ export async function fetchTopPicks(date?: string, limit?: number): Promise<TopP
   }
 }
 
+export interface PfMeetingSummary {
+  track: string;
+  state_code?: string | null;
+  runner_count: number;
+  races: number[];
+}
+
+export interface PfLiveResponse {
+  date: string;
+  columns: string[];
+  meetings: PfMeetingSummary[];
+  runners: Record<string, unknown>[];
+  source: string;
+}
+
+export async function fetchPfLive(date?: string, force?: boolean): Promise<PfLiveResponse> {
+  const params = new URLSearchParams();
+  if (date) params.append('date_str', date);
+  if (force) params.append('force', 'true');
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000);
+
+  try {
+    const res = await fetch(`${API_BASE}/pf/live?${params.toString()}`, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (res.status === 404) {
+      const payload = await res.json().catch(() => ({ detail: 'No live data available' }));
+      throw new Error(typeof payload.detail === 'string' ? payload.detail : 'No PuntingForm live data for this date.');
+    }
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => 'Unknown error');
+      throw new Error(`PF Live error (${res.status}): ${text}`);
+    }
+
+    return (await res.json()) as PfLiveResponse;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        throw new Error('PF live request timed out. Try forcing a refresh or selecting a different date.');
+      }
+      throw error;
+    }
+    throw new Error('Failed to fetch PuntingForm live data');
+  }
+}
+
 export async function runAce(forceRefresh = false): Promise<AceRunResponse> {
   const res = await fetch(`${API_BASE}/ace/run`, {
     method: 'POST',

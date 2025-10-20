@@ -32,6 +32,29 @@
   font-weight: 400;
 }
 
+.headerLinks {
+  margin-top: 1.25rem;
+}
+
+.headerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.25);
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.headerLink:hover {
+  background: rgba(15, 23, 42, 0.45);
+  transform: translateY(-1px);
+}
+
 .tabs {
   display: flex;
   gap: 0.5rem;

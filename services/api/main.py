@@ -420,6 +420,64 @@ def get_top_picks(
     }
 
 
+@app.get("/pf/live")
+def get_pf_live_data(
+    date_str: Optional[str] = Query(None, description="YYYY-MM-DD"),
+    force: bool = Query(False, description="Force refresh from PuntingForm API, bypassing cache"),
+) -> dict:
+    """Return raw PuntingForm live runners with all available fields."""
+    target_date = date.fromisoformat(date_str) if date_str else date.today()
+    try:
+        live_df = load_live_pf_day(target_date, force=force)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch PuntingForm data: {exc}") from exc
+
+    if live_df is None or live_df.empty:
+        raise HTTPException(status_code=404, detail=f"No PuntingForm live runners found on {target_date}")
+
+    live_df = live_df.copy()
+
+    # Ensure datetime columns serialise cleanly
+    datetime_cols = live_df.select_dtypes(include=["datetime64[ns]", "datetime64[ns, tz]"]).columns
+    for col in datetime_cols:
+        live_df[col] = live_df[col].astype(str)
+
+    meetings_summary: list[dict] = []
+    if "track" in live_df.columns:
+        group_cols = ["track"]
+        if "state_code" in live_df.columns:
+            group_cols.append("state_code")
+        grouped = live_df.groupby(group_cols, dropna=False)
+        for keys, group in grouped:
+            if not isinstance(keys, tuple):
+                keys = (keys,)
+            track_val = str(keys[0]) if keys and keys[0] is not None else ""
+            state_val = str(keys[1]) if len(keys) > 1 and keys[1] not in (None, "nan") else None
+            races: list[int] = []
+            if "race_no" in group.columns:
+                race_numbers = group["race_no"].dropna()
+                races = sorted({int(float(r)) for r in race_numbers if pd.notna(r)})
+            meetings_summary.append(
+                {
+                    "track": track_val,
+                    "state_code": state_val,
+                    "runner_count": int(len(group)),
+                    "races": races,
+                }
+            )
+
+    columns = list(live_df.columns)
+    records = json.loads(live_df.to_json(orient="records", date_format="iso"))
+
+    return {
+        "date": target_date.isoformat(),
+        "columns": columns,
+        "meetings": meetings_summary,
+        "runners": records,
+        "source": "puntingform_live",
+    }
+
+
 @app.get("/selections")
 def get_selections(
     date_str: Optional[str] = Query(None, description="YYYY-MM-DD or YYYY-MM-DD:YYYY-MM-DD for date range"),
