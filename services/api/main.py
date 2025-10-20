@@ -189,25 +189,25 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
         scratched_statuses = ["SCRATCHED", "WITHDRAWN", "REMOVED", "LATE SCRATCHING", "scratched", "withdrawn"]
         df = df[~df["runner_status"].isin(scratched_statuses)]
 
-    # Method 2: AGGRESSIVE heuristic - filter EXACT default pattern
-    # If betfair_horse_rating==50.0 AND win_rate==0.1 exactly, it's almost certainly scratched
-    if "betfair_horse_rating" in df.columns and "win_rate" in df.columns:
-        # Use exact equality - scratched horses have EXACTLY these values
+    # Method 2: Race-level heuristic - filter defaults only when other horses in same race have real data
+    # This prevents filtering out ALL horses when entire dataset has defaults, but still catches scratched horses
+    if all(col in df.columns for col in ["betfair_horse_rating", "win_rate", "track", "race_no"]):
         is_exact_default = (df["betfair_horse_rating"] == 50.0) & (df["win_rate"] == 0.1)
 
-        scratched_count = is_exact_default.sum()
-        if scratched_count > 0:
-            percent_scratched = (scratched_count / len(df)) * 100
-            print(f"[WARN] Found {scratched_count}/{len(df)} horses ({percent_scratched:.1f}%) with exact default pattern (rating=50.0, win_rate=0.1)")
+        # For each race, check if SOME horses have defaults while others don't
+        # Only filter defaults if the race has mixed data quality
+        filtered_indices = []
+        for (track, race_no), race_df in df.groupby(["track", "race_no"]):
+            race_has_defaults = is_exact_default.loc[race_df.index].any()
+            race_all_defaults = is_exact_default.loc[race_df.index].all()
 
-            # Only filter if < 90% are defaults (otherwise we have NO real data for this date)
-            if percent_scratched < 90:
-                if "selection_name" in df.columns:
-                    print(f"[DEBUG] Filtering scratched horses: {df[is_exact_default]['selection_name'].head(10).tolist()}")
-                df = df[~is_exact_default]
-            else:
-                print(f"[ERROR] {percent_scratched:.1f}% of horses have default values - NO REAL DATA FOR THIS DATE")
-                print(f"[ERROR] This date likely has no PuntingForm data. All picks may be scratched/invalid.")
+            # If some horses have defaults but not all, filter the defaults (likely scratched)
+            if race_has_defaults and not race_all_defaults:
+                filtered_indices.extend(race_df.index[is_exact_default.loc[race_df.index]].tolist())
+
+        if filtered_indices:
+            print(f"[WARN] Filtering {len(filtered_indices)} horses with defaults in races that have real data")
+            df = df.drop(filtered_indices)
 
     filtered_count = initial_count - len(df)
     if filtered_count > 0:
