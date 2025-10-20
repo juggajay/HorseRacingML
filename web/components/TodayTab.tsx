@@ -67,26 +67,30 @@ export default function TodayTab({ topPicksData, playbookData, date, setDate, to
         <div className={styles.explainerCard}>
           <h3 className={styles.explainerTitle}>📖 What Am I Looking At?</h3>
           <p className={styles.explainerText}>
-            This page shows <strong>today's highest-probability horses</strong> selected by the machine learning model.
-            These picks are ranked by the model's confidence - meaning the horses it believes have the best chance of winning
-            their respective races.
+            This page shows the <strong>top 10 horses by model confidence</strong> - the runners the ML model believes have the
+            highest probability of winning today. These are sorted purely by win probability, NOT by value/edge.
+            For value bets with positive edge, see the Races tab.
           </p>
           <div className={styles.explainerPoints}>
             <div className={styles.explainerPoint}>
-              <span className={styles.explainerBullet}>🤖</span>
-              <span><strong>ML Model Picks:</strong> Trained on 45+ features including PuntingForm AI ratings, historical performance, and market data</span>
-            </div>
-            <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>🎯</span>
-              <span><strong>Confidence Level:</strong> "Very High" means model probability &gt;30%, "High" means 20-30%</span>
+              <span><strong>Selection Criteria:</strong> Top 10 highest model probabilities across all races. These are favorites/strong chances, not necessarily value bets</span>
             </div>
             <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>📊</span>
-              <span><strong>Edge:</strong> The difference between what the model thinks the horse's chance is vs what the market odds suggest</span>
+              <span><strong>Model Probability:</strong> The ML model's calibrated win chance (0-100%). "Very High" = &gt;25%, "High" = 15-25%</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>💎</span>
+              <span><strong>Edge:</strong> Can be positive (value) or negative (overbet). Green edge = good value, red edge = market has already bet it down</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>⚠️</span>
+              <span><strong>Important:</strong> High probability ≠ good bet! A horse with 30% chance at $2.50 odds has negative edge. Check the Races tab for value bets</span>
             </div>
             <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>💰</span>
-              <span><strong>POT (Profit on Turnover):</strong> Historical profitability from the Playbook - shows how profitable ACE's strategies have been</span>
+              <span><strong>POT (Profit on Turnover):</strong> Historical profitability from the Playbook - shows how profitable ACE's betting strategies have been</span>
             </div>
           </div>
         </div>
