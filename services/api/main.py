@@ -201,23 +201,27 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
         is_default_rating = (df["betfair_horse_rating"] == 50.0) | df["betfair_horse_rating"].isna()
         is_default_win_rate = (df["win_rate"] == 0.1) | df["win_rate"].isna()
 
-        # Check if PF features are missing
-        pf_missing = True
-        if "pf_score" in df.columns:
-            pf_missing = df["pf_score"].isna()
-        elif "pf_ai_rank" in df.columns:
-            pf_missing = df["pf_ai_rank"].isna()
-        elif "neural_rating" in df.columns:
-            pf_missing = df["neural_rating"].isna()
-        else:
-            pf_missing = pd.Series([True] * len(df), index=df.index)
+        # Check if PF features are missing - check ALL common PF feature fields
+        pf_feature_cols = ["pf_score", "pf_ai_rank", "pf_ai_score", "neural_rating", "time_rating",
+                          "weight_class_rating", "early_time_rating", "late_sectional_rating"]
 
-        # Flag as likely scratched if: default rating + default win_rate + missing PF features
+        # Count how many PF features are actually present and non-null
+        pf_features_present = 0
+        for col in pf_feature_cols:
+            if col in df.columns:
+                pf_features_present += df[col].notna().astype(int)
+
+        # If a horse has 0 PF features (all null/missing), flag as suspicious
+        # Real horses should have AT LEAST one PF feature
+        pf_missing = (pf_features_present == 0)
+
+        # Flag as likely scratched if: default rating + default win_rate + NO PF features at all
         likely_scratched = is_default_rating & is_default_win_rate & pf_missing
 
         scratched_count = likely_scratched.sum()
         if scratched_count > 0:
             print(f"[WARN] Detected {scratched_count} likely scratched horses via heuristics (all default features)")
+            print(f"[DEBUG] Sample scratched horses: {df[likely_scratched]['selection_name'].head(3).tolist() if 'selection_name' in df.columns else 'N/A'}")
             # Filter them out
             df = df[~likely_scratched]
 
