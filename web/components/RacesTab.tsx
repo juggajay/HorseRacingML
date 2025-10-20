@@ -84,6 +84,40 @@ export default function RacesTab({
         </div>
       </div>
 
+      {/* Explanation Section */}
+      <div className={styles.explainerSection}>
+        <div className={styles.explainerCard}>
+          <h3 className={styles.explainerTitle}>📖 What Am I Looking At?</h3>
+          <p className={styles.explainerText}>
+            This page shows <strong>every horse racing today</strong> with detailed ML predictions for each race.
+            Unlike the Today tab (which shows only the top picks), this gives you the complete picture with
+            probabilities and value ratings for all ~950 horses across all tracks.
+          </p>
+          <div className={styles.explainerPoints}>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🏇</span>
+              <span><strong>All Runners:</strong> Complete field for each race with model probabilities, market odds, and calculated edge</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📊</span>
+              <span><strong>Model Probability:</strong> The ML model's calibrated win chance (0-100%). Higher = better chance to win</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>💎</span>
+              <span><strong>Edge (Value):</strong> Green = model thinks horse has better chance than odds suggest. Red = overbet by market</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🎚️</span>
+              <span><strong>Margin Threshold:</strong> Filters horses to only show those with edge above this % (used by ACE for bet selection)</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>⏱️</span>
+              <span><strong>Loading Time:</strong> Processing 950+ horses with 45 features each takes ~2 minutes - be patient!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className={styles.filters}>
         <div className={styles.filterGroup}>

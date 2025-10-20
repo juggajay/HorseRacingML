@@ -62,6 +62,36 @@ export default function TodayTab({ topPicksData, playbookData, date, setDate, to
         </div>
       </div>
 
+      {/* Explanation Section */}
+      <div className={styles.explainerSection}>
+        <div className={styles.explainerCard}>
+          <h3 className={styles.explainerTitle}>📖 What Am I Looking At?</h3>
+          <p className={styles.explainerText}>
+            This page shows <strong>today's highest-probability horses</strong> selected by the machine learning model.
+            These picks are ranked by the model's confidence - meaning the horses it believes have the best chance of winning
+            their respective races.
+          </p>
+          <div className={styles.explainerPoints}>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🤖</span>
+              <span><strong>ML Model Picks:</strong> Trained on 45+ features including PuntingForm AI ratings, historical performance, and market data</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🎯</span>
+              <span><strong>Confidence Level:</strong> "Very High" means model probability &gt;30%, "High" means 20-30%</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📊</span>
+              <span><strong>Edge:</strong> The difference between what the model thinks the horse's chance is vs what the market odds suggest</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>💰</span>
+              <span><strong>POT (Profit on Turnover):</strong> Historical profitability from the Playbook - shows how profitable ACE's strategies have been</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Quick Stats */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>

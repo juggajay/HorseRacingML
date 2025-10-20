@@ -37,6 +37,40 @@ export default function HistoryTab({ playbookData }: HistoryTabProps) {
         <p className={styles.subtitle}>Historical playbook snapshots and performance tracking</p>
       </div>
 
+      {/* Explanation Section */}
+      <div className={styles.explainerSection}>
+        <div className={styles.explainerCard}>
+          <h3 className={styles.explainerTitle}>📖 What Am I Looking At?</h3>
+          <p className={styles.explainerText}>
+            This page shows <strong>historical snapshots from every ACE run</strong> - a timeline of how your betting strategies
+            have evolved over time. ACE keeps the last 10 playbook snapshots so you can track performance trends and see
+            if strategies are improving.
+          </p>
+          <div className={styles.explainerPoints}>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📅</span>
+              <span><strong>Snapshots:</strong> Each card represents one ACE run. The most recent is at the top. ACE runs daily when you click "Run ACE Daily Update"</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📊</span>
+              <span><strong>Performance Metrics:</strong> Each snapshot shows POT, hit rate, total bets, and experiences analyzed at that point in time</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📈</span>
+              <span><strong>Trend Analysis:</strong> Compare snapshots to see if your strategies are getting better. Rising POT = improving profitability</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🧠</span>
+              <span><strong>Learning Over Time:</strong> More experiences = better patterns. ACE gets smarter as it analyzes more betting decisions</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>💾</span>
+              <span><strong>Anti-Erosion:</strong> ACE never forgets. Even if recent performance is poor, it keeps historical learnings to prevent knowledge loss</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {history.length === 0 ? (
         <div className={styles.empty}>
           <p>No historical data available yet.</p>

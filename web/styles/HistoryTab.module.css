@@ -24,6 +24,51 @@
   margin: 0;
 }
 
+.explainerSection {
+  margin-bottom: 2rem;
+}
+
+.explainerCard {
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 0.75rem;
+}
+
+.explainerTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 1rem 0;
+}
+
+.explainerText {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin: 0 0 1.5rem 0;
+}
+
+.explainerPoints {
+  display: grid;
+  gap: 1rem;
+}
+
+.explainerPoint {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.explainerBullet {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .empty {
   padding: 3rem;
   text-align: center;

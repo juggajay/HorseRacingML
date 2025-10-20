@@ -91,6 +91,44 @@ export default function PlaybookTab({ playbookData, error }: PlaybookTabProps) {
         </div>
       )}
 
+      {/* Explanation Section */}
+      <div className={styles.explainerSection}>
+        <div className={styles.explainerCard}>
+          <h3 className={styles.explainerTitle}>📖 What Am I Looking At?</h3>
+          <p className={styles.explainerText}>
+            This page shows insights from <strong>ACE (Autonomous Context Engineering)</strong> - a two-loop learning system that
+            tests different betting strategies and identifies what actually works. Think of it as your betting coach analyzing
+            past performance to find winning patterns.
+          </p>
+          <div className={styles.explainerPoints}>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🔬</span>
+              <span><strong>How ACE Works:</strong> It simulates 24 betting strategies (different margins, stake sizes, selection counts) on historical data to find what's profitable</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📊</span>
+              <span><strong>Strategies:</strong> Each strategy is a betting rule like "bet $1 on top 2 horses when model edge is 5%+". ACE ranks them by profitability</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🏇</span>
+              <span><strong>Hot Tracks:</strong> Tracks where your ML model performs best. Higher POT = more profitable. Use this to focus your betting</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🎯</span>
+              <span><strong>Context Cues:</strong> Specific scenarios (track + distance + race type) where strategies excel. E.g., "Randwick 1600m Maiden = 42% POT"</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>💰</span>
+              <span><strong>POT (Profit on Turnover):</strong> If POT is 28.6%, betting $100 would return $128.60 on average. Positive = profitable, negative = losing</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🔄</span>
+              <span><strong>Daily Updates:</strong> Click "Run ACE" to analyze yesterday's races and update the playbook with new learnings</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {error && <div className={styles.error}>Failed to load playbook: {error.message}</div>}
 
       {!error && !playbook && (
