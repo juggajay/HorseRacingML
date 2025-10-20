@@ -173,49 +173,6 @@ class AceRunResponse(BaseModel):
     schema_runners_added: int
 
 
-def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
-    """Filter out scratched/withdrawn horses from the dataset."""
-    if df is None or df.empty:
-        return df
-
-    initial_count = len(df)
-    print(f"[DEBUG] _filter_scratched_runners called with {initial_count} runners")
-
-    # Method 1: Check for explicit status fields
-    if "is_scratched" in df.columns:
-        df = df[~df["is_scratched"].isin([True, "true", "True", "TRUE", 1, "1", "yes", "Yes", "YES"])]
-
-    if "runner_status" in df.columns:
-        scratched_statuses = ["SCRATCHED", "WITHDRAWN", "REMOVED", "LATE SCRATCHING", "scratched", "withdrawn"]
-        df = df[~df["runner_status"].isin(scratched_statuses)]
-
-    # Method 2: Race-level heuristic - filter defaults only when other horses in same race have real data
-    # This prevents filtering out ALL horses when entire dataset has defaults, but still catches scratched horses
-    if all(col in df.columns for col in ["betfair_horse_rating", "win_rate", "track", "race_no"]):
-        is_exact_default = (df["betfair_horse_rating"] == 50.0) & (df["win_rate"] == 0.1)
-
-        # For each race, check if SOME horses have defaults while others don't
-        # Only filter defaults if the race has mixed data quality
-        filtered_indices = []
-        for (track, race_no), race_df in df.groupby(["track", "race_no"]):
-            race_has_defaults = is_exact_default.loc[race_df.index].any()
-            race_all_defaults = is_exact_default.loc[race_df.index].all()
-
-            # If some horses have defaults but not all, filter the defaults (likely scratched)
-            if race_has_defaults and not race_all_defaults:
-                filtered_indices.extend(race_df.index[is_exact_default.loc[race_df.index]].tolist())
-
-        if filtered_indices:
-            print(f"[WARN] Filtering {len(filtered_indices)} horses with defaults in races that have real data")
-            df = df.drop(filtered_indices)
-
-    filtered_count = initial_count - len(df)
-    if filtered_count > 0:
-        print(f"[INFO] Total filtered: {filtered_count} scratched/withdrawn runners ({initial_count} → {len(df)})")
-    else:
-        print(f"[WARN] NO runners filtered - check if defaults exist in data")
-
-    return df
 
 
 def _score(df_raw: pd.DataFrame, booster: Booster) -> pd.DataFrame:
@@ -326,8 +283,6 @@ def get_top_picks(
     subset = _load_dataset(target_date)
     booster = _latest_model()
     scored = _score(subset, booster)
-    # Filter out scratched/withdrawn horses AFTER scoring (defaults added during feature engineering)
-    scored = _filter_scratched_runners(scored)
 
     # Debug: Log probability distribution and feature availability
     print(f"\n[DEBUG] Top Picks for {target_date}:")
@@ -500,8 +455,6 @@ def get_selections(
 
     booster = _latest_model()
     scored = _score(subset, booster)
-    # Filter out scratched/withdrawn horses AFTER scoring (defaults added during feature engineering)
-    scored = _filter_scratched_runners(scored)
 
     scored["edge_margin"] = scored["model_prob"] - scored["implied_prob"] * margin
     filtered = scored[scored["edge_margin"] > 0].copy()
