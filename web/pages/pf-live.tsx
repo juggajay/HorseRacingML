@@ -135,7 +135,7 @@ export default function PfLivePage() {
 
   const { data, error, isLoading, isValidating, mutate } = useSWR<PfLiveResponse>(
     ['pf-live', date],
-    ([, d]) => fetchPfLive(d),
+    ([, d]: [string, string]) => fetchPfLive(d),
     { revalidateOnFocus: false }
   );
 
