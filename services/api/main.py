@@ -204,10 +204,6 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
             # If some horses have defaults but not all, filter the defaults (likely scratched)
             if race_has_defaults and not race_all_defaults:
                 filtered_indices.extend(race_df.index[is_exact_default.loc[race_df.index]].tolist())
-            # If ALL horses in a race have defaults AND high odds (>8.0), it's likely all scratched - filter entire race
-            elif race_all_defaults and (race_df["win_odds"] > 8.0).all():
-                print(f"[WARN] Race {track} R{race_no} has ALL defaults + high odds - likely all scratched, filtering entire race")
-                filtered_indices.extend(race_df.index.tolist())
 
         if filtered_indices:
             print(f"[WARN] Filtering {len(filtered_indices)} horses with defaults in races that have real data")
