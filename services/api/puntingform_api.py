@@ -229,6 +229,9 @@ class PuntingFormClient:
         # When we know the date, include it to avoid receiving empty or scratched-only runner lists.
         if date_hint is not None:
             params["meetingDate"] = date_hint.isoformat()
+            print(f"[DEBUG] Adding meetingDate parameter: {date_hint.isoformat()} for meeting_id: {meeting_id}")
+        else:
+            print(f"[WARN] No date_hint provided for meeting_id: {meeting_id}, may get scratched-only data")
 
         response = self._make_request("v2/form/form", params, date_hint=date_hint, force=force)
 
