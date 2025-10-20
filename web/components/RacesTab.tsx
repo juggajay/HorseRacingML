@@ -112,7 +112,7 @@ export default function RacesTab({
             </div>
             <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>⏱️</span>
-              <span><strong>Loading Time:</strong> Processing 950+ horses with 45 features each takes ~2 minutes - be patient!</span>
+              <span><strong>Loading Time:</strong> Processing time varies by race day. Big racing days with 100+ races can take up to 2 minutes</span>
             </div>
           </div>
         </div>
@@ -229,7 +229,7 @@ export default function RacesTab({
           <div className={styles.spinner} />
           <p>Loading race cards...</p>
           <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}>
-            Analyzing ~950 horses across all tracks. This may take up to 2 minutes.
+            Processing time varies by race day size. Big racing days may take up to 2 minutes.
           </p>
         </div>
       )}
