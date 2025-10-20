@@ -179,55 +179,34 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     initial_count = len(df)
+    print(f"[DEBUG] _filter_scratched_runners called with {initial_count} runners")
 
     # Method 1: Check for explicit status fields
-    # is_scratched: explicit True/False or boolean-like values
     if "is_scratched" in df.columns:
-        # Handle boolean, string, or numeric representations
         df = df[~df["is_scratched"].isin([True, "true", "True", "TRUE", 1, "1", "yes", "Yes", "YES"])]
 
-    # runner_status: check for "SCRATCHED", "WITHDRAWN", "REMOVED" etc.
     if "runner_status" in df.columns:
         scratched_statuses = ["SCRATCHED", "WITHDRAWN", "REMOVED", "LATE SCRATCHING", "scratched", "withdrawn"]
         df = df[~df["runner_status"].isin(scratched_statuses)]
 
-    # Method 2: Heuristic detection - horses with ALL default/missing features
-    # Scratched horses typically have missing PuntingForm data, showing as all defaults
-    # Pattern: betfair_horse_rating=50.0 AND win_rate=0.1 AND (missing pf_score OR pf_score=null)
-    has_heuristic_columns = all(col in df.columns for col in ["betfair_horse_rating", "win_rate"])
+    # Method 2: AGGRESSIVE heuristic - filter EXACT default pattern
+    # If betfair_horse_rating==50.0 AND win_rate==0.1 exactly, it's almost certainly scratched
+    if "betfair_horse_rating" in df.columns and "win_rate" in df.columns:
+        # Use exact equality - scratched horses have EXACTLY these values
+        is_exact_default = (df["betfair_horse_rating"] == 50.0) & (df["win_rate"] == 0.1)
 
-    if has_heuristic_columns:
-        # Identify suspicious runners: all key features are defaults/missing
-        is_default_rating = (df["betfair_horse_rating"] == 50.0) | df["betfair_horse_rating"].isna()
-        is_default_win_rate = (df["win_rate"] == 0.1) | df["win_rate"].isna()
-
-        # Check if PF features are missing - check ALL common PF feature fields
-        pf_feature_cols = ["pf_score", "pf_ai_rank", "pf_ai_score", "neural_rating", "time_rating",
-                          "weight_class_rating", "early_time_rating", "late_sectional_rating"]
-
-        # Count how many PF features are actually present and non-null
-        pf_features_present = 0
-        for col in pf_feature_cols:
-            if col in df.columns:
-                pf_features_present += df[col].notna().astype(int)
-
-        # If a horse has 0 PF features (all null/missing), flag as suspicious
-        # Real horses should have AT LEAST one PF feature
-        pf_missing = (pf_features_present == 0)
-
-        # Flag as likely scratched if: default rating + default win_rate + NO PF features at all
-        likely_scratched = is_default_rating & is_default_win_rate & pf_missing
-
-        scratched_count = likely_scratched.sum()
+        scratched_count = is_exact_default.sum()
         if scratched_count > 0:
-            print(f"[WARN] Detected {scratched_count} likely scratched horses via heuristics (all default features)")
-            print(f"[DEBUG] Sample scratched horses: {df[likely_scratched]['selection_name'].head(3).tolist() if 'selection_name' in df.columns else 'N/A'}")
-            # Filter them out
-            df = df[~likely_scratched]
+            print(f"[WARN] Filtering {scratched_count} horses with exact default pattern (rating=50.0, win_rate=0.1)")
+            if "selection_name" in df.columns:
+                print(f"[DEBUG] Scratched horses: {df[is_exact_default]['selection_name'].head(10).tolist()}")
+            df = df[~is_exact_default]
 
     filtered_count = initial_count - len(df)
     if filtered_count > 0:
-        print(f"[INFO] Filtered {filtered_count} scratched/withdrawn runners ({initial_count} → {len(df)})")
+        print(f"[INFO] Total filtered: {filtered_count} scratched/withdrawn runners ({initial_count} → {len(df)})")
+    else:
+        print(f"[WARN] NO runners filtered - check if defaults exist in data")
 
     return df
 
