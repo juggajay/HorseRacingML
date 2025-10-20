@@ -180,7 +180,7 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
 
     initial_count = len(df)
 
-    # Check for various scratched indicators
+    # Method 1: Check for explicit status fields
     # is_scratched: explicit True/False or boolean-like values
     if "is_scratched" in df.columns:
         # Handle boolean, string, or numeric representations
@@ -191,8 +191,35 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
         scratched_statuses = ["SCRATCHED", "WITHDRAWN", "REMOVED", "LATE SCRATCHING", "scratched", "withdrawn"]
         df = df[~df["runner_status"].isin(scratched_statuses)]
 
-    # emergency_runner: sometimes emergency runners indicate scratching
-    # (Only filter if explicitly marked as scratched emergency)
+    # Method 2: Heuristic detection - horses with ALL default/missing features
+    # Scratched horses typically have missing PuntingForm data, showing as all defaults
+    # Pattern: betfair_horse_rating=50.0 AND win_rate=0.1 AND (missing pf_score OR pf_score=null)
+    has_heuristic_columns = all(col in df.columns for col in ["betfair_horse_rating", "win_rate"])
+
+    if has_heuristic_columns:
+        # Identify suspicious runners: all key features are defaults/missing
+        is_default_rating = (df["betfair_horse_rating"] == 50.0) | df["betfair_horse_rating"].isna()
+        is_default_win_rate = (df["win_rate"] == 0.1) | df["win_rate"].isna()
+
+        # Check if PF features are missing
+        pf_missing = True
+        if "pf_score" in df.columns:
+            pf_missing = df["pf_score"].isna()
+        elif "pf_ai_rank" in df.columns:
+            pf_missing = df["pf_ai_rank"].isna()
+        elif "neural_rating" in df.columns:
+            pf_missing = df["neural_rating"].isna()
+        else:
+            pf_missing = pd.Series([True] * len(df), index=df.index)
+
+        # Flag as likely scratched if: default rating + default win_rate + missing PF features
+        likely_scratched = is_default_rating & is_default_win_rate & pf_missing
+
+        scratched_count = likely_scratched.sum()
+        if scratched_count > 0:
+            print(f"[WARN] Detected {scratched_count} likely scratched horses via heuristics (all default features)")
+            # Filter them out
+            df = df[~likely_scratched]
 
     filtered_count = initial_count - len(df)
     if filtered_count > 0:
