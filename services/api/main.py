@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import asyncio
+import json
 import os
 from datetime import date, datetime
 from pathlib import Path
@@ -466,8 +466,16 @@ def get_pf_live_data(
                 }
             )
 
+    live_df = live_df.replace({pd.NaT: None})
+    live_df = live_df.astype(object).where(pd.notnull(live_df), None)
+
     columns = list(live_df.columns)
-    records = json.loads(live_df.to_json(orient="records", date_format="iso"))
+    python_records = live_df.to_dict(orient="records")
+    try:
+        records = json.loads(json.dumps(python_records, default=str))
+    except Exception as exc:
+        print(f"[ERROR] Failed to serialise PF live data: {exc}")
+        raise HTTPException(status_code=500, detail=f"Serialisation failed: {exc}") from exc
 
     return {
         "date": target_date.isoformat(),

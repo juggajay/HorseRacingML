@@ -83,8 +83,15 @@ class PuntingFormClient:
     def _cached_get(self, endpoint: str, year: int, month: int, params: Dict[str, Any], force: bool=False) -> Dict[str, Any]:
         path = self._cache_path(endpoint, year, month, params)
         if (not force) and os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                return json.load(f)
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except json.JSONDecodeError:
+                # Corrupted cache entry (partial download or truncated file) – delete and refetch.
+                try:
+                    os.remove(path)
+                except OSError:
+                    pass
         data = self._get(endpoint, params)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
