@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import asyncio
 import json
+import asyncio
 import os
 from datetime import date, datetime
 from pathlib import Path
@@ -180,25 +180,18 @@ def _filter_scratched_runners(df: pd.DataFrame) -> pd.DataFrame:
 
     initial_count = len(df)
     print(f"[DEBUG] _filter_scratched_runners called with {initial_count} runners")
-    print(f"[DEBUG] Available columns: {list(df.columns)}")
 
     # Method 1: Check for explicit status fields
     if "is_scratched" in df.columns:
-        print(f"[DEBUG] is_scratched column found. Unique values: {df['is_scratched'].unique()}")
-        before = len(df)
         df = df[~df["is_scratched"].isin([True, "true", "True", "TRUE", 1, "1", "yes", "Yes", "YES"])]
-        print(f"[DEBUG] Filtered {before - len(df)} runners by is_scratched field")
 
     if "runner_status" in df.columns:
-        print(f"[DEBUG] runner_status column found. Unique values: {df['runner_status'].unique()}")
         scratched_statuses = ["SCRATCHED", "WITHDRAWN", "REMOVED", "LATE SCRATCHING", "scratched", "withdrawn"]
-        before = len(df)
         df = df[~df["runner_status"].isin(scratched_statuses)]
-        print(f"[DEBUG] Filtered {before - len(df)} runners by runner_status field")
 
     # Method 2: Race-level heuristic - filter defaults only when other horses in same race have real data
     # This prevents filtering out ALL horses when entire dataset has defaults, but still catches scratched horses
-    if all(col in df.columns for col in ["betfair_horse_rating", "win_rate", "track", "race_no", "win_odds"]):
+    if all(col in df.columns for col in ["betfair_horse_rating", "win_rate", "track", "race_no"]):
         is_exact_default = (df["betfair_horse_rating"] == 50.0) & (df["win_rate"] == 0.1)
 
         # For each race, check if SOME horses have defaults while others don't
@@ -473,16 +466,8 @@ def get_pf_live_data(
                 }
             )
 
-    live_df = live_df.replace({pd.NaT: None})
-    live_df = live_df.astype(object).where(pd.notnull(live_df), None)
-
     columns = list(live_df.columns)
-    python_records = live_df.to_dict(orient="records")
-    try:
-        records = json.loads(json.dumps(python_records, default=str))
-    except Exception as exc:
-        print(f"[ERROR] Failed to serialise PF live data: {exc}")
-        raise HTTPException(status_code=500, detail=f"Serialisation failed: {exc}") from exc
+    records = json.loads(live_df.to_json(orient="records", date_format="iso"))
 
     return {
         "date": target_date.isoformat(),

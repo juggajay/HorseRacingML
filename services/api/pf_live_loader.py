@@ -63,7 +63,7 @@ def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFra
             pass
 
     client = PuntingFormClient()
-    meetings = client.get_meetings_list(target_date, force=force)
+    meetings = client.get_meetings_list(target_date)
     if not meetings:
         return pd.DataFrame()
 
@@ -77,7 +77,7 @@ def load_live_pf_day(target_date: dt.date, *, force: bool = False) -> pd.DataFra
         track_name = track_info.get("name") if isinstance(track_info, dict) else track_info
         state_code = track_info.get("state") if isinstance(track_info, dict) else None
 
-        form_df = client.get_form(meeting_id, meeting_date, force=force)
+        form_df = client.get_form(meeting_id, meeting_date)
         if form_df is None or form_df.empty:
             continue
 

@@ -83,15 +83,8 @@ class PuntingFormClient:
     def _cached_get(self, endpoint: str, year: int, month: int, params: Dict[str, Any], force: bool=False) -> Dict[str, Any]:
         path = self._cache_path(endpoint, year, month, params)
         if (not force) and os.path.exists(path):
-            try:
-                with open(path, "r", encoding="utf-8") as f:
-                    return json.load(f)
-            except json.JSONDecodeError:
-                # Corrupted cache entry (partial download or truncated file) – delete and refetch.
-                try:
-                    os.remove(path)
-                except OSError:
-                    pass
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
         data = self._get(endpoint, params)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
@@ -229,9 +222,6 @@ class PuntingFormClient:
         # When we know the date, include it to avoid receiving empty or scratched-only runner lists.
         if date_hint is not None:
             params["meetingDate"] = date_hint.isoformat()
-            print(f"[DEBUG] Adding meetingDate parameter: {date_hint.isoformat()} for meeting_id: {meeting_id}")
-        else:
-            print(f"[WARN] No date_hint provided for meeting_id: {meeting_id}, may get scratched-only data")
 
         response = self._make_request("v2/form/form", params, date_hint=date_hint, force=force)
 
