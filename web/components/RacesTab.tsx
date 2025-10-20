@@ -89,26 +89,26 @@ export default function RacesTab({
         <div className={styles.explainerCard}>
           <h3 className={styles.explainerTitle}>📖 What Am I Looking At?</h3>
           <p className={styles.explainerText}>
-            This page shows <strong>every horse racing today</strong> with detailed ML predictions for each race.
-            Unlike the Today tab (which shows only the top picks), this gives you the complete picture with
-            probabilities and value ratings for all ~950 horses across all tracks.
+            This page shows <strong>value bets</strong> - horses where the ML model has found an edge over the market odds.
+            Only horses that meet the margin threshold are shown (default 5% edge). Adjust the slider to see more/fewer
+            selections, or filter by specific tracks and races.
           </p>
           <div className={styles.explainerPoints}>
             <div className={styles.explainerPoint}>
-              <span className={styles.explainerBullet}>🏇</span>
-              <span><strong>All Runners:</strong> Complete field for each race with model probabilities, market odds, and calculated edge</span>
-            </div>
-            <div className={styles.explainerPoint}>
-              <span className={styles.explainerBullet}>📊</span>
-              <span><strong>Model Probability:</strong> The ML model's calibrated win chance (0-100%). Higher = better chance to win</span>
-            </div>
-            <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>💎</span>
-              <span><strong>Edge (Value):</strong> Green = model thinks horse has better chance than odds suggest. Red = overbet by market</span>
+              <span><strong>Value Betting:</strong> These horses have "positive edge" - the model believes they have a better chance than the market odds suggest</span>
             </div>
             <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>🎚️</span>
-              <span><strong>Margin Threshold:</strong> Filters horses to only show those with edge above this % (used by ACE for bet selection)</span>
+              <span><strong>Margin Threshold:</strong> Slide to adjust minimum edge required. Higher = fewer but stronger value bets. Lower = more selections but weaker edges</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>📊</span>
+              <span><strong>Model Probability:</strong> What the ML model thinks the horse's true win chance is (0-100%). Compare this to the implied probability from odds</span>
+            </div>
+            <div className={styles.explainerPoint}>
+              <span className={styles.explainerBullet}>🏇</span>
+              <span><strong>Edge Calculation:</strong> Edge = Model Probability - Implied Probability (from market odds). Green positive edge = value bet opportunity</span>
             </div>
             <div className={styles.explainerPoint}>
               <span className={styles.explainerBullet}>⏱️</span>
